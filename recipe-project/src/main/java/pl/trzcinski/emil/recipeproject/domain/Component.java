@@ -1,4 +1,3 @@
-
 package pl.trzcinski.emil.recipeproject.domain;
 
 import com.fasterxml.jackson.annotation.*;
@@ -17,7 +16,9 @@ import java.util.Map;
     "id",
     "raw_text"
 })
+
 @Generated("jsonschema2pojo")
+
 public class Component {
 
     @JsonProperty("extra_comment")

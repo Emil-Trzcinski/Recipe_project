@@ -1,7 +1,7 @@
-
 package pl.trzcinski.emil.recipeproject.domain;
 
 import com.fasterxml.jackson.annotation.*;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Generated;
 import java.util.HashMap;
@@ -13,6 +13,7 @@ import java.util.Map;
     "quantity",
     "unit"
 })
+
 @Generated("jsonschema2pojo")
 public class Measurement {
 

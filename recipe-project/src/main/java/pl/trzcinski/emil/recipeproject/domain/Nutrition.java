@@ -1,4 +1,3 @@
-
 package pl.trzcinski.emil.recipeproject.domain;
 
 import java.util.HashMap;
@@ -10,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.springframework.stereotype.Component;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -21,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "fiber",
     "updated_at"
 })
+
 @Generated("jsonschema2pojo")
 public class Nutrition {
 
@@ -161,4 +162,17 @@ public class Nutrition {
         return this;
     }
 
+    @Override
+    public String toString() {
+        return " Nutrition { " +
+                "\n calories=" + calories +
+                "\n, carbohydrates=" + carbohydrates +
+                "\n, fat=" + fat +
+                "\n, protein=" + protein +
+                "\n, sugar=" + sugar +
+                "\n, fiber=" + fiber +
+                "\n, updatedAt='" + updatedAt + '\'' +
+                "\n, additionalProperties=" + additionalProperties +
+                '}';
+    }
 }

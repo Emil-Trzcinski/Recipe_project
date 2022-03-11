@@ -1,4 +1,3 @@
-
 package pl.trzcinski.emil.recipeproject.domain;
 
 import java.util.HashMap;
@@ -10,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.springframework.stereotype.Component;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "count_negative",
     "score"
 })
+
 @Generated("jsonschema2pojo")
 public class UserRatings {
 

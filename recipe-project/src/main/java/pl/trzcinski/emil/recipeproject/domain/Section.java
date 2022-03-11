@@ -1,4 +1,3 @@
-
 package pl.trzcinski.emil.recipeproject.domain;
 
 import java.util.HashMap;
@@ -18,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "name",
     "position"
 })
+
 @Generated("jsonschema2pojo")
 public class Section {
 

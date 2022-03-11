@@ -1,17 +1,12 @@
-
 package pl.trzcinski.emil.recipeproject.domain;
 
+import com.fasterxml.jackson.annotation.*;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Generated;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Generated;
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import pl.trzcinski.emil.recipeproject.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -66,7 +61,9 @@ import pl.trzcinski.emil.recipeproject.*;
     "tags",
     "cook_time_minutes"
 })
+
 @Generated("jsonschema2pojo")
+@Component
 public class Recipe {
 
     @JsonProperty("nutrition")
@@ -937,4 +934,60 @@ public class Recipe {
         return this;
     }
 
+    @Override
+    public String toString() {
+        return "\n Recipe { " +
+                "\n nutrition=" + nutrition +
+                "\n, sections=" + sections +
+                "\n, buzzId=" + buzzId +
+                "\n, createdAt=" + createdAt +
+                "\n, prepTimeMinutes=" + prepTimeMinutes +
+                "\n, originalVideoUrl=" + originalVideoUrl +
+                "\n, beautyUrl=" + beautyUrl +
+                "\n, inspiredByUrl=" + inspiredByUrl +
+                "\n, seoTitle='" + seoTitle + '\'' +
+                "\n, tipsAndRatingsEnabled=" + tipsAndRatingsEnabled +
+                "\n, totalTimeMinutes=" + totalTimeMinutes +
+                "\n, videoUrl=" + videoUrl +
+                "\n, compilations=" + compilations +
+                "\n, facebookPosts=" + facebookPosts +
+                "\n, id=" + id +
+                "\n, renditions=" + renditions +
+                "\n, language='" + language + '\'' +
+                "\n, slug='" + slug + '\'' +
+                "\n, videoId=" + videoId +
+                "\n, instructions=" + instructions +
+                "\n, topics=" + topics +
+                "\n, isShoppable=" + isShoppable +
+                "\n, draftStatus='" + draftStatus + '\'' +
+                "\n, updatedAt=" + updatedAt +
+                "\n, videoAdContent=" + videoAdContent +
+                "\n, country='" + country + '\'' +
+                "\n, isOneTop=" + isOneTop +
+                "\n, keywords='" + keywords + '\'' +
+                "\n, promotion='" + promotion + '\'' +
+                "\n, servingsNounPlural='" + servingsNounPlural + '\'' +
+                "\n, servingsNounSingular='" + servingsNounSingular + '\'' +
+                "\n, showId=" + showId +
+                "\n, thumbnailAltText='" + thumbnailAltText + '\'' +
+                "\n, aspectRatio='" + aspectRatio + '\'' +
+                "\n, totalTimeTier=" + totalTimeTier +
+                "\n, userRatings=" + userRatings +
+                "\n, credits=" + credits +
+                "\n, canonicalId='" + canonicalId + '\'' +
+                "\n, thumbnailUrl='" + thumbnailUrl + '\'' +
+                "\n, brandId=" + brandId +
+                "\n, description='" + description + '\'' +
+                "\n, numServings=" + numServings +
+                "\n, yields='" + yields + '\'' +
+                "\n, nutritionVisibility='" + nutritionVisibility + '\'' +
+                "\n, show=" + show +
+                "\n, approvedAt=" + approvedAt +
+                "\n, name='" + name + '\'' +
+                "\n, brand=" + brand +
+                "\n, tags=" + tags +
+                "\n, cookTimeMinutes=" + cookTimeMinutes +
+                "\n, additionalProperties=" + additionalProperties +
+                '}';
+    }
 }
