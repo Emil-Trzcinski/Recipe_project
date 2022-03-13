@@ -7,12 +7,12 @@ import pl.trzcinski.emil.recipeproject.domain.Recipe;
 import pl.trzcinski.emil.recipeproject.domain.RecipeList;
 import pl.trzcinski.emil.recipeproject.service.CallToExternalApiService;
 
+
 @Slf4j
 @RestController
 public class ExternalApiRequest {
 
     private final CallToExternalApiService callToExternalApiSevice;
-
     public ExternalApiRequest(CallToExternalApiService callToExternalApiSevice) {
         this.callToExternalApiSevice = callToExternalApiSevice;
     }
@@ -30,5 +30,6 @@ public class ExternalApiRequest {
         callToExternalApiSevice.getNameFromRecipe(callToExternalApiSevice.getRecipeFromExternalApi());
         return callToExternalApiSevice.getRecipeFromExternalApi();
     }
+
 
 }
