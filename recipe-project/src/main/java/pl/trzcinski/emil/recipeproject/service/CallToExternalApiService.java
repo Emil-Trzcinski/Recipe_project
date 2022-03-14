@@ -11,10 +11,9 @@ import org.springframework.stereotype.Service;
 import pl.trzcinski.emil.recipeproject.domain.Recipe;
 import pl.trzcinski.emil.recipeproject.domain.RecipeList;
 
-
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
+
+import static pl.trzcinski.emil.recipeproject.utility.RecipeListFilter.listFiltering;
 
 @Slf4j
 @Service
@@ -27,7 +26,6 @@ public class CallToExternalApiService {
     private final String headerHostValue = "tasty.p.rapidapi.com";
     private final String headerKeyName = "x-rapidapi-key";
     private final String headerKeyValue = "599499f508msh901b6a991084120p1b3173jsn2ea6a449da3e";
-
 
     @NotNull
     public Response getResponse(String url) throws IOException {
@@ -43,14 +41,16 @@ public class CallToExternalApiService {
 
     public RecipeList getListFromExternalApi() throws Exception {
         try {
-            Response response = getResponse("list?from=0&size=20");
+            Response response = getResponse("list?from=0&size=40");
 
             String responseBody = response.body().string();
 
             ObjectMapper objectMapper = new ObjectMapper()
                     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-              return  objectMapper.readValue(responseBody, RecipeList.class);
+            RecipeList recipeList = objectMapper.readValue(responseBody, RecipeList.class);
+
+            return listFiltering(recipeList);
 
         } catch (Exception e) {
             throw new Exception(e);
@@ -75,8 +75,14 @@ public class CallToExternalApiService {
     public void getNameFromRecipeList(RecipeList recipeList) {
         log.info("--------RecipeList----------");
 
-        recipeList.getResults().stream()
-                .map(k -> "Recipe: " + k.getName() + " --Id: " + k.getId()) /*+ " --Kcal: " + k.getNutrition().getCalories())*/
+        listFiltering(recipeList).getResults().stream()
+                .map(recipe ->
+                        "\nRecipe: " + recipe.getName()
+                        + "\n---- Time: " + recipe.getCookTimeMinutes()
+                        + "\n---- PrepTime: " + recipe.getPrepTimeMinutes()
+                        + "\n---- TotalTime: " + recipe.getTotalTimeMinutes()
+                        + "\n---- Kcal: " + recipe.getNutrition().getCalories()
+                        + "\n---- Id: " + recipe.getId())
                 .forEach(log::info);
     }
 
@@ -84,6 +90,4 @@ public class CallToExternalApiService {
         log.info("--------Recipe----------");
         log.info(recipe.toString());
     }
-
-
 }

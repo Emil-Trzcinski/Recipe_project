@@ -12,24 +12,22 @@ import pl.trzcinski.emil.recipeproject.service.CallToExternalApiService;
 @RestController
 public class ExternalApiRequest {
 
-    private final CallToExternalApiService callToExternalApiSevice;
-    public ExternalApiRequest(CallToExternalApiService callToExternalApiSevice) {
-        this.callToExternalApiSevice = callToExternalApiSevice;
+    private final CallToExternalApiService callToExternalApiService;
+    public ExternalApiRequest(CallToExternalApiService callToExternalApiService) {
+        this.callToExternalApiService = callToExternalApiService;
     }
 
     @GetMapping("/list")
     public RecipeList getListFromExternalApi() throws Exception {
 
-        callToExternalApiSevice.getNameFromRecipeList(callToExternalApiSevice.getListFromExternalApi());
-        return callToExternalApiSevice.getListFromExternalApi();
+        callToExternalApiService.getNameFromRecipeList(callToExternalApiService.getListFromExternalApi());
+        return callToExternalApiService.getListFromExternalApi();
     }
 
     @GetMapping("/recipe")
     public Recipe getRecipeFromExternalApi() throws Exception {
 
-        callToExternalApiSevice.getNameFromRecipe(callToExternalApiSevice.getRecipeFromExternalApi());
-        return callToExternalApiSevice.getRecipeFromExternalApi();
+        callToExternalApiService.getNameFromRecipe(callToExternalApiService.getRecipeFromExternalApi());
+        return callToExternalApiService.getRecipeFromExternalApi();
     }
-
-
 }

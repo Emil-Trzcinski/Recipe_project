@@ -14,10 +14,10 @@ public class Recipe {
 
     @JsonProperty("id")
     private Integer id;
-    @JsonProperty("nutrition")
-    private Nutrition nutrition;
     @JsonProperty("name")
     private String name;
+    @JsonProperty("nutrition")
+    private Nutrition nutrition;
     @JsonProperty("instructions")
     private List<Instruction> instructions = null;
     @JsonProperty("total_time_minutes")
@@ -38,17 +38,17 @@ public class Recipe {
     public String toString() {
         return "RecipeeeBoom{" +
                 "\n id=" + id +
-                ",\n nutrition=" + nutrition +
                 ",\n name='" + name + '\'' +
-                ",\n instructions=" + instructions +
+                ",\n nutrition=" + nutrition +
                 ",\n totalTimeMinutes=" + totalTimeMinutes +
                 ",\n prepTimeMinutes=" + prepTimeMinutes +
                 ",\n cookTimeMinutes=" + cookTimeMinutes +
-                ",\n thumbnailUrl='" + thumbnailUrl + '\'' +
-                ",\n numServings=" + numServings +
+                ",\n instructions=" + instructions +
                 "\n ------------------------------------------" +
                 ",\n sections=" + sections +
                 "\n ------------------------------------------" +
+                ",\n numServings=" + numServings +
+                ",\n thumbnailUrl='" + thumbnailUrl +
                 '}';
     }
 }
