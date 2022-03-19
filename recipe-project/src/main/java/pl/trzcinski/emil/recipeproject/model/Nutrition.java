@@ -1,10 +1,19 @@
-package pl.trzcinski.emil.recipeproject.domain;
+package pl.trzcinski.emil.recipeproject.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 @Data
+@Entity(name = "Nutrition")
 public class Nutrition {
+
+    @Id
+    @Column(name = "id", nullable = false)
+    private Long id;
 
     @JsonProperty("calories")
     private Integer calories;
@@ -18,6 +27,14 @@ public class Nutrition {
     private Integer sugar;
     @JsonProperty("fiber")
     private Integer fiber;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     @Override
     public String toString() {

@@ -1,11 +1,15 @@
 package pl.trzcinski.emil.recipeproject.utility;
 
-import pl.trzcinski.emil.recipeproject.domain.Recipe;
-import pl.trzcinski.emil.recipeproject.domain.RecipeList;
+import pl.trzcinski.emil.recipeproject.model.Recipe;
+import pl.trzcinski.emil.recipeproject.model.RecipeList;
 
 import java.util.List;
 
 public class RecipeListFilter {
+
+    private RecipeListFilter() {
+        //defensive move to block creating instance of this class
+    }
 
     public static RecipeList listFiltering(RecipeList recipeList) {
         List<Recipe> temp = recipeList.getResults()
@@ -24,6 +28,7 @@ public class RecipeListFilter {
                 .filter(recipe -> recipe.getSections() != null)
                 .filter(recipe -> recipe.getNumServings() != null)
                 .filter(recipe -> recipe.getThumbnailUrl() != null)
+                .filter(recipe -> recipe.getTags() != null)
                 .toList();
 
         RecipeList filteredRecipeList = new RecipeList();

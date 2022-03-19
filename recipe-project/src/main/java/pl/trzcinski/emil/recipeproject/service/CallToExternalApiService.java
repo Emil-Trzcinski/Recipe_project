@@ -1,3 +1,5 @@
+/*
+
 package pl.trzcinski.emil.recipeproject.service;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -8,8 +10,9 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
-import pl.trzcinski.emil.recipeproject.domain.Recipe;
-import pl.trzcinski.emil.recipeproject.domain.RecipeList;
+import pl.trzcinski.emil.recipeproject.model.Recipe;
+import pl.trzcinski.emil.recipeproject.model.RecipeList;
+import pl.trzcinski.emil.recipeproject.repository.RecipeRepository;
 
 import java.io.IOException;
 
@@ -19,6 +22,15 @@ import static pl.trzcinski.emil.recipeproject.utility.RecipeListFilter.listFilte
 @Service
 public class CallToExternalApiService {
 
+    Recipe recipe;
+    RecipeList recipeList;
+    RecipeRepository recipeRepository;
+
+    public CallToExternalApiService(Recipe recipe, RecipeList recipeList, RecipeRepository recipeRepository) {
+        this.recipe = recipe;
+        this.recipeList = recipeList;
+        this.recipeRepository = recipeRepository;
+    }
     //dodać do enum lub proporities
 
     private final String headerHostName = "x-rapidapi-host";
@@ -50,7 +62,11 @@ public class CallToExternalApiService {
 
             RecipeList recipeList = objectMapper.readValue(responseBody, RecipeList.class);
 
-            return listFiltering(recipeList);
+
+            //recipeList.getResults().forEach(recipeRepository.save(recipe -> recipe.);
+
+
+            return  listFiltering(recipeList);
 
         } catch (Exception e) {
             throw new Exception(e);
@@ -75,7 +91,7 @@ public class CallToExternalApiService {
     public void getNameFromRecipeList(RecipeList recipeList) {
         log.info("--------RecipeList----------");
 
-        listFiltering(recipeList).getResults().stream()
+        recipeList.getResults().stream()
                 .map(recipe ->
                         "\nRecipe: " + recipe.getName()
                         + "\n---- Time: " + recipe.getCookTimeMinutes()
@@ -91,3 +107,6 @@ public class CallToExternalApiService {
         log.info(recipe.toString());
     }
 }
+
+
+ */

@@ -1,33 +1,38 @@
 package pl.trzcinski.emil.recipeproject.api.request;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-import pl.trzcinski.emil.recipeproject.domain.Recipe;
-import pl.trzcinski.emil.recipeproject.domain.RecipeList;
-import pl.trzcinski.emil.recipeproject.service.CallToExternalApiService;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import org.springframework.stereotype.Controller;
 
+import java.io.IOException;
 
 @Slf4j
-@RestController
+@Controller
 public class ExternalApiRequest {
 
-    private final CallToExternalApiService callToExternalApiService;
-    public ExternalApiRequest(CallToExternalApiService callToExternalApiService) {
-        this.callToExternalApiService = callToExternalApiService;
+    //dodać do enum lub proporities
+    private final String urlTasty = "https://tasty.p.rapidapi.com/recipes/";
+    private final String headerHostName = "x-rapidapi-host";
+    private final String headerHostValue = "tasty.p.rapidapi.com";
+    private final String headerKeyName = "x-rapidapi-key";
+    private final String headerKeyValue = "599499f508msh901b6a991084120p1b3173jsn2ea6a449da3e";
+
+    private Response getResponse(String url) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(urlTasty + url)
+                .get()
+                .addHeader(headerHostName, headerHostValue)
+                .addHeader(headerKeyName, headerKeyValue)
+                .build();
+        return client.newCall(request).execute();
     }
 
-    @GetMapping("/list")
-    public RecipeList getListFromExternalApi() throws Exception {
-
-        callToExternalApiService.getNameFromRecipeList(callToExternalApiService.getListFromExternalApi());
-        return callToExternalApiService.getListFromExternalApi();
+    public String getResponseBodyFromResponse() throws IOException {
+        Response response = getResponse("list?from=0&size=40");
+        return response.body().string();
     }
 
-    @GetMapping("/recipe")
-    public Recipe getRecipeFromExternalApi() throws Exception {
-
-        callToExternalApiService.getNameFromRecipe(callToExternalApiService.getRecipeFromExternalApi());
-        return callToExternalApiService.getRecipeFromExternalApi();
-    }
 }
