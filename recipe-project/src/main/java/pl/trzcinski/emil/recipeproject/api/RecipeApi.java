@@ -25,11 +25,10 @@ public class RecipeApi {
         return recipeService.recipeListFiltering().toString();
     }
 
-    /*
+
     @GetMapping("/przepis")
-    public String getRecipe(@RequestParam int kcal) {
-
+    public String getRecipe(@RequestParam int kcal, int prepareTotalTimeMinutes) throws Exception {
+        recipeService.getNameFromRecipe(recipeService.getRecipeWithParameters(kcal, prepareTotalTimeMinutes));
+        return recipeService.getRecipeWithParameters(kcal, prepareTotalTimeMinutes).toString();
     }
-
-     */
 }

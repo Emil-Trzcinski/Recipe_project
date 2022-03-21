@@ -18,9 +18,11 @@ public class ExternalApiRequest {
     private final String headerHostValue = "tasty.p.rapidapi.com";
     private final String headerKeyName = "x-rapidapi-key";
     private final String headerKeyValue = "599499f508msh901b6a991084120p1b3173jsn2ea6a449da3e";
+    String urlParameters = "list?from=40&size=40";
 
     private Response getResponse(String url) throws IOException {
         OkHttpClient client = new OkHttpClient();
+
         Request request = new Request.Builder()
                 .url(urlTasty + url)
                 .get()
@@ -31,8 +33,7 @@ public class ExternalApiRequest {
     }
 
     public String getResponseBodyFromResponse() throws IOException {
-        Response response = getResponse("list?from=0&size=40");
+        Response response = getResponse(urlParameters);
         return response.body().string();
     }
-
 }

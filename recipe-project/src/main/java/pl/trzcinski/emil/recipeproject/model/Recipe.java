@@ -16,6 +16,7 @@ import java.util.List;
 public class Recipe {
 
     @Id
+    @GeneratedValue
     @Column(name = "table_id", nullable = false)
     private Long tableId;
 
@@ -40,15 +41,15 @@ public class Recipe {
 
     @Transient
     @JsonProperty("total_time_minutes")
-    private Object totalTimeMinutes;
+    private Integer totalTimeMinutes;
 
     @Transient
     @JsonProperty("prep_time_minutes")
-    private Object prepTimeMinutes;
+    private Integer prepTimeMinutes;
 
     @Transient
     @JsonProperty("cook_time_minutes")
-    private Object cookTimeMinutes;
+    private Integer cookTimeMinutes;
 
     @JsonProperty("thumbnail_url")
     private String thumbnailUrl;
@@ -73,7 +74,7 @@ public class Recipe {
 
     @Override
     public String toString() {
-        return "RecipeeeBoom{" +
+        return "RecipeeeBoom {" +
                 "\n id=" + id +
                 ",\n name='" + name + '\'' +
                 ",\n nutrition=" + nutrition +

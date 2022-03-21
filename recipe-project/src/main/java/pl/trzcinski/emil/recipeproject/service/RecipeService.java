@@ -4,6 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pl.trzcinski.emil.recipeproject.model.Recipe;
 import pl.trzcinski.emil.recipeproject.model.RecipeList;
+import pl.trzcinski.emil.recipeproject.repository.RecipeRepository;
+
+import java.util.Optional;
 
 import static pl.trzcinski.emil.recipeproject.utility.RecipeListFilter.listFiltering;
 
@@ -13,10 +16,12 @@ public class RecipeService {
 
     private RecipeList recipeList;
     private final RecipeListMapperService recipeListMapperService;
+    private final RecipeRepository recipeRepository;
 
-    public RecipeService(RecipeList recipeList, RecipeListMapperService recipeListMapperService) {
+    public RecipeService(RecipeList recipeList, RecipeListMapperService recipeListMapperService, RecipeRepository recipeRepository) {
         this.recipeList = recipeList;
         this.recipeListMapperService = recipeListMapperService;
+        this.recipeRepository = recipeRepository;
     }
 
     public RecipeList recipeListFiltering() throws Exception {
@@ -24,11 +29,17 @@ public class RecipeService {
         return listFiltering(recipeList);
     }
 
-    /*
-    public void getRecipeWithParameters(int kcal) {
-        listFiltering(recipeList);
-        recipeList.getResults().stream()
-                .map(recipe -> (recipe.getNutrition().getCalories() >= kcal + 1000) ? recipe : null)
+    public Recipe getRecipeWithParameters(int kcal, int prepareTotalTimeMinutes) throws Exception {
+        recipeList = recipeListFiltering();
+        Optional<Recipe> recipeTemp;
+
+        recipeTemp = recipeList.getResults().stream()
+                .map(recipe ->
+                    (recipe.getNutrition().getCalories() > 0 &&
+                            recipe.getNutrition().getCalories() <= kcal &&
+                            recipe.getTotalTimeMinutes() > 0  &&
+                            recipe.getTotalTimeMinutes() <= prepareTotalTimeMinutes) ?
+                            recipe : null)
                 .reduce((recipe, recipe2) -> {
                     if (recipe2 != null) {
                         return recipe.getNutrition().getCalories() > recipe2.getNutrition().getCalories() ?
@@ -36,11 +47,9 @@ public class RecipeService {
                     }
                     return recipe;
                 });
+
+        return recipeTemp.get();
     }
-
-     */
-
-
 
     public void getNameFromRecipeList(RecipeList recipeList) {
         log.info("--------RecipeList----------");
