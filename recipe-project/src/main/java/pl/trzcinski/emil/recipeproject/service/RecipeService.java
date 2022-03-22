@@ -6,7 +6,9 @@ import pl.trzcinski.emil.recipeproject.model.Recipe;
 import pl.trzcinski.emil.recipeproject.model.RecipeList;
 import pl.trzcinski.emil.recipeproject.repository.RecipeRepository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static pl.trzcinski.emil.recipeproject.utility.RecipeListFilter.listFiltering;
 
@@ -28,18 +30,24 @@ public class RecipeService {
         recipeList = recipeListMapperService.getListFromResponseBody();
         return listFiltering(recipeList);
     }
-
-    public Recipe getRecipeWithParameters(int kcal, int prepareTotalTimeMinutes) throws Exception {
+    public Recipe getListOfRecipesWithParameters(int kcal, int prepareTotalTimeMinutes) throws Exception {
         recipeList = recipeListFiltering();
-        Optional<Recipe> recipeTemp;
+        List<Recipe> recipeTemp;
 
         recipeTemp = recipeList.getResults().stream()
-                .map(recipe ->
-                    (recipe.getNutrition().getCalories() > 0 &&
-                            recipe.getNutrition().getCalories() <= kcal &&
-                            recipe.getTotalTimeMinutes() > 0  &&
-                            recipe.getTotalTimeMinutes() <= prepareTotalTimeMinutes) ?
-                            recipe : null)
+                .filter(recipe ->
+                        (recipe.getNutrition().getCalories() > 0 &&
+                                recipe.getNutrition().getCalories() <= kcal &&
+                                recipe.getTotalTimeMinutes() > 0  &&
+                                recipe.getTotalTimeMinutes() <= prepareTotalTimeMinutes))
+                .collect(Collectors.toList());
+
+        return getRecipeFromListOfRecipesWithPara(recipeTemp);
+    }
+
+    private Recipe getRecipeFromListOfRecipesWithPara(List<Recipe> recipeTemp) {
+        Optional<Recipe> optionalRecipe;
+        optionalRecipe = recipeTemp.stream()
                 .reduce((recipe, recipe2) -> {
                     if (recipe2 != null) {
                         return recipe.getNutrition().getCalories() > recipe2.getNutrition().getCalories() ?
@@ -48,7 +56,7 @@ public class RecipeService {
                     return recipe;
                 });
 
-        return recipeTemp.get();
+        return optionalRecipe.get();
     }
 
     public void getNameFromRecipeList(RecipeList recipeList) {

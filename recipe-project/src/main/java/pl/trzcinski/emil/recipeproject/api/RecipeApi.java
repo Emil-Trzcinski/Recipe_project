@@ -28,7 +28,7 @@ public class RecipeApi {
 
     @GetMapping("/przepis")
     public String getRecipe(@RequestParam int kcal, int prepareTotalTimeMinutes) throws Exception {
-        recipeService.getNameFromRecipe(recipeService.getRecipeWithParameters(kcal, prepareTotalTimeMinutes));
-        return recipeService.getRecipeWithParameters(kcal, prepareTotalTimeMinutes).toString();
+        recipeService.getNameFromRecipe(recipeService.getListOfRecipesWithParameters(kcal, prepareTotalTimeMinutes));
+        return recipeService.getListOfRecipesWithParameters(kcal, prepareTotalTimeMinutes).toString();
     }
 }
