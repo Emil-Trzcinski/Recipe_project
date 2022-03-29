@@ -14,7 +14,7 @@ public class RecipeListFilter {
     public static RecipeList listFiltering(RecipeList recipeList) {
         List<Recipe> temp = recipeList.getResults()
                 .stream()
-                .filter(recipe -> recipe.getId() != null)
+                //.filter(recipe -> recipe.getId() != null)
                 .filter(recipe -> recipe.getName() != null)
                 .filter(recipe -> recipe.getNutrition() != null)
                 .filter(recipe -> recipe.getNutrition().getCalories() != null)

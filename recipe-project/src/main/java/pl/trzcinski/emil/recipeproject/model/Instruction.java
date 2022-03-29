@@ -3,27 +3,31 @@ package pl.trzcinski.emil.recipeproject.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Data
-@Entity(name = "Instruction")
+@Entity
 public class Instruction {
 
     @Id
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "instruction_id", nullable = false)
+    private Long instruction_id;
 
+    @ManyToOne
+    @JoinColumn(name = "recipe_id")
+    private Recipe recipe;
+
+    @Column(columnDefinition = "varchar(max)")
     @JsonProperty("display_text")
     private String displayText;
 
-    public Long getId() {
-        return id;
+    public Long getInstruction_id() {
+        return instruction_id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setInstruction_id(Long id) {
+        this.instruction_id = id;
     }
 
     @Override

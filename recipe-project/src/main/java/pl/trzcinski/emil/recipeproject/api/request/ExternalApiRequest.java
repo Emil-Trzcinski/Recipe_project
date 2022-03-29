@@ -17,7 +17,10 @@ public class ExternalApiRequest {
     private final String headerHostName = "x-rapidapi-host";
     private final String headerHostValue = "tasty.p.rapidapi.com";
     private final String headerKeyName = "x-rapidapi-key";
-    private final String headerKeyValue = "599499f508msh901b6a991084120p1b3173jsn2ea6a449da3e";
+//  private final String headerKeyValue = "599499f508msh901b6a991084120p1b3173jsn2ea6a449da3e";
+    private final String headerKeyValue = "259a8d7c8fmsheed54b685a759a3p1eb7d2jsn46270f6f5903";
+
+
     String urlParameters = "list?from=40&size=40";
 
     private Response getResponse(String url) throws IOException {

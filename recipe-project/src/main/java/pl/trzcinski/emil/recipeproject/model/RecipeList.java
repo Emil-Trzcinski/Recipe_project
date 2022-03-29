@@ -10,7 +10,6 @@ import java.util.List;
 
 @Data
 @Component
-
 public class RecipeList {
 
     private List<Recipe> results;

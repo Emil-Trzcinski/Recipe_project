@@ -3,17 +3,20 @@ package pl.trzcinski.emil.recipeproject.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+
+import javax.persistence.*;
 
 @Data
 @Entity(name = "Nutrition")
 public class Nutrition {
 
     @Id
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "nutrition_id", nullable = false)
     private Long id;
+
+    @OneToOne(mappedBy = "nutrition")
+    private Recipe recipe;
 
     @JsonProperty("calories")
     private Integer calories;

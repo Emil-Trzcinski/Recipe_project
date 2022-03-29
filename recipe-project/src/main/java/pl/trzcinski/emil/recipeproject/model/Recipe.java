@@ -3,6 +3,8 @@ package pl.trzcinski.emil.recipeproject.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
@@ -12,31 +14,29 @@ import java.util.List;
 
 @Data
 @Component
-@Entity(name = "Recipies")
+@Entity
 public class Recipe {
 
     @Id
-    @GeneratedValue
-    @Column(name = "table_id", nullable = false)
-    private Long tableId;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "recipe_id", nullable = false)
+    private Long recipeId;
 
-    @JsonProperty("id")
-    private Integer id;
+//    @JsonProperty("id")
+//    private Integer id;
 
     @JsonProperty("name")
     private String name;
 
-    @ManyToMany
-    @JsonProperty("tags")
-    private List<Tag> tags = null;
-
-    @ManyToOne
+    @OneToOne
+    @Cascade(CascadeType.ALL)
     @JoinColumn(name = "nutrition_id")
     @JsonProperty("nutrition")
     private Nutrition nutrition;
-    @JsonProperty("instructions")
 
-    @ManyToMany
+    @OneToMany
+    @Cascade(CascadeType.ALL)
+    @JsonProperty("instructions")
     private List<Instruction> instructions = null;
 
     @Transient
@@ -51,42 +51,46 @@ public class Recipe {
     @JsonProperty("cook_time_minutes")
     private Integer cookTimeMinutes;
 
+    @OneToMany(mappedBy = "recipe")
+    @Cascade(CascadeType.SAVE_UPDATE)
+    @JsonProperty("sections")
+    private List<Section> sections = null;
+
     @JsonProperty("thumbnail_url")
     private String thumbnailUrl;
 
     @JsonProperty("num_servings")
     private Integer numServings;
 
-
-    @ManyToMany
-    @JsonProperty("sections")
-    private List<Section> sections = null;
-
-
+    @OneToMany
+    @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.PERSIST})
+    @JsonProperty("tags")
+    private List<Tag> tags = null;
 
     public Long getTableId() {
-        return tableId;
+        return recipeId;
     }
 
-    public void setTableId(Long tableId) {
-        this.tableId = tableId;
+    public void setTableId(Long recipeId) {
+        this.recipeId = recipeId;
     }
 
     @Override
     public String toString() {
         return "RecipeeeBoom {" +
-                "\n id=" + id +
+                //"\n id=" + id +
                 ",\n name='" + name + '\'' +
                 ",\n nutrition=" + nutrition +
+                ",\n instructions=" + instructions +
+                " \n ------------------------------------------" +
                 ",\n totalTimeMinutes=" + totalTimeMinutes +
                 ",\n prepTimeMinutes=" + prepTimeMinutes +
                 ",\n cookTimeMinutes=" + cookTimeMinutes +
-                ",\n instructions=" + instructions +
-                "\n ------------------------------------------" +
+                " \n ------------------------------------------" +
                 ",\n sections=" + sections +
                 "\n ------------------------------------------" +
-                ",\n numServings=" + numServings +
                 ",\n thumbnailUrl='" + thumbnailUrl +
+                ",\n numServings=" + numServings +
                 '}';
     }
 }

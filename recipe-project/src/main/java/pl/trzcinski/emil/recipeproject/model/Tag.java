@@ -8,17 +8,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 
 @Data
-@Entity(name = "Tag")
+@Entity
 public class Tag {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_tag", nullable = false)
     private Long idTag;
 

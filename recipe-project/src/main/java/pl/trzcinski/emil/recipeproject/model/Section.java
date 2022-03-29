@@ -2,32 +2,40 @@ package pl.trzcinski.emil.recipeproject.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Data
-@Entity(name  = "Section")
+@Entity
 public class Section {
 
     @Id
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "section_id", nullable = false)
+    private Long sectionId;
 
-    @ManyToMany
+    @OneToMany(mappedBy = "section")
+    @Cascade(CascadeType.SAVE_UPDATE)
     @JsonProperty("components")
     private List<Component> components = null;
+
+    @ManyToOne
+    @JoinColumn(name = "recipe_id", nullable = false)
+    private Recipe recipe;
 
     @Transient
     @JsonProperty("name")
     private Object name;
 
-    public Long getId() {
-        return id;
+    public Long getSectionId() {
+        return sectionId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setSectionId(Long id) {
+        this.sectionId = id;
     }
 
     @Override

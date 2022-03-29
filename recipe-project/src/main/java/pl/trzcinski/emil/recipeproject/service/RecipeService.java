@@ -30,6 +30,7 @@ public class RecipeService {
         recipeList = recipeListMapperService.getListFromResponseBody();
         return listFiltering(recipeList);
     }
+
     public Recipe getListOfRecipesWithParameters(int kcal, int prepareTotalTimeMinutes) throws Exception {
         recipeList = recipeListFiltering();
         List<Recipe> recipeTemp;
@@ -56,6 +57,9 @@ public class RecipeService {
                     return recipe;
                 });
 
+           Recipe recipeToSave = optionalRecipe.get();
+           recipeRepository.saveAndFlush(recipeToSave);
+
         return optionalRecipe.get();
     }
 
@@ -68,8 +72,8 @@ public class RecipeService {
                                 + "\n---- Time: " + recipe.getCookTimeMinutes()
                                 + "\n---- PrepTime: " + recipe.getPrepTimeMinutes()
                                 + "\n---- TotalTime: " + recipe.getTotalTimeMinutes()
-                                + "\n---- Kcal: " + recipe.getNutrition().getCalories()
-                                + "\n---- Id: " + recipe.getId())
+                                + "\n---- Kcal: " + recipe.getNutrition().getCalories())
+                                //+ "\n---- Id: " + recipe.getId())
                 .forEach(log::info);
     }
 
@@ -77,28 +81,4 @@ public class RecipeService {
         log.info("--------Recipe----------");
         log.info(recipe.toString());
     }
-
-
-
-
-
-
-
-
-    /*
-
-    do poprawy...
-
-    public Recipe getOneRecipe(RecipeList recipeList, int kcal) {
-            List<Recipe> firstRecipe = recipeList.getResults().stream()
-                    .filter(recipe -> recipe.getNutrition().getCalories() >= Math.max(kcal, kcal + 1000))
-                    .toList();
-
-            log.info("----------getOneRecipe---------");
-            log.info(String.valueOf(firstRecipe));
-
-            return firstRecipe.get(0);
-    }
-
-     */
 }

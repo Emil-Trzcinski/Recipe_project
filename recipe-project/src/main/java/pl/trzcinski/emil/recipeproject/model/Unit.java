@@ -3,28 +3,30 @@ package pl.trzcinski.emil.recipeproject.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Data
-@Entity(name = "Unit")
+@Entity
 public class Unit {
 
     @Id
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "unit_id", nullable = false)
+    private Long unitId;
+
+    @OneToOne(mappedBy = "unit")
+    private Measurement measurement;
 
     @JsonProperty("name")
     private String name;
     @JsonProperty("system")
     private String system;
 
-    public Long getId() {
-        return id;
+    public Long getUnitId() {
+        return unitId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUnitId(Long id) {
+        this.unitId = id;
     }
 }
