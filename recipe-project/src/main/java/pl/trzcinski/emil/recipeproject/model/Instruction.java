@@ -10,8 +10,8 @@ import javax.persistence.*;
 public class Instruction {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "instruction_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "instruction_id")
     private Long instruction_id;
 
     @ManyToOne

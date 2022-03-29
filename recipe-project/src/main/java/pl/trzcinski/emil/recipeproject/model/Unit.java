@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class Unit {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "unit_id", nullable = false)
     private Long unitId;
 

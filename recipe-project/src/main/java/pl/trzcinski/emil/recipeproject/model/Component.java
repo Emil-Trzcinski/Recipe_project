@@ -13,17 +13,17 @@ import java.util.List;
 public class Component {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "component_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "component_id")
     private Long component_id;
 
     @OneToMany(mappedBy = "component")
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade(CascadeType.ALL)
     @JsonProperty("measurements")
     private List<Measurement> measurements = null;
 
     @ManyToOne
-    @JoinColumn(name = "section_id", nullable = false)
+    @JoinColumn(name = "section_id")
     private Section section;
 
     @JsonProperty("raw_text")

@@ -18,7 +18,7 @@ import java.util.List;
 public class Recipe {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "recipe_id", nullable = false)
     private Long recipeId;
 
@@ -34,7 +34,7 @@ public class Recipe {
     @JsonProperty("nutrition")
     private Nutrition nutrition;
 
-    @OneToMany
+    @OneToMany//(mappedBy = "recipe")
     @Cascade(CascadeType.ALL)
     @JsonProperty("instructions")
     private List<Instruction> instructions = null;
@@ -52,7 +52,7 @@ public class Recipe {
     private Integer cookTimeMinutes;
 
     @OneToMany(mappedBy = "recipe")
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade(CascadeType.ALL)
     @JsonProperty("sections")
     private List<Section> sections = null;
 
@@ -62,8 +62,8 @@ public class Recipe {
     @JsonProperty("num_servings")
     private Integer numServings;
 
-    @OneToMany
-    @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(mappedBy = "recipe")
+    @Cascade(CascadeType.ALL)
     @JsonProperty("tags")
     private List<Tag> tags = null;
 

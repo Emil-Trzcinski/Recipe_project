@@ -15,12 +15,12 @@ public class Measurement {
     //private Long id;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "measurement_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "measurement_id")
     private Long measurementId;
 
     @ManyToOne
-    @JoinColumn(name = "component_id", nullable = false)
+    @JoinColumn(name = "component_id")
     private Component component;
 
 

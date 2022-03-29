@@ -43,6 +43,10 @@ public class RecipeService {
                                 recipe.getTotalTimeMinutes() <= prepareTotalTimeMinutes))
                 .collect(Collectors.toList());
 
+        //just for test DB
+        Recipe recipeToSave = getRecipeFromListOfRecipesWithPara(recipeTemp);
+        recipeRepository.save(recipeToSave);
+
         return getRecipeFromListOfRecipesWithPara(recipeTemp);
     }
 
@@ -56,9 +60,6 @@ public class RecipeService {
                     }
                     return recipe;
                 });
-
-           Recipe recipeToSave = optionalRecipe.get();
-           recipeRepository.saveAndFlush(recipeToSave);
 
         return optionalRecipe.get();
     }

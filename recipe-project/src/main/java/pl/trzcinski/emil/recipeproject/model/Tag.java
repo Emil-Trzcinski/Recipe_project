@@ -24,6 +24,10 @@ public class Tag {
     @JsonProperty("name")
     private String name;
 
+    @ManyToOne
+    @JoinColumn(name = "recipe_id")
+    private Recipe recipe;
+
     public Long getIdTag() {
         return idTag;
     }
