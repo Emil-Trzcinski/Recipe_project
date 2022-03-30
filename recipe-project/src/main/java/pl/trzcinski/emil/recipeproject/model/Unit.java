@@ -1,11 +1,13 @@
 package pl.trzcinski.emil.recipeproject.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-
+import lombok.*;
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Unit {
 
@@ -21,12 +23,4 @@ public class Unit {
     private String name;
     @JsonProperty("system")
     private String system;
-
-    public Long getUnitId() {
-        return unitId;
-    }
-
-    public void setUnitId(Long id) {
-        this.unitId = id;
-    }
 }

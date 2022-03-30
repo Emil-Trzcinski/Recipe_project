@@ -2,17 +2,20 @@ package pl.trzcinski.emil.recipeproject.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.springframework.stereotype.Component;
-
 import javax.persistence.*;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Component
 @Entity
 public class Recipe {
@@ -34,27 +37,24 @@ public class Recipe {
     @JsonProperty("nutrition")
     private Nutrition nutrition;
 
-    @OneToMany//(mappedBy = "recipe")
+    @OneToMany(mappedBy = "recipe")
     @Cascade(CascadeType.ALL)
     @JsonProperty("instructions")
-    private List<Instruction> instructions = null;
+    private Collection<Instruction> instructions = new ArrayList<>();
 
-    @Transient
     @JsonProperty("total_time_minutes")
     private Integer totalTimeMinutes;
 
-    @Transient
     @JsonProperty("prep_time_minutes")
     private Integer prepTimeMinutes;
 
-    @Transient
     @JsonProperty("cook_time_minutes")
     private Integer cookTimeMinutes;
 
     @OneToMany(mappedBy = "recipe")
     @Cascade(CascadeType.ALL)
     @JsonProperty("sections")
-    private List<Section> sections = null;
+    private Collection<Section> sections = new ArrayList<>();
 
     @JsonProperty("thumbnail_url")
     private String thumbnailUrl;
@@ -65,15 +65,7 @@ public class Recipe {
     @OneToMany(mappedBy = "recipe")
     @Cascade(CascadeType.ALL)
     @JsonProperty("tags")
-    private List<Tag> tags = null;
-
-    public Long getTableId() {
-        return recipeId;
-    }
-
-    public void setTableId(Long recipeId) {
-        this.recipeId = recipeId;
-    }
+    private Collection<Tag> tags = new ArrayList<>();
 
     @Override
     public String toString() {
@@ -93,4 +85,5 @@ public class Recipe {
                 ",\n numServings=" + numServings +
                 '}';
     }
+
 }

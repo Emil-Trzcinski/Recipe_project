@@ -1,14 +1,17 @@
 package pl.trzcinski.emil.recipeproject.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-
 import javax.persistence.*;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Component {
 
@@ -20,7 +23,7 @@ public class Component {
     @OneToMany(mappedBy = "component")
     @Cascade(CascadeType.ALL)
     @JsonProperty("measurements")
-    private List<Measurement> measurements = null;
+    private Collection<Measurement> measurements = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "section_id")
@@ -28,14 +31,6 @@ public class Component {
 
     @JsonProperty("raw_text")
     private String rawText;
-
-    public Long getComponent_id() {
-        return component_id;
-    }
-
-    public void setComponent_id(Long id) {
-        this.component_id = id;
-    }
 
     @Override
     public String toString() {

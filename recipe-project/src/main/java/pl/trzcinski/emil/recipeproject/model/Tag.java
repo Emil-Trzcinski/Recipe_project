@@ -1,18 +1,16 @@
-
 package pl.trzcinski.emil.recipeproject.model;
-
-
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import lombok.Data;
-
+import lombok.*;
 import javax.persistence.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Tag {
 
@@ -25,14 +23,7 @@ public class Tag {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "recipe_id")
+    @JoinColumn(name = "id", referencedColumnName = "recipe_id")
     private Recipe recipe;
 
-    public Long getIdTag() {
-        return idTag;
-    }
-
-    public void setIdTag(Long idTag) {
-        this.idTag = idTag;
-    }
 }

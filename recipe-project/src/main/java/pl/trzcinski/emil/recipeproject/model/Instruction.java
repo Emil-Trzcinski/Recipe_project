@@ -1,11 +1,13 @@
 package pl.trzcinski.emil.recipeproject.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-
+import lombok.*;
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Instruction {
 
@@ -14,25 +16,18 @@ public class Instruction {
     @Column(name = "instruction_id")
     private Long instruction_id;
 
-    @ManyToOne
-    @JoinColumn(name = "recipe_id")
-    private Recipe recipe;
-
     @Column(columnDefinition = "varchar(max)")
     @JsonProperty("display_text")
     private String displayText;
 
-    public Long getInstruction_id() {
-        return instruction_id;
-    }
-
-    public void setInstruction_id(Long id) {
-        this.instruction_id = id;
-    }
+    @ManyToOne//(optional = false)
+    @JoinColumn(name = "id", referencedColumnName = "recipe_id")
+    private Recipe recipe;
 
     @Override
     public String toString() {
         return "\n Instruction - " +
                 "" + displayText;
     }
+
 }

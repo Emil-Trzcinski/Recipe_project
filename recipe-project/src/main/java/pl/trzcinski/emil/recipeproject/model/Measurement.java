@@ -1,18 +1,17 @@
 package pl.trzcinski.emil.recipeproject.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-
-
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Measurement {
-
-    //private Long id;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +22,6 @@ public class Measurement {
     @JoinColumn(name = "component_id")
     private Component component;
 
-
     @JsonProperty("quantity")
     private String quantity;
 
@@ -33,11 +31,4 @@ public class Measurement {
     @JsonProperty("unit")
     private Unit unit;
 
-    public Long getMeasurementId() {
-        return measurementId;
-    }
-
-    public void setMeasurementId(Long id) {
-        this.measurementId = id;
-    }
 }
