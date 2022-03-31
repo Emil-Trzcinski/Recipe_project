@@ -1,9 +1,14 @@
 package pl.trzcinski.emil.recipeproject.api.request;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.databind.DatabindException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
@@ -12,31 +17,28 @@ import java.io.IOException;
 @Controller
 public class ExternalApiRequest {
 
-    //dodać do enum lub proporities
-    private final String urlTasty = "https://tasty.p.rapidapi.com/recipes/";
-    private final String headerHostName = "x-rapidapi-host";
-    private final String headerHostValue = "tasty.p.rapidapi.com";
-    private final String headerKeyName = "x-rapidapi-key";
-//  private final String headerKeyValue = "599499f508msh901b6a991084120p1b3173jsn2ea6a449da3e";
-    private final String headerKeyValue = "259a8d7c8fmsheed54b685a759a3p1eb7d2jsn46270f6f5903";
+    public String createUrl() {
+        UrlBuilder urlBuilder = new UrlBuilder();
+        urlBuilder.setUrlTasty("https://tasty.p.rapidapi.com/recipes/");
+        urlBuilder.setRequestStartingPoint(40);
+        urlBuilder.setUrlParameters("&size=40");
+        urlBuilder.setTag("dinner");
 
+        return urlBuilder.build();
+    }
 
-    String urlParameters = "list?from=40&size=40";
+    public Response getResponse() throws IOException, NullPointerException , StreamReadException,
+            DatabindException, JsonProcessingException, JsonMappingException {
 
-    private Response getResponse(String url) throws IOException {
         OkHttpClient client = new OkHttpClient();
-
         Request request = new Request.Builder()
-                .url(urlTasty + url)
+                .url(createUrl())
                 .get()
-                .addHeader(headerHostName, headerHostValue)
-                .addHeader(headerKeyName, headerKeyValue)
+                .addHeader(ApiRequestEnums.HEADER_HOST_NAME.getValue(), ApiRequestEnums.HEADER_HOST_VALUE.getValue())
+                .addHeader(ApiRequestEnums.HEADER_KEY_NAME.getValue(), ApiRequestEnums.HEADER_KEY_VALUE.getValue())
                 .build();
+
         return client.newCall(request).execute();
     }
 
-    public String getResponseBodyFromResponse() throws IOException {
-        Response response = getResponse(urlParameters);
-        return response.body().string();
-    }
 }

@@ -2,9 +2,11 @@ package pl.trzcinski.emil.recipeproject.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import pl.trzcinski.emil.recipeproject.api.request.ExternalApiRequest;
 import pl.trzcinski.emil.recipeproject.model.Recipe;
 import pl.trzcinski.emil.recipeproject.model.RecipeList;
 import pl.trzcinski.emil.recipeproject.repository.RecipeRepository;
+import pl.trzcinski.emil.recipeproject.utility.RecipeListMapperUtility;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,22 +19,21 @@ import static pl.trzcinski.emil.recipeproject.utility.RecipeListFilter.listFilte
 public class RecipeService {
 
     private RecipeList recipeList;
-    private final RecipeListMapperService recipeListMapperService;
+    private final ExternalApiRequest externalApiRequest;
+    private final RecipeListMapperUtility recipeListMapperUtility;
     private final RecipeRepository recipeRepository;
 
-    public RecipeService(RecipeList recipeList, RecipeListMapperService recipeListMapperService, RecipeRepository recipeRepository) {
+    public RecipeService(RecipeList recipeList, ExternalApiRequest externalApiRequest, RecipeListMapperUtility recipeListMapperUtility, RecipeRepository recipeRepository) {
         this.recipeList = recipeList;
-        this.recipeListMapperService = recipeListMapperService;
+        this.externalApiRequest = externalApiRequest;
+        this.recipeListMapperUtility = recipeListMapperUtility;
         this.recipeRepository = recipeRepository;
     }
 
-    public RecipeList recipeListFiltering() throws Exception {
-        recipeList = recipeListMapperService.getListFromResponseBody();
-        return listFiltering(recipeList);
-    }
-
     public Recipe getListOfRecipesWithParameters(int kcal, int prepareTotalTimeMinutes) throws Exception {
-        recipeList = recipeListFiltering();
+        recipeList = recipeListMapperUtility.getListFromResponseBody(externalApiRequest.getResponse());
+        recipeList = listFiltering(recipeList);
+
         List<Recipe> recipeTemp;
 
         recipeTemp = recipeList.getResults().stream()
@@ -44,13 +45,13 @@ public class RecipeService {
                 .collect(Collectors.toList());
 
         //just for test DB
-        Recipe recipeToSave = getRecipeFromListOfRecipesWithPara(recipeTemp);
+        Recipe recipeToSave = getRecipeFromListOfRecipes(recipeTemp);
         recipeRepository.save(recipeToSave);
 
-        return getRecipeFromListOfRecipesWithPara(recipeTemp);
+        return getRecipeFromListOfRecipes(recipeTemp);
     }
 
-    private Recipe getRecipeFromListOfRecipesWithPara(List<Recipe> recipeTemp) {
+    private Recipe getRecipeFromListOfRecipes(List<Recipe> recipeTemp) {
         Optional<Recipe> optionalRecipe;
         optionalRecipe = recipeTemp.stream()
                 .reduce((recipe, recipe2) -> {
@@ -64,7 +65,10 @@ public class RecipeService {
         return optionalRecipe.get();
     }
 
-    public void getNameFromRecipeList(RecipeList recipeList) {
+    // jakaś medtoda kótra kontaktuje się z funkcja skierowana do externalapi
+
+
+    public void logNameFromRecipeList(RecipeList recipeList) {
         log.info("--------RecipeList----------");
 
         recipeList.getResults().stream()
@@ -78,7 +82,7 @@ public class RecipeService {
                 .forEach(log::info);
     }
 
-    public void getNameFromRecipe(Recipe recipe) {
+    public void logNameFromRecipe(Recipe recipe) {
         log.info("--------Recipe----------");
         log.info(recipe.toString());
     }

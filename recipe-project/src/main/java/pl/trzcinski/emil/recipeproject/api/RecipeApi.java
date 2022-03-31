@@ -19,16 +19,18 @@ public class RecipeApi {
         this.recipeService = recipeService;
     }
 
-    @GetMapping("/list")
-    public String getListFromExternalApi() throws Exception {
-        recipeService.getNameFromRecipeList(recipeService.recipeListFiltering());
-        return recipeService.recipeListFiltering().toString();
-    }
-
+//    @GetMapping("/list")
+//    public String getListFromExternalApi() throws Exception {
+//        recipeService.logNameFromRecipeList(recipeService.recipeListFiltering());
+//        return recipeService.recipeListFiltering().toString();
+//    }
 
     @GetMapping("/przepis")
     public String getRecipe(@RequestParam int kcal, int prepareTotalTimeMinutes) throws Exception {
-        recipeService.getNameFromRecipe(recipeService.getListOfRecipesWithParameters(kcal, prepareTotalTimeMinutes));
+
+        // metoda wysyłająca informację do recipeservcie
+
+        recipeService.logNameFromRecipe(recipeService.getListOfRecipesWithParameters(kcal, prepareTotalTimeMinutes));
         return recipeService.getListOfRecipesWithParameters(kcal, prepareTotalTimeMinutes).toString();
     }
 }
