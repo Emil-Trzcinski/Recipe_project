@@ -8,11 +8,17 @@ import pl.trzcinski.emil.recipeproject.model.RecipeList;
 import pl.trzcinski.emil.recipeproject.repository.RecipeRepository;
 import pl.trzcinski.emil.recipeproject.utility.RecipeListMapperUtility;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import static pl.trzcinski.emil.recipeproject.utility.RecipeListFilter.listFiltering;
+import static pl.trzcinski.emil.recipeproject.utility.RecipeListFilters.getExpectedMeal;
+import static pl.trzcinski.emil.recipeproject.utility.RecipeListFilters.listFiltering;
+import static pl.trzcinski.emil.recipeproject.service.MealTagEnum.*;
+
+
 
 @Slf4j
 @Service
@@ -23,16 +29,46 @@ public class RecipeService {
     private final RecipeListMapperUtility recipeListMapperUtility;
     private final RecipeRepository recipeRepository;
 
-    public RecipeService(RecipeList recipeList, ExternalApiRequest externalApiRequest, RecipeListMapperUtility recipeListMapperUtility, RecipeRepository recipeRepository) {
+    public RecipeService(RecipeList recipeList, ExternalApiRequest externalApiRequest,
+                         RecipeListMapperUtility recipeListMapperUtility, RecipeRepository recipeRepository) {
+
         this.recipeList = recipeList;
         this.externalApiRequest = externalApiRequest;
         this.recipeListMapperUtility = recipeListMapperUtility;
         this.recipeRepository = recipeRepository;
     }
 
-    public Recipe getListOfRecipesWithParameters(int kcal, int prepareTotalTimeMinutes) throws Exception {
-        recipeList = recipeListMapperUtility.getListFromResponseBody(externalApiRequest.getResponse());
+    public Set<Recipe> getListOfRecipesWithAllParameters(int kcal, int prepareTotalTimeMinutes, int meals) throws Exception {
+        final Set<Recipe> mealSet = new HashSet<>();
+
+        switch (meals) {
+            case 1:
+                mealSet.add(getListOfRecipesWithParameters(kcal, prepareTotalTimeMinutes, BREAKFAST.getMeal()));
+                break;
+
+            case 2:
+                mealSet.add(getListOfRecipesWithParameters(kcal, prepareTotalTimeMinutes, BREAKFAST.getMeal()));
+                mealSet.add(getListOfRecipesWithParameters(kcal, prepareTotalTimeMinutes, LUNCH.getMeal()));
+                break;
+
+            case 3:
+                mealSet.add(getListOfRecipesWithParameters(kcal, prepareTotalTimeMinutes, BREAKFAST.getMeal()));
+                mealSet.add(getListOfRecipesWithParameters(kcal, prepareTotalTimeMinutes, LUNCH.getMeal()));
+                mealSet.add(getListOfRecipesWithParameters(kcal, prepareTotalTimeMinutes, DINNER.getMeal()));
+                break;
+
+            default:
+                //nothing to do here
+
+        }
+
+        return mealSet;
+    }
+
+    public Recipe getListOfRecipesWithParameters(int kcal, int prepareTotalTimeMinutes, String meal) throws Exception {
+        recipeList = recipeListMapperUtility.getListFromResponseBody(externalApiRequest.getResponse(meal));
         recipeList = listFiltering(recipeList);
+        recipeList = getExpectedMeal(recipeList, meal);
 
         List<Recipe> recipeTemp;
 
@@ -52,6 +88,7 @@ public class RecipeService {
     }
 
     private Recipe getRecipeFromListOfRecipes(List<Recipe> recipeTemp) {
+
         Optional<Recipe> optionalRecipe;
         optionalRecipe = recipeTemp.stream()
                 .reduce((recipe, recipe2) -> {
@@ -62,11 +99,14 @@ public class RecipeService {
                     return recipe;
                 });
 
+        if (optionalRecipe.isEmpty()) {
+            log.info("-----Recipe is empty-----");
+            //externalApiRequest.setRequestStartingPoint(externalApiRequest.requestStartingPoint += 40);
+
+            throw new RuntimeException("-----Recipe is empty-----");
+        }
         return optionalRecipe.get();
     }
-
-    // jakaś medtoda kótra kontaktuje się z funkcja skierowana do externalapi
-
 
     public void logNameFromRecipeList(RecipeList recipeList) {
         log.info("--------RecipeList----------");

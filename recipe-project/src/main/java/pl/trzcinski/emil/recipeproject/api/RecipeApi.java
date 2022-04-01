@@ -26,11 +26,11 @@ public class RecipeApi {
 //    }
 
     @GetMapping("/przepis")
-    public String getRecipe(@RequestParam int kcal, int prepareTotalTimeMinutes) throws Exception {
+    public String getRecipe(@RequestParam int kcal, int prepareTotalTimeMinutes, int meals) throws Exception {
 
         // metoda wysyłająca informację do recipeservcie
 
-        recipeService.logNameFromRecipe(recipeService.getListOfRecipesWithParameters(kcal, prepareTotalTimeMinutes));
-        return recipeService.getListOfRecipesWithParameters(kcal, prepareTotalTimeMinutes).toString();
+//        recipeService.logNameFromRecipeSet(recipeService.getListOfRecipesWithAllParameters(kcal, prepareTotalTimeMinutes, meals));
+        return recipeService.getListOfRecipesWithAllParameters(kcal, prepareTotalTimeMinutes, meals).toString();
     }
 }

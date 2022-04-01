@@ -22,6 +22,10 @@ public class UrlBuilder {
         this.tag = tag;
     }
 
+//    public String build() {
+//        return urlTasty + "list?from=" + requestStartingPoint + urlParameters;
+//    }
+
     public String build() {
         return urlTasty + "list?from=" + requestStartingPoint + urlParameters + "&tags=" + tag;
     }

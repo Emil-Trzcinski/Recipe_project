@@ -13,32 +13,38 @@ import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 
+import static pl.trzcinski.emil.recipeproject.api.request.ApiRequestEnums.*;
+
 @Slf4j
 @Controller
 public class ExternalApiRequest {
+    public int requestStartingPoint = 0; //- to trzeba zabezpieczyć
 
-    public String createUrl() {
+    public String createUrl(String meal) {
         UrlBuilder urlBuilder = new UrlBuilder();
         urlBuilder.setUrlTasty("https://tasty.p.rapidapi.com/recipes/");
-        urlBuilder.setRequestStartingPoint(40);
+        urlBuilder.setRequestStartingPoint(requestStartingPoint);
         urlBuilder.setUrlParameters("&size=40");
-        urlBuilder.setTag("dinner");
+        urlBuilder.setTag(meal);
 
         return urlBuilder.build();
     }
 
-    public Response getResponse() throws IOException, NullPointerException , StreamReadException,
+    public Response getResponse(String meal) throws IOException, NullPointerException , StreamReadException,
             DatabindException, JsonProcessingException, JsonMappingException {
 
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url(createUrl())
+                .url(createUrl(meal))
                 .get()
-                .addHeader(ApiRequestEnums.HEADER_HOST_NAME.getValue(), ApiRequestEnums.HEADER_HOST_VALUE.getValue())
-                .addHeader(ApiRequestEnums.HEADER_KEY_NAME.getValue(), ApiRequestEnums.HEADER_KEY_VALUE.getValue())
+                .addHeader(HEADER_HOST_NAME.getValue(), HEADER_HOST_VALUE.getValue())
+                .addHeader(HEADER_KEY_NAME.getValue(), HEADER_KEY_VALUE.getValue())
                 .build();
 
         return client.newCall(request).execute();
     }
 
+    public void setRequestStartingPoint(int requestStartingPoint) {
+        this.requestStartingPoint = requestStartingPoint;
+    }
 }
