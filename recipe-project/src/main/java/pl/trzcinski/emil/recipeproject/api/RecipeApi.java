@@ -4,33 +4,30 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pl.trzcinski.emil.recipeproject.api.request.ExternalApiRequest;
-import pl.trzcinski.emil.recipeproject.service.RecipeService;
+import pl.trzcinski.emil.recipeproject.api.response.ApiResponse;
+import pl.trzcinski.emil.recipeproject.model.Recipe;
+
+import java.util.Set;
 
 @Slf4j
 @RestController
 public class RecipeApi {
 
-    private final ExternalApiRequest externalApiRequest;
-    private final RecipeService recipeService;
+    private final ApiResponse apiResponse;
 
-    public RecipeApi(ExternalApiRequest externalApiRequest, RecipeService recipeService) {
-        this.externalApiRequest = externalApiRequest;
-        this.recipeService = recipeService;
+    public RecipeApi(ApiResponse apiResponse) {
+        this.apiResponse = apiResponse;
+
     }
 
-//    @GetMapping("/list")
-//    public String getListFromExternalApi() throws Exception {
-//        recipeService.logNameFromRecipeList(recipeService.recipeListFiltering());
-//        return recipeService.recipeListFiltering().toString();
-//    }
-
     @GetMapping("/przepis")
-    public String getRecipe(@RequestParam int kcal, int prepareTotalTimeMinutes, int meals) throws Exception {
+    public Set<Recipe> getRecipe(@RequestParam int expectedKcal, int expectedTotalTimeMinutes, int numberOfMeals) throws Exception {
+        // metoda wysyłająca informację do recipeservcie - hardcode
+        return apiResponse.responseFromRecipeService(expectedKcal, expectedTotalTimeMinutes, numberOfMeals);
 
-        // metoda wysyłająca informację do recipeservcie
 
-//        recipeService.logNameFromRecipeSet(recipeService.getListOfRecipesWithAllParameters(kcal, prepareTotalTimeMinutes, meals));
-        return recipeService.getListOfRecipesWithAllParameters(kcal, prepareTotalTimeMinutes, meals).toString();
+
+//        recipeService.logNameFromRecipeSet(recipeService.getListOfRecipesWithAllParameters(expectedKcal, expectedTotalTimeMinutes, numberOfMeals));
+//        return recipeService.getListOfRecipesWithAllParameters(expectedKcal, expectedTotalTimeMinutes, numberOfMeals).toString();
     }
 }

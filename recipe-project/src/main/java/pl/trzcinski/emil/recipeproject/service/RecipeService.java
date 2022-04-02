@@ -14,20 +14,21 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static pl.trzcinski.emil.recipeproject.utility.MealPreparedAttributes.calculateKcalPerMeal;
+import static pl.trzcinski.emil.recipeproject.utility.MealPreparedAttributes.calculateTimePerMeal;
 import static pl.trzcinski.emil.recipeproject.utility.RecipeListFilters.getExpectedMeal;
 import static pl.trzcinski.emil.recipeproject.utility.RecipeListFilters.listFiltering;
 import static pl.trzcinski.emil.recipeproject.service.MealTagEnum.*;
-
-
 
 @Slf4j
 @Service
 public class RecipeService {
 
-    private RecipeList recipeList;
     private final ExternalApiRequest externalApiRequest;
     private final RecipeListMapperUtility recipeListMapperUtility;
     private final RecipeRepository recipeRepository;
+    private RecipeList recipeList;
+
 
     public RecipeService(RecipeList recipeList, ExternalApiRequest externalApiRequest,
                          RecipeListMapperUtility recipeListMapperUtility, RecipeRepository recipeRepository) {
@@ -38,46 +39,47 @@ public class RecipeService {
         this.recipeRepository = recipeRepository;
     }
 
-    public Set<Recipe> getListOfRecipesWithAllParameters(int kcal, int prepareTotalTimeMinutes, int meals) throws Exception {
-        final Set<Recipe> mealSet = new HashSet<>();
+    public Set<Recipe> getListOfRecipesWithAllParameters
+            (int expectedKcal, int expectedTotalTimeMinutes, int numberOfMeals) throws Exception {
 
-        switch (meals) {
-            case 1:
-                mealSet.add(getListOfRecipesWithParameters(kcal, prepareTotalTimeMinutes, BREAKFAST.getMeal()));
-                break;
+        final Set<Recipe> mealsSet = new HashSet<>();
+
+        final int preparedKcal = calculateKcalPerMeal(expectedKcal, numberOfMeals);
+        final int preparedTime = calculateTimePerMeal(expectedTotalTimeMinutes, numberOfMeals);
+
+        switch (numberOfMeals) {
+            case 3:
+                mealsSet.add(getListOfRecipesWithParameters(preparedKcal, preparedTime, DINNER.getMeal()));
 
             case 2:
-                mealSet.add(getListOfRecipesWithParameters(kcal, prepareTotalTimeMinutes, BREAKFAST.getMeal()));
-                mealSet.add(getListOfRecipesWithParameters(kcal, prepareTotalTimeMinutes, LUNCH.getMeal()));
-                break;
+                mealsSet.add(getListOfRecipesWithParameters(preparedKcal, preparedTime,  LUNCH.getMeal()));
 
-            case 3:
-                mealSet.add(getListOfRecipesWithParameters(kcal, prepareTotalTimeMinutes, BREAKFAST.getMeal()));
-                mealSet.add(getListOfRecipesWithParameters(kcal, prepareTotalTimeMinutes, LUNCH.getMeal()));
-                mealSet.add(getListOfRecipesWithParameters(kcal, prepareTotalTimeMinutes, DINNER.getMeal()));
+            case 1:
+                mealsSet.add(getListOfRecipesWithParameters(preparedKcal, preparedTime,  BREAKFAST.getMeal()));
                 break;
 
             default:
                 //nothing to do here
-
         }
 
-        return mealSet;
+        return mealsSet;
     }
 
-    public Recipe getListOfRecipesWithParameters(int kcal, int prepareTotalTimeMinutes, String meal) throws Exception {
-        recipeList = recipeListMapperUtility.getListFromResponseBody(externalApiRequest.getResponse(meal));
+    private Recipe getListOfRecipesWithParameters
+            (int expectedKcal, int expectedTotalTimeMinutes, String mealTag) throws Exception {
+
+        recipeList = recipeListMapperUtility.getListFromResponseBody(externalApiRequest.getResponse(mealTag));
         recipeList = listFiltering(recipeList);
-        recipeList = getExpectedMeal(recipeList, meal);
+        recipeList = getExpectedMeal(recipeList, mealTag);
 
         List<Recipe> recipeTemp;
 
         recipeTemp = recipeList.getResults().stream()
                 .filter(recipe ->
                         (recipe.getNutrition().getCalories() > 0 &&
-                                recipe.getNutrition().getCalories() <= kcal &&
+                                recipe.getNutrition().getCalories() <= expectedKcal &&
                                 recipe.getTotalTimeMinutes() > 0  &&
-                                recipe.getTotalTimeMinutes() <= prepareTotalTimeMinutes))
+                                recipe.getTotalTimeMinutes() <= expectedTotalTimeMinutes))
                 .collect(Collectors.toList());
 
         //just for test DB
@@ -108,22 +110,22 @@ public class RecipeService {
         return optionalRecipe.get();
     }
 
-    public void logNameFromRecipeList(RecipeList recipeList) {
-        log.info("--------RecipeList----------");
-
-        recipeList.getResults().stream()
-                .map(recipe ->
-                        "\n Recipe: " + recipe.getName()
-                                + "\n---- Time: " + recipe.getCookTimeMinutes()
-                                + "\n---- PrepTime: " + recipe.getPrepTimeMinutes()
-                                + "\n---- TotalTime: " + recipe.getTotalTimeMinutes()
-                                + "\n---- Kcal: " + recipe.getNutrition().getCalories())
-                                //+ "\n---- Id: " + recipe.getId())
-                .forEach(log::info);
-    }
-
-    public void logNameFromRecipe(Recipe recipe) {
-        log.info("--------Recipe----------");
-        log.info(recipe.toString());
-    }
+//    public void logNameFromRecipeList(RecipeList recipeList) {
+//        log.info("--------RecipeList----------");
+//
+//        recipeList.getResults().stream()
+//                .map(recipe ->
+//                        "\n Recipe: " + recipe.getName()
+//                                + "\n---- Time: " + recipe.getCookTimeMinutes()
+//                                + "\n---- PrepTime: " + recipe.getPrepTimeMinutes()
+//                                + "\n---- TotalTime: " + recipe.getTotalTimeMinutes()
+//                                + "\n---- Kcal: " + recipe.getNutrition().getCalories())
+//                                //+ "\n---- Id: " + recipe.getId())
+//                .forEach(log::info);
+//    }
+//
+//    public void logNameFromRecipe(Recipe recipe) {
+//        log.info("--------Recipe----------");
+//        log.info(recipe.toString());
+//    }
 }

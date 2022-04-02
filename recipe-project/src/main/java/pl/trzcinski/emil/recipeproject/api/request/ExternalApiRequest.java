@@ -8,9 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-
 import org.springframework.stereotype.Controller;
-
 import java.io.IOException;
 
 import static pl.trzcinski.emil.recipeproject.api.request.ApiRequestEnums.*;
@@ -20,22 +18,22 @@ import static pl.trzcinski.emil.recipeproject.api.request.ApiRequestEnums.*;
 public class ExternalApiRequest {
     public int requestStartingPoint = 0; //- to trzeba zabezpieczyć
 
-    public String createUrl(String meal) {
+    public String createUrl(String mealTag) {
         UrlBuilder urlBuilder = new UrlBuilder();
         urlBuilder.setUrlTasty("https://tasty.p.rapidapi.com/recipes/");
         urlBuilder.setRequestStartingPoint(requestStartingPoint);
         urlBuilder.setUrlParameters("&size=40");
-        urlBuilder.setTag(meal);
+        urlBuilder.setTag(mealTag);
 
         return urlBuilder.build();
     }
 
-    public Response getResponse(String meal) throws IOException, NullPointerException , StreamReadException,
+    public Response getResponse(String mealTag) throws IOException, NullPointerException , StreamReadException,
             DatabindException, JsonProcessingException, JsonMappingException {
 
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url(createUrl(meal))
+                .url(createUrl(mealTag))
                 .get()
                 .addHeader(HEADER_HOST_NAME.getValue(), HEADER_HOST_VALUE.getValue())
                 .addHeader(HEADER_KEY_NAME.getValue(), HEADER_KEY_VALUE.getValue())
