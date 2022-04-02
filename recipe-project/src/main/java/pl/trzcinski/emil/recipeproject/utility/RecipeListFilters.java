@@ -12,6 +12,7 @@ public class RecipeListFilters {
     }
 
     public static RecipeList listFiltering(RecipeList recipeList) {
+
         List<Recipe> temp = recipeList.getResults()
                 .stream()
                 //.filter(recipe -> recipe.getId() != null)

@@ -4,7 +4,7 @@ public enum MealTagEnum {
 
     BREAKFAST("breakfast"),
     LUNCH("lunch"),
-    DINNER("dinmer");
+    DINNER("dinner");
 
     private final String meal;
 

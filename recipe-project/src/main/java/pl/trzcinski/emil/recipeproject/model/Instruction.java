@@ -17,7 +17,7 @@ public class Instruction {
     @Column(name = "instruction_id")
     private Long instruction_id;
 
-    @Column(columnDefinition = "varchar(max)")
+    @Column(name = "Instruction", columnDefinition = "varchar(max)")
     @JsonProperty("display_text")
     private String displayText;
 
