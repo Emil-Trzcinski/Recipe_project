@@ -1,7 +1,7 @@
 package pl.trzcinski.emil.recipeproject.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+
+import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -67,6 +67,11 @@ public class Recipe {
     @JsonProperty("tags")
     private Collection<Tag> tags = new ArrayList<>();
 
+    @ManyToOne
+    @Cascade(CascadeType.ALL)
+    @JoinColumn(name = "meals_id")
+    private Meals meals;
+
     @Override
     public String toString() {
         return "RecipeeeBoom {" +
@@ -85,5 +90,4 @@ public class Recipe {
                 ",\n numServings=" + numServings +
                 '}';
     }
-
 }

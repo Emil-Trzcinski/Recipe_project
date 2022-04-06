@@ -1,6 +1,7 @@
 package pl.trzcinski.emil.recipeproject.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import pl.trzcinski.emil.recipeproject.api.request.ExternalApiRequest;
 import pl.trzcinski.emil.recipeproject.model.Recipe;
@@ -8,15 +9,11 @@ import pl.trzcinski.emil.recipeproject.model.RecipeList;
 import pl.trzcinski.emil.recipeproject.repository.RecipeRepository;
 import pl.trzcinski.emil.recipeproject.utility.RecipeListMapperUtility;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static pl.trzcinski.emil.recipeproject.utility.MealPreparedAttributes.calculateKcalPerMeal;
 import static pl.trzcinski.emil.recipeproject.utility.MealPreparedAttributes.calculateTimePerMeal;
-import static pl.trzcinski.emil.recipeproject.utility.RecipeListFilters.getExpectedMeal;
 import static pl.trzcinski.emil.recipeproject.utility.RecipeListFilters.listFiltering;
 import static pl.trzcinski.emil.recipeproject.service.MealTagEnum.*;
 
@@ -39,7 +36,8 @@ public class RecipeService {
         this.recipeRepository = recipeRepository;
     }
 
-    public Set<Recipe> getListOfRecipesWithAllParameters
+    //przenieść do MealSrevice????
+    public Set<Recipe> getSetOfRecipesWithAllParameters
             (int expectedKcal, int expectedTotalTimeMinutes, int numberOfMeals) throws Exception {
 
         final Set<Recipe> mealsSet = new HashSet<>();
@@ -68,19 +66,25 @@ public class RecipeService {
     private Recipe getListOfRecipesWithParameters
             (int expectedKcal, int expectedTotalTimeMinutes, String mealTag) throws Exception {
 
-        recipeList = recipeListMapperUtility.getListFromResponseBody(externalApiRequest.getResponse(mealTag));
-        recipeList = listFiltering(recipeList);
-        recipeList = getExpectedMeal(recipeList, mealTag);
-
+        int requestStartingPoint = 0;
         List<Recipe> recipeTemp;
 
-        recipeTemp = recipeList.getResults().stream()
-                .filter(recipe ->
-                        (recipe.getNutrition().getCalories() > 0 &&
-                                recipe.getNutrition().getCalories() <= expectedKcal &&
-                                recipe.getTotalTimeMinutes() > 0  &&
-                                recipe.getTotalTimeMinutes() <= expectedTotalTimeMinutes))
-                .collect(Collectors.toList());
+        do {
+        recipeList = recipeListMapperUtility.getListFromResponseBody(externalApiRequest.getResponse(mealTag, requestStartingPoint));
+        recipeList = listFiltering(recipeList);
+//        recipeList = getExpectedMeal(recipeList, mealTag);
+
+            recipeTemp = recipeList.getResults().stream()
+                    .filter(recipe ->
+                            (recipe.getNutrition().getCalories() > 0 &&
+                                    recipe.getNutrition().getCalories() <= expectedKcal &&
+                                    recipe.getTotalTimeMinutes() > 0 &&
+                                    recipe.getTotalTimeMinutes() <= expectedTotalTimeMinutes))
+                    .collect(Collectors.toList());
+            requestStartingPoint += 40;
+
+        } while (recipeTemp.isEmpty());
+
 
         //just for test DB
         Recipe recipeToSave = getRecipeFromListOfRecipes(recipeTemp);
@@ -93,22 +97,23 @@ public class RecipeService {
 
         Optional<Recipe> optionalRecipe;
         optionalRecipe = recipeTemp.stream()
-                .reduce((recipe, recipe2) -> {
-                    if (recipe2 != null) {
-                        return recipe.getNutrition().getCalories() > recipe2.getNutrition().getCalories() ?
-                                recipe : recipe2;
+                .reduce((recipe, secRecipe) -> {
+                    if (secRecipe != null) {
+                        return recipe.getNutrition().getCalories() > secRecipe.getNutrition().getCalories() ?
+                                recipe : secRecipe;
                     }
                     return recipe;
                 });
 
         if (optionalRecipe.isEmpty()) {
             log.info("-----Recipe is empty-----");
-            //externalApiRequest.setRequestStartingPoint(externalApiRequest.requestStartingPoint += 40);
-
             throw new RuntimeException("-----Recipe is empty-----");
         }
+
         return optionalRecipe.get();
     }
+
+
 
 //    public void logNameFromRecipeList(RecipeList recipeList) {
 //        log.info("--------RecipeList----------");
