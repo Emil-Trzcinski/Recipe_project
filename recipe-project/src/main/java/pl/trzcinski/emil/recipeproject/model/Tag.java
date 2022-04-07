@@ -23,7 +23,7 @@ public class Tag {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "id", referencedColumnName = "recipe_id")
+    @JoinColumn(name = "recipe_id", referencedColumnName = "recipe_id")
     private Recipe recipe;
 
 }

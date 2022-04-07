@@ -20,13 +20,14 @@ public class Section {
     @Column(name = "section_id", nullable = false)
     private Long sectionId;
 
-    @OneToMany(mappedBy = "section")
+    @OneToMany
     @Cascade(CascadeType.ALL)
+    @JoinColumn(name = "section_id")
     @JsonProperty("components")
     private Collection<Component> components = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "id", referencedColumnName = "recipe_id")
+    @JoinColumn(name = "recipe_id", referencedColumnName = "recipe_id")
     private Recipe recipe;
 
     @Transient

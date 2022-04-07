@@ -20,13 +20,14 @@ public class Component {
     @Column(name = "component_id")
     private Long component_id;
 
-    @OneToMany(mappedBy = "component")
+    @OneToMany
     @Cascade(CascadeType.ALL)
+    @JoinColumn(name = "component_id")
     @JsonProperty("measurements")
     private Collection<Measurement> measurements = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "section_id")
+    @JoinColumn(name = "section_id", referencedColumnName = "section_id")
     private Section section;
 
     @JsonProperty("raw_text")

@@ -37,8 +37,9 @@ public class Recipe {
     @JsonProperty("nutrition")
     private Nutrition nutrition;
 
-    @OneToMany(mappedBy = "recipe")
+    @OneToMany
     @Cascade(CascadeType.ALL)
+    @JoinColumn(name = "recipe_id")
     @JsonProperty("instructions")
     private Collection<Instruction> instructions = new ArrayList<>();
 
@@ -51,8 +52,9 @@ public class Recipe {
     @JsonProperty("cook_time_minutes")
     private Integer cookTimeMinutes;
 
-    @OneToMany(mappedBy = "recipe")
+    @OneToMany
     @Cascade(CascadeType.ALL)
+    @JoinColumn(name = "recipe_id")
     @JsonProperty("sections")
     private Collection<Section> sections = new ArrayList<>();
 
@@ -62,14 +64,14 @@ public class Recipe {
     @JsonProperty("num_servings")
     private Integer numServings;
 
-    @OneToMany(mappedBy = "recipe")
+    @OneToMany
     @Cascade(CascadeType.ALL)
+    @JoinColumn(name = "recipe_id")
     @JsonProperty("tags")
     private Collection<Tag> tags = new ArrayList<>();
 
     @ManyToOne
-    @Cascade(CascadeType.ALL)
-    @JoinColumn(name = "meals_id")
+    @JoinColumn(name = "meals_id", referencedColumnName = "meals_id")
     private Meals meals;
 
     @Override

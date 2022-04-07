@@ -4,25 +4,33 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pl.trzcinski.emil.recipeproject.model.Meals;
 import pl.trzcinski.emil.recipeproject.model.Recipe;
+import pl.trzcinski.emil.recipeproject.repository.MealsRepository;
 import pl.trzcinski.emil.recipeproject.repository.RecipeRepository;
 
 import java.util.OptionalInt;
 
 @Slf4j
 @Service
-public class MealsService {
+public class MealsService  {
 
-    private final Recipe recipe;
     private final Meals meals;
-    private final RecipeRepository recipeRepository;
+    private final MealsRepository mealsRepository;
     private final RecipeService recipeService;
 
-    public MealsService(Recipe recipe, Meals meals, RecipeRepository recipeRepository, RecipeService recipeService) {
-        this.recipe = recipe;
+    public MealsService(Meals meals, MealsRepository mealsRepository, RecipeService recipeService) {
         this.meals = meals;
-        this.recipeRepository = recipeRepository;
+        this.mealsRepository = mealsRepository;
         this.recipeService = recipeService;
     }
+
+    // DB test - poprawić
+    public Meals getMeals(int expectedKcal, int expectedTotalTimeMinutes, int numberOfMeals) throws Exception {
+        getExceptedMeals(expectedKcal, expectedTotalTimeMinutes, numberOfMeals);
+
+        mealsRepository.save(getExceptedMeals(expectedKcal, expectedTotalTimeMinutes, numberOfMeals));
+        return meals;
+    }
+
 
     public Meals getExceptedMeals(int expectedKcal, int expectedTotalTimeMinutes, int numberOfMeals) throws Exception {
 
@@ -34,6 +42,7 @@ public class MealsService {
 
         return meals;
     }
+
 
     public Integer sumOfMealsKcal() {
         OptionalInt sumOfKcal = meals.getRecipeSet()

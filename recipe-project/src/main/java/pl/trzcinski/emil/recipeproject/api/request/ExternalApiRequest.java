@@ -45,7 +45,7 @@ public class ExternalApiRequest {
             return client.newCall(request).execute();
 
         } catch (Exception exception) {
-            throw new ResponseStatusException(HttpStatus.REQUEST_TIMEOUT, "ExternalApi Is offline");
+            throw new ResponseStatusException(HttpStatus.REQUEST_TIMEOUT, "ExternalApi ss Offline");
         }
     }
 

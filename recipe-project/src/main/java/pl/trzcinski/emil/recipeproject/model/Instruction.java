@@ -1,8 +1,8 @@
 package pl.trzcinski.emil.recipeproject.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+
 import javax.persistence.*;
 
 @Getter
@@ -21,9 +21,8 @@ public class Instruction {
     @JsonProperty("display_text")
     private String displayText;
 
-    @ManyToOne//(optional = false)
-    @JsonBackReference
-    @JoinColumn(name = "id", referencedColumnName = "recipe_id")
+    @ManyToOne
+    @JoinColumn(name = "recipe_id", referencedColumnName = "recipe_id")
     private Recipe recipe;
 
     @Override

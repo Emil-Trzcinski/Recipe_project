@@ -87,8 +87,8 @@ public class RecipeService {
 
 
         //just for test DB
-        Recipe recipeToSave = getRecipeFromListOfRecipes(recipeTemp);
-        recipeRepository.save(recipeToSave);
+//        Recipe recipeToSave = getRecipeFromListOfRecipes(recipeTemp);
+//        recipeRepository.save(recipeToSave);
 
         return getRecipeFromListOfRecipes(recipeTemp);
     }

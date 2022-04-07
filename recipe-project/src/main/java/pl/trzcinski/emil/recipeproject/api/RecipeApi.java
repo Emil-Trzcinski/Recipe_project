@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import pl.trzcinski.emil.recipeproject.api.response.ApiResponse;
 import pl.trzcinski.emil.recipeproject.model.Meals;
@@ -20,6 +21,7 @@ public class RecipeApi {
     }
 
     @GetMapping("/przepis")
+    @ResponseBody
     public ResponseEntity<Meals> getRecipe(@RequestParam int expectedKcal, int expectedTotalTimeMinutes,
                                                  @RequestParam(defaultValue = "1") int numberOfMeals) throws Exception {
 

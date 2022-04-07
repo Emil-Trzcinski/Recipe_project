@@ -19,7 +19,7 @@ public class Measurement {
     private Long measurementId;
 
     @ManyToOne
-    @JoinColumn(name = "component_id")
+    @JoinColumn(name = "component_id", referencedColumnName = "component_id")
     private Component component;
 
     @JsonProperty("quantity")

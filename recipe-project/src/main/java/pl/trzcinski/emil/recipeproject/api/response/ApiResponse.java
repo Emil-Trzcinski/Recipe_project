@@ -42,8 +42,9 @@ public class ApiResponse {
                     " please increase your excepted value, recommended is 20 minutes per meal -----");
         }
 
+
         return ResponseEntity.status(HttpStatus.OK)
                 .body(mealsService
-                        .getExceptedMeals(expectedKcal, expectedTotalTimeMinutes, numberOfMeals));
+                        .getMeals(expectedKcal, expectedTotalTimeMinutes, numberOfMeals));
     }
 }

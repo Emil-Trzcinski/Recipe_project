@@ -23,11 +23,12 @@ public class Meals {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "meals_id", nullable = false)
     private Long id;
 
-    @OneToMany(mappedBy = "meals")
+    @OneToMany
     @Cascade(CascadeType.ALL)
+    @JoinColumn(name = "meals_id")
     private Set<Recipe> recipeSet;
 
     private int totalKcalOfMeals;
