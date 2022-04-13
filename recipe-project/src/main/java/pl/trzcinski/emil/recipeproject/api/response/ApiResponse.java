@@ -45,6 +45,5 @@ public class ApiResponse {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(mealsService
-                        .getMeals(expectedKcal, expectedTotalTimeMinutes, numberOfMeals));
-    }
+                        .getMeals(expectedKcal, expectedTotalTimeMinutes, numberOfMeals));    }
 }

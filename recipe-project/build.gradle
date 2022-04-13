@@ -19,13 +19,23 @@ repositories {
 }
 
 dependencies {
-	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.3'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	runtimeOnly 'com.h2database:h2'
+
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
+	implementation 'javax.cache:cache-api:1.1.1'
+	implementation 'com.github.ben-manes.caffeine:caffeine:3.0.6'
+	implementation 'com.giffing.bucket4j.spring.boot.starter:bucket4j-spring-boot-starter:0.5.2'
+
+
+	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.3'
+	runtimeOnly 'com.h2database:h2'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
 }
 
 tasks.named('test') {

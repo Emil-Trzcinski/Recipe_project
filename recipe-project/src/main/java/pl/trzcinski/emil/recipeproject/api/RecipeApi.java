@@ -1,6 +1,7 @@
 package pl.trzcinski.emil.recipeproject.api;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -10,6 +11,7 @@ import pl.trzcinski.emil.recipeproject.api.response.ApiResponse;
 import pl.trzcinski.emil.recipeproject.model.Meals;
 
 @Slf4j
+@EnableCaching
 @RestController
 public class RecipeApi {
 
@@ -20,7 +22,7 @@ public class RecipeApi {
 
     }
 
-    @GetMapping("/przepis")
+    @GetMapping("/api/v1/przepis")
     @ResponseBody
     public ResponseEntity<Meals> getRecipe(@RequestParam int expectedKcal, int expectedTotalTimeMinutes,
                                                  @RequestParam(defaultValue = "1") int numberOfMeals) throws Exception {

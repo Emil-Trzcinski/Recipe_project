@@ -10,6 +10,7 @@ import org.hibernate.annotations.CascadeType;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
+import java.util.Map;
 import java.util.Set;
 
 @Getter
@@ -35,6 +36,6 @@ public class Meals {
     private int sumOfCookTotalTime;
 
     @Transient
-    private Set<Component> componentsSet;
+    private Map<Component, Unit> componentsMap;
 
 }

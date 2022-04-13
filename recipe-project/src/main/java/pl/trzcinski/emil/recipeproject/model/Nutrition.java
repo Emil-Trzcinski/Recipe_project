@@ -1,5 +1,6 @@
 package pl.trzcinski.emil.recipeproject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -18,6 +19,7 @@ public class Nutrition {
     private Long id;
 
     @OneToOne(mappedBy = "nutrition")
+    @JsonIgnore
     private Recipe recipe;
 
     @JsonProperty("calories")

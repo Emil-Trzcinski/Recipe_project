@@ -1,5 +1,6 @@
 package pl.trzcinski.emil.recipeproject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
@@ -20,6 +21,7 @@ public class Measurement {
 
     @ManyToOne
     @JoinColumn(name = "component_id", referencedColumnName = "component_id")
+    @JsonIgnore
     private Component component;
 
     @JsonProperty("quantity")

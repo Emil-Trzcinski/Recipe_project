@@ -1,5 +1,6 @@
 package pl.trzcinski.emil.recipeproject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import javax.persistence.*;
@@ -17,6 +18,7 @@ public class Unit {
     private Long unitId;
 
     @OneToOne(mappedBy = "unit")
+    @JsonIgnore
     private Measurement measurement;
 
     @JsonProperty("name")

@@ -1,5 +1,6 @@
 package pl.trzcinski.emil.recipeproject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -24,6 +25,7 @@ public class Tag {
 
     @ManyToOne
     @JoinColumn(name = "recipe_id", referencedColumnName = "recipe_id")
+    @JsonIgnore
     private Recipe recipe;
 
 }

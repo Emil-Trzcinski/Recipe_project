@@ -1,5 +1,6 @@
 package pl.trzcinski.emil.recipeproject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -23,6 +24,7 @@ public class Instruction {
 
     @ManyToOne
     @JoinColumn(name = "recipe_id", referencedColumnName = "recipe_id")
+    @JsonIgnore
     private Recipe recipe;
 
     @Override

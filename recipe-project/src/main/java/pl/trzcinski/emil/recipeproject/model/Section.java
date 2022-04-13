@@ -1,5 +1,6 @@
 package pl.trzcinski.emil.recipeproject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
@@ -28,6 +29,7 @@ public class Section {
 
     @ManyToOne
     @JoinColumn(name = "recipe_id", referencedColumnName = "recipe_id")
+    @JsonIgnore
     private Recipe recipe;
 
     @Transient
