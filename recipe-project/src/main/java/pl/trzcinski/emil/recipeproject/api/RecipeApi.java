@@ -30,9 +30,5 @@ public class RecipeApi {
         // metoda wysyłająca informację do recipeservcie - hardcode
         return apiResponse.responseFromRecipeService(expectedKcal, expectedTotalTimeMinutes, numberOfMeals);
 
-
-
-//        recipeService.logNameFromRecipeSet(recipeService.getListOfRecipesWithAllParameters(expectedKcal, expectedTotalTimeMinutes, numberOfMeals));
-//        return recipeService.getListOfRecipesWithAllParameters(expectedKcal, expectedTotalTimeMinutes, numberOfMeals).toString();
     }
 }

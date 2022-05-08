@@ -8,6 +8,7 @@ import org.hibernate.annotations.CascadeType;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Getter
 @Setter
@@ -25,22 +26,22 @@ public class Section {
     @Cascade(CascadeType.ALL)
     @JoinColumn(name = "section_id")
     @JsonProperty("components")
-    private Collection<Component> components = new ArrayList<>();
+    private List<Component> components = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "recipe_id", referencedColumnName = "recipe_id")
     @JsonIgnore
     private Recipe recipe;
 
-    @Transient
-    @JsonProperty("name")
-    private Object name;
+//    @Transient
+//    @JsonProperty("name")
+//    private Object name;
 
     @Override
     public String toString() {
         return "Section{" +
                 ", components=" + components +
-                ", name=" + name +
+//                ", name=" + name +
                 '}';
     }
 }

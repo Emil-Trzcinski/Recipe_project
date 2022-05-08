@@ -8,6 +8,7 @@ import org.hibernate.annotations.CascadeType;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,14 +19,14 @@ public class Component {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "component_id")
+    @Column(name = "component_id", nullable = false)
     private Long component_id;
 
     @OneToMany
     @Cascade(CascadeType.ALL)
     @JoinColumn(name = "component_id")
     @JsonProperty("measurements")
-    private Collection<Measurement> measurements = new ArrayList<>();
+    private List<Measurement> measurements = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "section_id", referencedColumnName = "section_id")
@@ -37,8 +38,11 @@ public class Component {
 
     @Override
     public String toString() {
-        return " \n Component{" +
-                "\n measurements=" + measurements + " składnik ='" + rawText + '\'' +
+        return "Component{" +
+                "\n component_id=" + component_id +
+                "\n , measurements=" + measurements +
+                "\n , section=" + section +
+                "\n , rawText='" + rawText + '\'' +
                 '}';
     }
 }

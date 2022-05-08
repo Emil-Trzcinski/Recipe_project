@@ -8,7 +8,7 @@ import org.hibernate.annotations.CascadeType;
 import org.springframework.stereotype.Component;
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 
@@ -41,7 +41,7 @@ public class Recipe {
     @Cascade(CascadeType.ALL)
     @JoinColumn(name = "recipe_id")
     @JsonProperty("instructions")
-    private Collection<Instruction> instructions = new ArrayList<>();
+    private List<Instruction> instructions = new ArrayList<>();
 
     @JsonProperty("total_time_minutes")
     private Integer totalTimeMinutes;
@@ -56,7 +56,7 @@ public class Recipe {
     @Cascade(CascadeType.ALL)
     @JoinColumn(name = "recipe_id")
     @JsonProperty("sections")
-    private Collection<Section> sections = new ArrayList<>();
+    private List<Section> sections = new ArrayList<>();
 
     @JsonProperty("thumbnail_url")
     private String thumbnailUrl;
@@ -68,28 +68,27 @@ public class Recipe {
     @Cascade(CascadeType.ALL)
     @JoinColumn(name = "recipe_id")
     @JsonProperty("tags")
-    private Collection<Tag> tags = new ArrayList<>();
+    private List<Tag> tags = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "meals_id", referencedColumnName = "meals_id")
     private Meals meals;
 
-    @Override
-    public String toString() {
-        return "RecipeeeBoom {" +
-                //"\n id=" + id +
-                ",\n name='" + name + '\'' +
-                ",\n nutrition=" + nutrition +
-                ",\n instructions=" + instructions +
-                " \n ------------------------------------------" +
-                ",\n totalTimeMinutes=" + totalTimeMinutes +
-                ",\n prepTimeMinutes=" + prepTimeMinutes +
-                ",\n cookTimeMinutes=" + cookTimeMinutes +
-                " \n ------------------------------------------" +
-                ",\n sections=" + sections +
-                "\n ------------------------------------------" +
-                ",\n thumbnailUrl='" + thumbnailUrl +
-                ",\n numServings=" + numServings +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "Recipe {" +
+//                ",\n name='" + name + '\'' +
+//                ",\n nutrition=" + nutrition +
+//                ",\n instructions=" + instructions +
+//                " \n ------------------------------------------" +
+//                ",\n totalTimeMinutes=" + totalTimeMinutes +
+//                ",\n prepTimeMinutes=" + prepTimeMinutes +
+//                ",\n cookTimeMinutes=" + cookTimeMinutes +
+//                " \n ------------------------------------------" +
+//                ",\n sections=" + sections +
+//                "\n ------------------------------------------" +
+//                ",\n thumbnailUrl='" + thumbnailUrl +
+//                ",\n numServings=" + numServings +
+//                '}';
+//    }
 }

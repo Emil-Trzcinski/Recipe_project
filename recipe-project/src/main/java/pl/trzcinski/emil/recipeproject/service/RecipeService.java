@@ -1,12 +1,10 @@
 package pl.trzcinski.emil.recipeproject.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import pl.trzcinski.emil.recipeproject.api.request.ExternalApiRequest;
 import pl.trzcinski.emil.recipeproject.model.Recipe;
 import pl.trzcinski.emil.recipeproject.model.RecipeList;
-import pl.trzcinski.emil.recipeproject.repository.RecipeRepository;
 import pl.trzcinski.emil.recipeproject.utility.RecipeListMapperUtility;
 
 import java.util.*;
@@ -19,29 +17,26 @@ import static pl.trzcinski.emil.recipeproject.service.MealTagEnum.*;
 
 @Slf4j
 @Service
-public class RecipeService {
+public class RecipeService implements RecipeSetService {
 
     private final ExternalApiRequest externalApiRequest;
     private final RecipeListMapperUtility recipeListMapperUtility;
-    private final RecipeRepository recipeRepository;
     private RecipeList recipeList;
 
 
     public RecipeService(RecipeList recipeList, ExternalApiRequest externalApiRequest,
-                         RecipeListMapperUtility recipeListMapperUtility, RecipeRepository recipeRepository) {
+                         RecipeListMapperUtility recipeListMapperUtility) {
 
         this.recipeList = recipeList;
         this.externalApiRequest = externalApiRequest;
         this.recipeListMapperUtility = recipeListMapperUtility;
-        this.recipeRepository = recipeRepository;
     }
 
-    //przenieść do MealSrevice????
+    @Override
     public Set<Recipe> getSetOfRecipesWithAllParameters
             (int expectedKcal, int expectedTotalTimeMinutes, int numberOfMeals) throws Exception {
 
         final Set<Recipe> mealsSet = new HashSet<>();
-
         final int preparedKcal = calculateKcalPerMeal(expectedKcal, numberOfMeals);
         final int preparedTime = calculateTimePerMeal(expectedTotalTimeMinutes, numberOfMeals);
 
@@ -70,9 +65,10 @@ public class RecipeService {
         List<Recipe> recipeTemp;
 
         do {
-        recipeList = recipeListMapperUtility.getListFromResponseBody(externalApiRequest.getResponse(mealTag, requestStartingPoint));
+        recipeList = recipeListMapperUtility.
+                getListFromResponseBody(externalApiRequest.getResponse(mealTag, requestStartingPoint));
+
         recipeList = listFiltering(recipeList);
-//        recipeList = getExpectedMeal(recipeList, mealTag);
 
             recipeTemp = recipeList.getResults().stream()
                     .filter(recipe ->
@@ -84,11 +80,6 @@ public class RecipeService {
             requestStartingPoint += 40;
 
         } while (recipeTemp.isEmpty());
-
-
-        //just for test DB
-//        Recipe recipeToSave = getRecipeFromListOfRecipes(recipeTemp);
-//        recipeRepository.save(recipeToSave);
 
         return getRecipeFromListOfRecipes(recipeTemp);
     }
@@ -112,7 +103,6 @@ public class RecipeService {
 
         return optionalRecipe.get();
     }
-
 
 
 //    public void logNameFromRecipeList(RecipeList recipeList) {
