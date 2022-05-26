@@ -62,7 +62,7 @@ public class RecipeService implements RecipeSetService {
             (int expectedKcal, int expectedTotalTimeMinutes, String mealTag) throws Exception {
 
         int requestStartingPoint = 0;
-        List<Recipe> recipeTemp;
+        Set<Recipe> recipeTemp;
 
         do {
         recipeList = recipeListMapperUtility.
@@ -76,7 +76,9 @@ public class RecipeService implements RecipeSetService {
                                     recipe.getNutrition().getCalories() <= expectedKcal &&
                                     recipe.getTotalTimeMinutes() > 0 &&
                                     recipe.getTotalTimeMinutes() <= expectedTotalTimeMinutes))
-                    .collect(Collectors.toList());
+
+                    //DODAĆ ZABEZPEICZNIE DLA PRZEPISU Z DWOMA RÓŻNYMNI TAGAMIA NP: PIZZA NA ŚNIADANI OBIAD I KOLACJE
+                    .collect(Collectors.toSet());
             requestStartingPoint += 40;
 
         } while (recipeTemp.isEmpty());
@@ -84,7 +86,7 @@ public class RecipeService implements RecipeSetService {
         return getRecipeFromListOfRecipes(recipeTemp);
     }
 
-    private Recipe getRecipeFromListOfRecipes(List<Recipe> recipeTemp) {
+    private Recipe getRecipeFromListOfRecipes(Set<Recipe> recipeTemp) {
 
         Optional<Recipe> optionalRecipe;
         optionalRecipe = recipeTemp.stream()

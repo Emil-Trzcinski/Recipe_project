@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import static pl.trzcinski.emil.recipeproject.service.MealTagEnum.*;
 import static pl.trzcinski.emil.recipeproject.utility.MealPreparedAttributes.calculateKcalPerMeal;
 import static pl.trzcinski.emil.recipeproject.utility.MealPreparedAttributes.calculateTimePerMeal;
+import static pl.trzcinski.emil.recipeproject.utility.ShoppingList.shoppingList;
 
 @Slf4j
 @Service
@@ -129,7 +130,7 @@ public class MealsService implements RecipeSetService {
         meals.setRecipeSet(recipeService.getSetOfRecipesWithAllParameters(expectedKcal, expectedTotalTimeMinutes, numberOfMeals));
         meals.setTotalKcalOfMeals(sumOfMealsKcal());
         meals.setSumOfCookTotalTime(sumOfCookTimes());
-//        meals.setComponentsMap(shoppingList(meals)); // zmienć na mape
+        meals.setComponentsMap(shoppingList(meals)); // zmienć na mape
 
         return meals;
     }
@@ -139,7 +140,7 @@ public class MealsService implements RecipeSetService {
         meals.setRecipeSet(recipeSetTemp);
         meals.setTotalKcalOfMeals(sumOfMealsKcal());
         meals.setSumOfCookTotalTime(sumOfCookTimes());
-//        meals.setComponentsMap(shoppingList(meals)); // zmienć na mape
+        meals.setComponentsMap(shoppingList(meals)); // zmienć na mape
 
         return meals;
     }

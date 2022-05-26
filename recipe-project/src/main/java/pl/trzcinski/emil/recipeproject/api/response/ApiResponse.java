@@ -40,7 +40,6 @@ public class ApiResponse {
                     " please increase your expected value, recommended is 20 minutes per meal -----");
         }
 
-
         return ResponseEntity.status(HttpStatus.OK)
                 .body(mealsService
                         .getMeals(expectedKcal, expectedTotalTimeMinutes, numberOfMeals));

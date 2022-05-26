@@ -33,6 +33,12 @@ public class Component {
     @JsonIgnore
     private Section section;
 
+    @OneToOne
+    @Cascade(CascadeType.ALL)
+    @JoinColumn(name = "ingredient_id")
+    @JsonProperty("ingredient")
+    private Ingredient ingredient;
+
     @JsonProperty("raw_text")
     private String rawText;
 

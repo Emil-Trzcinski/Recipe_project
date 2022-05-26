@@ -45,6 +45,7 @@ public class ExternalApiRequest {
             return client.newCall(request).execute();
 
         } catch (Exception exception) {
+            // dodac zabezpiecznie na wyadek wykorzytsania limitu api
             throw new ResponseStatusException(HttpStatus.REQUEST_TIMEOUT, "ExternalApi is Offline");
         }
     }
