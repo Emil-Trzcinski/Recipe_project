@@ -7,7 +7,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Getter
@@ -42,13 +41,4 @@ public class Component {
     @JsonProperty("raw_text")
     private String rawText;
 
-    @Override
-    public String toString() {
-        return "Component{" +
-                "\n component_id=" + component_id +
-                "\n , measurements=" + measurements +
-                "\n , section=" + section +
-                "\n , rawText='" + rawText + '\'' +
-                '}';
-    }
 }

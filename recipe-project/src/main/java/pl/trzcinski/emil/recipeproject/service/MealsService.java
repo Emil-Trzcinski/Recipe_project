@@ -176,19 +176,8 @@ public class MealsService implements RecipeSetService {
     }
 
 
-
-
-
-
-
-
-
-
         //metoda ogolna z if / else sprawdzająca baze danych lub uruchamiająca recipeservice - jest
-        //metoda zwracająca map ze składnikami
-
-
-
+        //metoda zwracająca map ze składnikami -jest
         //metoda do uruchaminia recipeservice - jest
         //metoda sumująca Kcal - jest
         //metoda sumująca czasPrzyrządzania - jest

@@ -25,9 +25,6 @@ public class Recipe {
     @Column(name = "recipe_id", nullable = false)
     private Long recipeId;
 
-//    @JsonProperty("id")
-//    private Integer id;
-
     @JsonProperty("name")
     private String name;
 
@@ -74,21 +71,4 @@ public class Recipe {
     @JoinColumn(name = "meals_id", referencedColumnName = "meals_id")
     private Meals meals;
 
-//    @Override
-//    public String toString() {
-//        return "Recipe {" +
-//                ",\n name='" + name + '\'' +
-//                ",\n nutrition=" + nutrition +
-//                ",\n instructions=" + instructions +
-//                " \n ------------------------------------------" +
-//                ",\n totalTimeMinutes=" + totalTimeMinutes +
-//                ",\n prepTimeMinutes=" + prepTimeMinutes +
-//                ",\n cookTimeMinutes=" + cookTimeMinutes +
-//                " \n ------------------------------------------" +
-//                ",\n sections=" + sections +
-//                "\n ------------------------------------------" +
-//                ",\n thumbnailUrl='" + thumbnailUrl +
-//                ",\n numServings=" + numServings +
-//                '}';
-//    }
 }

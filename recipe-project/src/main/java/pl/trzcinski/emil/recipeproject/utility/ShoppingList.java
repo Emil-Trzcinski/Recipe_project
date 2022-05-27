@@ -8,7 +8,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-
 @Slf4j
 public class ShoppingList {
 
@@ -71,19 +70,19 @@ public class ShoppingList {
             builder.append(numbers);
         }
 
-//        log.info(builder.toString().trim());
         return builder.toString().trim();
     }
 
-    public static String fractionConverter(String numbers) {
+
+    public static String fractionConverter(String number) {
         StringBuilder builder = new StringBuilder();
         StringBuilder numberBuilder = new StringBuilder();
         StringBuilder builderTemp = new StringBuilder();
 
         Pattern pattern = Pattern.compile("[¼½¾]");
-        Matcher matcher = pattern.matcher(numbers);
+        Matcher matcher = pattern.matcher(number);
 
-        numberBuilder.append(numberConverter(numbers));
+        numberBuilder.append(numberConverter(number));
 
         if (numberBuilder.isEmpty()) {
             numberBuilder.append("0");
@@ -107,13 +106,11 @@ public class ShoppingList {
             }
 
         } else {
-            builder.append(numbers);
+            builder.append(number);
         }
 
-        log.info(builder.toString().trim());
         return builder.toString().trim();
     }
-
 }
 
 

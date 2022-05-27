@@ -40,14 +40,4 @@ public class Nutrition {
     @JsonProperty("fiber")
     private Integer fiber;
 
-    @Override
-    public String toString() {
-        return "Nutrition" +
-                "\n calories=" + calories +
-                ",\n carbohydrates=" + carbohydrates +
-                ",\n fat=" + fat +
-                ",\n protein=" + protein +
-                ",\n sugar=" + sugar +
-                ",\n fiber=" + fiber;
-    }
 }

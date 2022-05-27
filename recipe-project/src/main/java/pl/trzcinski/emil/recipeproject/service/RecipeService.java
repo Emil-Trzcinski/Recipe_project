@@ -77,7 +77,6 @@ public class RecipeService implements RecipeSetService {
                                     recipe.getTotalTimeMinutes() > 0 &&
                                     recipe.getTotalTimeMinutes() <= expectedTotalTimeMinutes))
 
-                    //DODAĆ ZABEZPEICZNIE DLA PRZEPISU Z DWOMA RÓŻNYMNI TAGAMIA NP: PIZZA NA ŚNIADANI OBIAD I KOLACJE
                     .collect(Collectors.toSet());
             requestStartingPoint += 40;
 
@@ -105,24 +104,4 @@ public class RecipeService implements RecipeSetService {
 
         return optionalRecipe.get();
     }
-
-
-//    public void logNameFromRecipeList(RecipeList recipeList) {
-//        log.info("--------RecipeList----------");
-//
-//        recipeList.getResults().stream()
-//                .map(recipe ->
-//                        "\n Recipe: " + recipe.getName()
-//                                + "\n---- Time: " + recipe.getCookTimeMinutes()
-//                                + "\n---- PrepTime: " + recipe.getPrepTimeMinutes()
-//                                + "\n---- TotalTime: " + recipe.getTotalTimeMinutes()
-//                                + "\n---- Kcal: " + recipe.getNutrition().getCalories())
-//                                //+ "\n---- Id: " + recipe.getId())
-//                .forEach(log::info);
-//    }
-//
-//    public void logNameFromRecipe(Recipe recipe) {
-//        log.info("--------Recipe----------");
-//        log.info(recipe.toString());
-//    }
 }

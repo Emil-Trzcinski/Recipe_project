@@ -37,6 +37,5 @@ public class Meals {
 
     @Transient
     private Map<String, String> componentsMap; //zmienic na mape
-//    private Map<pl.trzcinski.emil.recipeproject.model.Component, Unit> componentsMap;
 
 }

@@ -33,13 +33,4 @@ public class Measurement {
     @JsonProperty("unit")
     private Unit unit;
 
-    @Override
-    public String toString() {
-        return "Measurement{" +
-                "\n measurementId=" + measurementId +
-                "\n, component=" + component +
-                "\n, quantity='" + quantity + '\'' +
-                "\n unit=" + unit +
-                '}';
-    }
 }

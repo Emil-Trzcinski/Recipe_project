@@ -33,15 +33,4 @@ public class Section {
     @JsonIgnore
     private Recipe recipe;
 
-//    @Transient
-//    @JsonProperty("name")
-//    private Object name;
-
-    @Override
-    public String toString() {
-        return "Section{" +
-                ", components=" + components +
-//                ", name=" + name +
-                '}';
-    }
 }

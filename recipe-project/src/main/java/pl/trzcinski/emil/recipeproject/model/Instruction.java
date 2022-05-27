@@ -27,10 +27,4 @@ public class Instruction {
     @JsonIgnore
     private Recipe recipe;
 
-    @Override
-    public String toString() {
-        return "\n Instruction - " +
-                "" + displayText;
-    }
-
 }
