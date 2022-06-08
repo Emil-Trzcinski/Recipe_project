@@ -91,8 +91,7 @@ public class RecipeService implements RecipeSetService {
         optionalRecipe = recipeTemp.stream()
                 .reduce((recipe, secRecipe) -> {
                     if (secRecipe != null) {
-                        return recipe.getNutrition().getCalories() > secRecipe.getNutrition().getCalories() ?
-                                recipe : secRecipe;
+                        return recipe.getNutrition().getCalories() > secRecipe.getNutrition().getCalories() ? recipe : secRecipe;
                     }
                     return recipe;
                 });

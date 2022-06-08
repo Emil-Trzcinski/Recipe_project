@@ -12,8 +12,8 @@ import pl.trzcinski.emil.recipeproject.service.MealsService;
 public class ApiResponse {
 
     private final MealsService mealsService;
-    private final int limitKcal  = 300;
-    private final int limitTime  = 20;
+    private static final int LIMIT_KCAL = 300;
+    private static final int LIMIT_TIME = 20;
 
     public ApiResponse(MealsService mealsService) {
         this.mealsService = mealsService;
@@ -28,13 +28,13 @@ public class ApiResponse {
                     " please insert correct value, starts from 1 to 3 meals -----");
         }
 
-        if (expectedKcal < limitKcal * numberOfMeals) {
+        if (expectedKcal < LIMIT_KCAL * numberOfMeals) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST
                     , "----- You expect to low Kcal per meal, " +
                     "please increase your expected value, recommended is 300 Kcal per meal -----");
         }
 
-        if (expectedTotalTimeMinutes < limitTime * numberOfMeals) {
+        if (expectedTotalTimeMinutes < LIMIT_TIME * numberOfMeals) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST
                     , "----- You expect to little Time to cook meals, " +
                     " please increase your expected value, recommended is 20 minutes per meal -----");

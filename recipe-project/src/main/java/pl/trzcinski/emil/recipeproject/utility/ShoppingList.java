@@ -22,43 +22,46 @@ public class ShoppingList {
                 .stream()
                 .flatMap(recipe -> recipe.getSections().stream())
                 .flatMap(section -> section.getComponents().stream())
-                .collect(Collectors.toMap(component -> component.getIngredient().getName(),
-                        component -> {
-                            List<String> listOfQuantity;
-                            List<String> listTemp = new ArrayList<>();
-
-                            if (component.getMeasurements().size() > 1) {
-                                listOfQuantity = (component.getMeasurements()
-                                        .stream()
-                                        .map(measurement -> fractionConverter(measurement.getQuantity()))
-                                        .filter(s -> s.length() > 0))
-                                        .toList();
-
-                                if (listOfQuantity.size() > 1) {
-                                    double number = Math.max(Double.parseDouble(listOfQuantity.get(0)), Double.parseDouble(listOfQuantity.get(1)));
-                                    listTemp.add(String.valueOf(number));
-
-                                    return listTemp.get(0);
-                                }
-
-                                return listOfQuantity.get(0);
-                            }
-
-                            listOfQuantity = component.getMeasurements().stream().map(measurement -> fractionConverter(measurement.getQuantity())).toList();
-
-                            double number = Double.parseDouble(listOfQuantity.get(0));
-                            if (number == 0) {
-                                return "1";
-                            }
-
-                            return listOfQuantity.get(0);
-                        }, (firstValue, secValue) -> String.valueOf(Double.parseDouble(firstValue) + Double.parseDouble(secValue))));
+                .collect(Collectors.toMap(component -> component.getIngredient().getName(), ShoppingList::getValue,
+                        (firstValue, secValue) -> String.valueOf(Double.parseDouble(firstValue) + Double.parseDouble(secValue))));
 
         log.info(String.valueOf(shoppingList));
         return shoppingList;
     }
 
-    public static String numberConverter(String numbers) {
+    private static String getValue(Component component) {
+        List<String> listOfQuantity;
+        List<String> listTemp = new ArrayList<>();
+
+        if (component.getMeasurements().size() > 1) {
+            listOfQuantity = (component.getMeasurements()
+                    .stream()
+                    .map(measurement -> fractionConverter(measurement.getQuantity()))
+                    .filter(s -> s.length() > 0))
+                    .toList();
+
+            if (listOfQuantity.size() > 1) {
+                double number = Math.max(Double.parseDouble(listOfQuantity.get(0)), Double.parseDouble(listOfQuantity.get(1)));
+                listTemp.add(String.valueOf(number));
+
+                return listTemp.get(0);
+            }
+
+            return listOfQuantity.get(0);
+        }
+
+        listOfQuantity = component.getMeasurements().stream().map(measurement -> fractionConverter(measurement.getQuantity())).toList();
+
+        double number = Double.parseDouble(listOfQuantity.get(0));
+        if (number == 0) {
+            return "1";
+        }
+
+        return listOfQuantity.get(0);
+
+    }
+
+    private static String numberConverter(String numbers) {
         StringBuilder builder = new StringBuilder();
 
         Pattern pattern = Pattern.compile("(^\\d\\W+\\d)|\\W");
@@ -74,7 +77,7 @@ public class ShoppingList {
     }
 
 
-    public static String fractionConverter(String number) {
+    private static String fractionConverter(String number) {
         StringBuilder builder = new StringBuilder();
         StringBuilder numberBuilder = new StringBuilder();
         StringBuilder builderTemp = new StringBuilder();

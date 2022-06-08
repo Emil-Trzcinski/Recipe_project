@@ -32,17 +32,17 @@ public class MealsService implements RecipeSetService {
         final Meals mealsTemp = new Meals();
 
         if (recipeSet.isEmpty()) {
-            log.info("--------PYTAMY API---------------");
+            log.info("--------ASKING API---------------");
             dataBaseMealsService.create(getExpectedMealsFromApi(expectedKcal, expectedTotalTimeMinutes, numberOfMeals));
 
         } else if (recipeSet.size() < numberOfMeals) {
-            log.info("--------PYTAMY API - ZA MAŁO PRZEPISÓW---------------");
+            log.info("--------ASKING API - NOT ENOUGH RECIPE IN DB---------------");
 
             final Meals tempMeals = getExpectedMealsFromApi(expectedKcal, expectedTotalTimeMinutes, numberOfMeals);
             final Set<Recipe> recipeTemp = tempMeals.getRecipeSet();
             final Set<String> recipeNamesSet = tempMeals.getRecipeSet().stream().map(Recipe::getName).collect(Collectors.toSet());
 
-            mealsTemp.setRecipeSet(checkingRecipies(recipeTemp, recipeNamesSet));
+            mealsTemp.setRecipeSet(checkingRecipes(recipeTemp, recipeNamesSet));
             dataBaseMealsService.create(mealsTemp);
 
             final Set<Recipe> recipeSetTemp = getFromDB(expectedKcal, expectedTotalTimeMinutes, numberOfMeals);
@@ -50,7 +50,7 @@ public class MealsService implements RecipeSetService {
             return getExpectedMealsFromDB(recipeSetTemp);
 
         } else {
-            log.info("--------PYTAMY BAZE DANYCH---------------");
+            log.info("--------ASKING DB---------------");
             meals.setRecipeSet(recipeSet);
             return getExpectedMealsFromDB(recipeSet);
         }
@@ -58,7 +58,7 @@ public class MealsService implements RecipeSetService {
         return meals;
     }
 
-    public Set<Recipe> checkingRecipies(Set<Recipe> recipeSet, Set<String> recipeNamesSet) {
+    public Set<Recipe> checkingRecipes(Set<Recipe> recipeSet, Set<String> recipeNamesSet) {
         final Set<Recipe> temp = new HashSet<>();
 
         for (String recipeName : recipeNamesSet) {
