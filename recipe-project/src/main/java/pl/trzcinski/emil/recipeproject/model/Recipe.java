@@ -8,7 +8,9 @@ import org.hibernate.annotations.CascadeType;
 import org.springframework.stereotype.Component;
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 
@@ -67,8 +69,10 @@ public class Recipe {
     @JsonProperty("tags")
     private List<Tag> tags = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "meals_id", referencedColumnName = "meals_id")
-    private Meals meals;
+//    @ManyToOne
+//    @JoinColumn(name = "meals_id", referencedColumnName = "meals_id")
+    @JsonIgnore
+    @ManyToMany(mappedBy = "recipeSet")
+    private Set<Meals> meals = new HashSet<>();
 
 }

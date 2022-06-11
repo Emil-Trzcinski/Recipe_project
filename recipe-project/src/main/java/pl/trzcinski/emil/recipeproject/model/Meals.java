@@ -1,5 +1,6 @@
 package pl.trzcinski.emil.recipeproject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import org.hibernate.annotations.CascadeType;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,10 +29,16 @@ public class Meals {
     @Column(name = "meals_id", nullable = false)
     private Long id;
 
-    @OneToMany
+//    @OneToMany
+//    @Cascade(CascadeType.ALL)
+//    @JoinColumn(name = "meals_id")
+
+
+    @ManyToMany
     @Cascade(CascadeType.ALL)
-    @JoinColumn(name = "meals_id")
-    private Set<Recipe> recipeSet;
+    @JoinTable(name = "meals_recipe",
+        joinColumns = @JoinColumn(name = "meals_id"), inverseJoinColumns = @JoinColumn(name = "recipe_id"))
+    private Set<Recipe> recipeSet = new HashSet<>();
 
     private int totalKcalOfMeals;
     private int sumOfCookTotalTime;

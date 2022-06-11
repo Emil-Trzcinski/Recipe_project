@@ -2,6 +2,7 @@ package pl.trzcinski.emil.recipeproject.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.trzcinski.emil.recipeproject.model.Meals;
 import pl.trzcinski.emil.recipeproject.model.Recipe;
 
@@ -34,6 +35,7 @@ public class MealsService implements RecipeSetService {
         if (recipeSet.isEmpty()) {
             log.info("--------ASKING API---------------");
             dataBaseMealsService.create(getExpectedMealsFromApi(expectedKcal, expectedTotalTimeMinutes, numberOfMeals));
+
 
         } else if (recipeSet.size() < numberOfMeals) {
             log.info("--------ASKING API - NOT ENOUGH RECIPE IN DB---------------");
