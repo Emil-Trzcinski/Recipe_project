@@ -76,13 +76,12 @@ public class ShoppingList {
         return builder.toString().trim();
     }
 
-
     private static String fractionConverter(String number) {
         StringBuilder builder = new StringBuilder();
         StringBuilder numberBuilder = new StringBuilder();
         StringBuilder builderTemp = new StringBuilder();
 
-        Pattern pattern = Pattern.compile("[¼½¾]");
+        Pattern pattern = Pattern.compile("[⅕¼⅓⅖½⅗⅔¾⅘]");
         Matcher matcher = pattern.matcher(number);
 
         numberBuilder.append(numberConverter(number));
@@ -95,14 +94,33 @@ public class ShoppingList {
             builderTemp.append(matcher.group());
 
             switch (builderTemp.toString()) {
+
+                case "⅕":
+                    builder.append(Double.parseDouble(numberBuilder.toString()) + Double.parseDouble("0.2"));
+                    break;
                 case "¼":
                     builder.append(Double.parseDouble(numberBuilder.toString()) + Double.parseDouble("0.25"));
+                    break;
+                case "⅓":
+                    builder.append(Double.parseDouble(numberBuilder.toString()) + Double.parseDouble("0.33"));
+                    break;
+                case "⅖":
+                    builder.append(Double.parseDouble(numberBuilder.toString()) + Double.parseDouble("0.4"));
                     break;
                 case "½":
                     builder.append(Double.parseDouble(numberBuilder.toString()) + Double.parseDouble("0.5"));
                     break;
+                case "⅗":
+                    builder.append(Double.parseDouble(numberBuilder.toString()) + Double.parseDouble("0.6"));
+                    break;
+                case "⅔":
+                    builder.append(Double.parseDouble(numberBuilder.toString()) + Double.parseDouble("0,66"));
+                    break;
                 case "¾":
                     builder.append(Double.parseDouble(numberBuilder.toString()) + Double.parseDouble("0.75"));
+                    break;
+                case "⅘":
+                    builder.append(Double.parseDouble(numberBuilder.toString()) + Double.parseDouble("0.8"));
                     break;
                 default:
                     //nothing to do here

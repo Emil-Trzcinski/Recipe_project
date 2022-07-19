@@ -2,7 +2,10 @@ package pl.trzcinski.emil.recipeproject.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -17,10 +20,6 @@ public class Nutrition {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "nutrition_id", nullable = false)
     private Long id;
-
-    @OneToOne(mappedBy = "nutrition")
-    @JsonIgnore
-    private Recipe recipe;
 
     @JsonProperty("calories")
     private Integer calories;
@@ -39,5 +38,10 @@ public class Nutrition {
 
     @JsonProperty("fiber")
     private Integer fiber;
+
+    @OneToOne(mappedBy = "nutrition")
+    @JsonIgnore
+    private Recipe recipe;
+
 
 }

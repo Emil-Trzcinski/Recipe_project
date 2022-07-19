@@ -1,6 +1,7 @@
 package pl.trzcinski.emil.recipeproject.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import pl.trzcinski.emil.recipeproject.api.request.ExternalApiRequest;
 import pl.trzcinski.emil.recipeproject.model.Recipe;
@@ -23,7 +24,6 @@ public class RecipeService implements RecipeSetService {
     private final RecipeListMapperUtility recipeListMapperUtility;
     private RecipeList recipeList;
 
-
     public RecipeService(RecipeList recipeList, ExternalApiRequest externalApiRequest,
                          RecipeListMapperUtility recipeListMapperUtility) {
 
@@ -32,7 +32,6 @@ public class RecipeService implements RecipeSetService {
         this.recipeListMapperUtility = recipeListMapperUtility;
     }
 
-    @Override
     public Set<Recipe> getSetOfRecipesWithAllParameters
             (int expectedKcal, int expectedTotalTimeMinutes, int numberOfMeals) throws Exception {
 
@@ -42,13 +41,13 @@ public class RecipeService implements RecipeSetService {
 
         switch (numberOfMeals) {
             case 3:
-                mealsSet.add(getListOfRecipesWithParameters(preparedKcal, preparedTime, DINNER.getMeal()));
+                mealsSet.add(getRecipeFromListOfRecipes(preparedKcal, preparedTime, DINNER.getMeal(), mealsSet));
 
             case 2:
-                mealsSet.add(getListOfRecipesWithParameters(preparedKcal, preparedTime,  LUNCH.getMeal()));
+                mealsSet.add(getRecipeFromListOfRecipes(preparedKcal, preparedTime, LUNCH.getMeal(), mealsSet));
 
             case 1:
-                mealsSet.add(getListOfRecipesWithParameters(preparedKcal, preparedTime,  BREAKFAST.getMeal()));
+                mealsSet.add(getRecipeFromListOfRecipes(preparedKcal, preparedTime, BREAKFAST.getMeal(), mealsSet));
                 break;
 
             default:
@@ -58,17 +57,17 @@ public class RecipeService implements RecipeSetService {
         return mealsSet;
     }
 
-    private Recipe getListOfRecipesWithParameters
-            (int expectedKcal, int expectedTotalTimeMinutes, String mealTag) throws Exception {
+    private Recipe getRecipeFromListOfRecipes
+            (int expectedKcal, int expectedTotalTimeMinutes, String mealTag, Set<Recipe> mealsSet) throws Exception {
 
         int requestStartingPoint = 0;
         Set<Recipe> recipeTemp;
+        Set<Recipe> preparedSet;
 
         do {
-        recipeList = recipeListMapperUtility.
-                getListFromResponseBody(externalApiRequest.getResponse(mealTag, requestStartingPoint));
+            recipeList = recipeListMapperUtility.getListFromResponseBody(externalApiRequest.getResponse(mealTag, requestStartingPoint));
 
-        recipeList = listFiltering(recipeList);
+            recipeList = listFiltering(recipeList);
 
             recipeTemp = recipeList.getResults().stream()
                     .filter(recipe ->
@@ -76,16 +75,22 @@ public class RecipeService implements RecipeSetService {
                                     recipe.getNutrition().getCalories() <= expectedKcal &&
                                     recipe.getTotalTimeMinutes() > 0 &&
                                     recipe.getTotalTimeMinutes() <= expectedTotalTimeMinutes))
-
                     .collect(Collectors.toSet());
+
             requestStartingPoint += 40;
 
         } while (recipeTemp.isEmpty());
 
-        return getRecipeFromListOfRecipes(recipeTemp);
+        if (!mealsSet.isEmpty()) {
+            preparedSet = hasSameName(recipeTemp, mealsSet);
+        } else {
+            return getRecipeWithTopParameters(recipeTemp);
+        }
+
+        return getRecipeWithTopParameters(preparedSet);
     }
 
-    private Recipe getRecipeFromListOfRecipes(Set<Recipe> recipeTemp) {
+    private Recipe getRecipeWithTopParameters(Set<Recipe> recipeTemp) {
 
         Optional<Recipe> optionalRecipe;
         optionalRecipe = recipeTemp.stream()
@@ -102,5 +107,17 @@ public class RecipeService implements RecipeSetService {
         }
 
         return optionalRecipe.get();
+    }
+
+    public Set<Recipe> hasSameName(Set<Recipe> recipeTemp, @NotNull Set<Recipe> mealsSet) {
+        final Set<Recipe> temp = new HashSet<>();
+        Set<String> tempOfRecipeNames = mealsSet.stream().map(Recipe::getName).collect(Collectors.toSet());
+
+        for (String recipeName : tempOfRecipeNames) {
+            temp.addAll(recipeTemp.stream()
+                    .filter(recipe -> !recipe.getName().equals(recipeName))
+                    .collect(Collectors.toSet()));
+        }
+        return temp;
     }
 }

@@ -5,6 +5,7 @@ import pl.trzcinski.emil.recipeproject.model.RecipeList;
 
 import java.util.List;
 
+
 public class RecipeListFilters {
 
     private RecipeListFilters() {
@@ -34,20 +35,5 @@ public class RecipeListFilters {
         RecipeList filteredRecipeList = new RecipeList();
         filteredRecipeList.setResults(temp);
         return filteredRecipeList;
-    }
-
-    public static RecipeList getExpectedMeal(RecipeList recipeList, String meal) {
-
-        List<Recipe> temp = recipeList.getResults()
-                .stream()
-                .filter(recipe -> recipe.getTags()
-                        .stream()
-                        .anyMatch(mealTag -> mealTag.getName().equalsIgnoreCase(meal)))
-                .toList();
-
-        RecipeList recipeListWithExpectedMeals = new RecipeList();
-        recipeListWithExpectedMeals.setResults(temp);
-
-        return recipeListWithExpectedMeals;
     }
 }

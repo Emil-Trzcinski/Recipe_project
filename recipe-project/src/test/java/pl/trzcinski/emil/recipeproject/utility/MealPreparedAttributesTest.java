@@ -19,9 +19,9 @@ class MealPreparedAttributesTest {
         assertEquals(expected, result);
     }
 
-    @ParameterizedTest(name = "Test {index} => Division {0} and {1} returns {2}")
+    @ParameterizedTest(name = "Test {index} => Division {0} and {1} returns less than 0")
     @CsvSource({"-5, 4", "5, -5"})
-    void should_throw_IllegalArgumentException_when_calculate_Kcal_PerMeal(int expectedKcal, int numberOfMeals) {
+    void should_throw_IllegalArgumentException_when_calculate_Kcal_Per_Meal(int expectedKcal, int numberOfMeals) {
         //given
         //when
         Exception exception = assertThrows(IllegalArgumentException.class, () -> calculateKcalPerMeal(expectedKcal, numberOfMeals));
@@ -29,9 +29,9 @@ class MealPreparedAttributesTest {
         assertTrue(exception.getMessage().contains("less than 0"));
     }
 
-    @ParameterizedTest(name = "Test {index} => Division {0} and {1} returns {2}")
+    @ParameterizedTest(name = "Test {index} => Division {0} and {1} returns Division by 0")
     @CsvSource({"4, 0"})
-    void should_throw_ArithmeticException_when_calculate_Kcal_PerMeal(int expectedKcal, int numberOfMeals) {
+    void should_throw_ArithmeticException_when_calculate_Kcal_Per_Meal(int expectedKcal, int numberOfMeals) {
         //given
         //when
         Exception exception = assertThrows(ArithmeticException.class, () -> calculateKcalPerMeal(expectedKcal, numberOfMeals));
@@ -49,7 +49,7 @@ class MealPreparedAttributesTest {
         assertEquals(expected, result);
     }
 
-    @ParameterizedTest(name = "Test {index} => Division {0} and {1} returns {2}")
+    @ParameterizedTest(name = "Test {index} => Division {0} and {1} returns less than 0")
     @CsvSource({"-5, 4", "5, -5"})
     void should_throw_IllegalArgumentException_when_calculate_Time_Per_Meal(int expectedKcal, int numberOfMeals) {
         //given
@@ -59,7 +59,7 @@ class MealPreparedAttributesTest {
         assertTrue(exception.getMessage().contains("less than 0"));
     }
 
-    @ParameterizedTest(name = "Test {index} => Division {0} and {1} returns {2}")
+    @ParameterizedTest(name = "Test {index} => Division {0} and {1} returns Division by 0")
     @CsvSource({"4, 0"})
     void should_throw_ArithmeticException_when_calculate_Time_Per_Meal(int expectedKcal, int numberOfMeals) {
         //given

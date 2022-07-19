@@ -21,7 +21,7 @@ public class Ingredient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ingredient_id", nullable = false)
     @JsonIgnore
-    private Integer ingredient_id;
+    private Long ingredient_id;
 
     @JsonProperty("name")
     private String name;

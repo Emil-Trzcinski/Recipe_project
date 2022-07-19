@@ -19,10 +19,9 @@ public class RecipeApi {
 
     public RecipeApi(ApiResponse apiResponse) {
         this.apiResponse = apiResponse;
-
     }
 
-    @GetMapping("/api/v1/przepis")
+    @GetMapping("/api/v1/meals")
     @ResponseBody
     public ResponseEntity<Meals> getRecipe(@RequestParam int expectedKcal, int expectedTotalTimeMinutes,
                                                  @RequestParam(defaultValue = "1") int numberOfMeals) throws Exception {

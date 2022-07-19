@@ -1,11 +1,11 @@
 package pl.trzcinski.emil.recipeproject.model;
 
-
 import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.springframework.stereotype.Component;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -20,6 +20,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Component
 @Entity
+@Builder
 public class Recipe {
 
     @Id
@@ -69,8 +70,6 @@ public class Recipe {
     @JsonProperty("tags")
     private List<Tag> tags = new ArrayList<>();
 
-//    @ManyToOne
-//    @JoinColumn(name = "meals_id", referencedColumnName = "meals_id")
     @JsonIgnore
     @ManyToMany(mappedBy = "recipeSet")
     private Set<Meals> meals = new HashSet<>();

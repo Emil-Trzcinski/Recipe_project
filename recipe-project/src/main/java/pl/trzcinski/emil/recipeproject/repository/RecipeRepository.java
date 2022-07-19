@@ -10,7 +10,7 @@ import java.util.Set;
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
     Set<Recipe> findByNutrition_CaloriesLessThanEqualAndCookTimeMinutesLessThanEqual
-            (Integer expectedKcal, Integer expectedTotalTimeMinutes);
+            (int expectedKcal, int expectedTotalTimeMinutes);
 
     Recipe findByName(String name);
 }

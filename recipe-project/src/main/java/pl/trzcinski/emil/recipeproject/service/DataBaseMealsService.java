@@ -21,8 +21,7 @@ public class DataBaseMealsService {
     }
 
     public Meals create(Meals meals) {
-        mealsRepository.save(meals);
-        return meals;
+        return mealsRepository.save(meals);
         //hmmm zwracac np: ID
     }
 
@@ -30,7 +29,12 @@ public class DataBaseMealsService {
         return recipeRepository.findByName(name);
     }
 
-    public Set<Recipe> findExpectedMeals(int expectedKcal, int expectedTotalTimeMinutes) {
+    public Meals findExpectedMeals(int expectedKcal, int expectedTotalTimeMinutes, int size) {
+        return mealsRepository.findTopByTotalKcalOfMealsLessThanEqualAndSumOfCookTotalTimeLessThanEqualAndRecipeSetSizeEquals
+                (expectedKcal, expectedTotalTimeMinutes, size);
+    }
+
+    public Set<Recipe> findExpectedRecipeSet(int expectedKcal, int expectedTotalTimeMinutes) {
         return recipeRepository.
                 findByNutrition_CaloriesLessThanEqualAndCookTimeMinutesLessThanEqual
                         (expectedKcal, expectedTotalTimeMinutes);
@@ -43,5 +47,4 @@ public class DataBaseMealsService {
     //create
     //find/findAll
     //opcjonalnie delete
-
 }
