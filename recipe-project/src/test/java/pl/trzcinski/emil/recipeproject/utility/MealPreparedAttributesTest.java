@@ -1,5 +1,6 @@
 package pl.trzcinski.emil.recipeproject.utility;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -9,8 +10,9 @@ import static pl.trzcinski.emil.recipeproject.utility.MealPreparedAttributes.cal
 
 class MealPreparedAttributesTest {
 
+    @DisplayName("Calculate Kcal Per Meal")
     @ParameterizedTest(name = "Test {index} => Division {0} and {1} returns {2}")
-    @CsvSource({ "2, 1, 2", "4, 2, 2", "20, 4, 5", "5, 3 , 1", "10, 10, 1", "0, 1, 0"})
+    @CsvSource({"2, 1, 2", "4, 2, 2", "20, 4, 5", "5, 3 , 1", "10, 10, 1", "0, 1, 0"})
     void should_calculate_Kcal_PerMeal(int expectedKcal, int numberOfMeals, int expected) {
         //given
         //when
@@ -19,7 +21,8 @@ class MealPreparedAttributesTest {
         assertEquals(expected, result);
     }
 
-    @ParameterizedTest(name = "Test {index} => Division {0} and {1} returns less than 0")
+    @DisplayName("Calculate Kcal Per Meal Throw Illegal Argument Exception")
+    @ParameterizedTest(name = "Test {index} => Division {0} and {1} returns Illegal Argument Exception")
     @CsvSource({"-5, 4", "5, -5"})
     void should_throw_IllegalArgumentException_when_calculate_Kcal_Per_Meal(int expectedKcal, int numberOfMeals) {
         //given
@@ -29,6 +32,7 @@ class MealPreparedAttributesTest {
         assertTrue(exception.getMessage().contains("less than 0"));
     }
 
+    @DisplayName("Calculate Kcal Per Meal Throw Arithmetic Exception")
     @ParameterizedTest(name = "Test {index} => Division {0} and {1} returns Division by 0")
     @CsvSource({"4, 0"})
     void should_throw_ArithmeticException_when_calculate_Kcal_Per_Meal(int expectedKcal, int numberOfMeals) {
@@ -39,8 +43,9 @@ class MealPreparedAttributesTest {
         assertTrue(exception.getMessage().contains("Division by 0"));
     }
 
+    @DisplayName("Calculate Time Per Meal")
     @ParameterizedTest(name = "Test {index} => Division {0} and {1} returns {2}")
-    @CsvSource({ "2, 1, 2", "4, 2, 2", "20, 4, 5", "5, 3 , 1", "10, 10, 1, 0, 1, 0"})
+    @CsvSource({"2, 1, 2", "4, 2, 2", "20, 4, 5", "5, 3 , 1", "10, 10, 1, 0, 1, 0"})
     void should_calculate_Time_Per_Meal(int expectedTotalTimeMinutes, int numberOfMeals, int expected) {
         //given
         //when
@@ -49,7 +54,8 @@ class MealPreparedAttributesTest {
         assertEquals(expected, result);
     }
 
-    @ParameterizedTest(name = "Test {index} => Division {0} and {1} returns less than 0")
+    @DisplayName("Calculate Time Per Meal Throw Illegal Argument Exception")
+    @ParameterizedTest(name = "Test {index} => Division {0} and {1} returns Illegal Argument Exception")
     @CsvSource({"-5, 4", "5, -5"})
     void should_throw_IllegalArgumentException_when_calculate_Time_Per_Meal(int expectedKcal, int numberOfMeals) {
         //given
@@ -59,6 +65,7 @@ class MealPreparedAttributesTest {
         assertTrue(exception.getMessage().contains("less than 0"));
     }
 
+    @DisplayName("Calculate Time Per Meal Throw Arithmetic Exception")
     @ParameterizedTest(name = "Test {index} => Division {0} and {1} returns Division by 0")
     @CsvSource({"4, 0"})
     void should_throw_ArithmeticException_when_calculate_Time_Per_Meal(int expectedKcal, int numberOfMeals) {

@@ -17,7 +17,6 @@ public class InstructionBuilder {
         return this;
     }
 
-
     public InstructionBuilder withDefaultInstruction_id() {
         this.instruction_id = 1L;
         return this;

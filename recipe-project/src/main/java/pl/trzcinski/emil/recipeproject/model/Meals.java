@@ -39,5 +39,8 @@ public class Meals {
     private int sumOfCookTotalTime;
 
     @Transient
-    private Map<String, String> componentsMap;
+    private Map<String, String> shoppingList;
+
+//    public Meals(Long id, Set<Recipe> recipeSet, Integer calculateSumOfMealsKcal, Integer calculateSumOfCookTimes, Map<String, String> shoppingList) {
+//    }
 }

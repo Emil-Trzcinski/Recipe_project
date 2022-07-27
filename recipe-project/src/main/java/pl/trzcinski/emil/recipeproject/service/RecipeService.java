@@ -6,30 +6,31 @@ import org.springframework.stereotype.Service;
 import pl.trzcinski.emil.recipeproject.api.request.ExternalApiRequest;
 import pl.trzcinski.emil.recipeproject.model.Recipe;
 import pl.trzcinski.emil.recipeproject.model.RecipeList;
-import pl.trzcinski.emil.recipeproject.utility.RecipeListMapperUtility;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static pl.trzcinski.emil.recipeproject.utility.MealPreparedAttributes.calculateKcalPerMeal;
 import static pl.trzcinski.emil.recipeproject.utility.MealPreparedAttributes.calculateTimePerMeal;
-import static pl.trzcinski.emil.recipeproject.utility.RecipeListFilters.listFiltering;
 import static pl.trzcinski.emil.recipeproject.service.MealTagEnum.*;
 
 @Slf4j
 @Service
 public class RecipeService implements RecipeSetService {
 
+    private final RecipeListFilterService recipeListFilterService;
+
     private final ExternalApiRequest externalApiRequest;
-    private final RecipeListMapperUtility recipeListMapperUtility;
+    private final RecipeListMapperService recipeListMapperService;
     private RecipeList recipeList;
 
-    public RecipeService(RecipeList recipeList, ExternalApiRequest externalApiRequest,
-                         RecipeListMapperUtility recipeListMapperUtility) {
+    public RecipeService(RecipeListFilterService recipeListFilterService, RecipeList recipeList, ExternalApiRequest externalApiRequest,
+                         RecipeListMapperService recipeListMapperService) {
 
+        this.recipeListFilterService = recipeListFilterService;
         this.recipeList = recipeList;
         this.externalApiRequest = externalApiRequest;
-        this.recipeListMapperUtility = recipeListMapperUtility;
+        this.recipeListMapperService = recipeListMapperService;
     }
 
     public Set<Recipe> getSetOfRecipesWithAllParameters
@@ -65,9 +66,9 @@ public class RecipeService implements RecipeSetService {
         Set<Recipe> preparedSet;
 
         do {
-            recipeList = recipeListMapperUtility.getListFromResponseBody(externalApiRequest.getResponse(mealTag, requestStartingPoint));
+            recipeList = recipeListMapperService.getListFromResponseBody(externalApiRequest.getResponse(mealTag, requestStartingPoint));
 
-            recipeList = listFiltering(recipeList);
+            recipeList = recipeListFilterService.listFiltering(recipeList);
 
             recipeTemp = recipeList.getResults().stream()
                     .filter(recipe ->

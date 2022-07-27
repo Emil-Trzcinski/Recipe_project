@@ -18,7 +18,6 @@ public class IngredientBuilder {
         return this;
     }
 
-
     public IngredientBuilder withDefaultIngredient_id() {
         this.ingredient_id = 1L;
         return this;

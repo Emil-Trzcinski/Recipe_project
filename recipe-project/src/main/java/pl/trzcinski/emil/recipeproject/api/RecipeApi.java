@@ -2,32 +2,53 @@ package pl.trzcinski.emil.recipeproject.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import pl.trzcinski.emil.recipeproject.api.response.ApiResponse;
+import org.springframework.web.server.ResponseStatusException;
 import pl.trzcinski.emil.recipeproject.model.Meals;
+import pl.trzcinski.emil.recipeproject.service.MealsService;
 
 @Slf4j
 @EnableCaching
 @RestController
 public class RecipeApi {
 
-    private final ApiResponse apiResponse;
+    private final MealsService mealsService;
+    private static final int LIMIT_KCAL = 300;
+    private static final int LIMIT_TIME = 20;
 
-    public RecipeApi(ApiResponse apiResponse) {
-        this.apiResponse = apiResponse;
+
+    public RecipeApi(MealsService mealsService) {
+        this.mealsService = mealsService;
     }
 
     @GetMapping("/api/v1/meals")
     @ResponseBody
     public ResponseEntity<Meals> getRecipe(@RequestParam int expectedKcal, int expectedTotalTimeMinutes,
-                                                 @RequestParam(defaultValue = "1") int numberOfMeals) throws Exception {
+                                           @RequestParam(defaultValue = "1") int numberOfMeals) throws Exception {
+        if (numberOfMeals < 1 || numberOfMeals > 3) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST
+                    , "----- You expect wrong number of meals, " +
+                    " please insert correct value, starts from 1 to 3 meals -----");
+        }
 
-        // metoda wysyłająca informację do recipeservcie - hardcode
-        return apiResponse.responseFromRecipeService(expectedKcal, expectedTotalTimeMinutes, numberOfMeals);
+        if (expectedKcal < LIMIT_KCAL * numberOfMeals) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST
+                    , "----- You expect to low Kcal per meal, " +
+                    "please increase your expected value, recommended is 300 Kcal per meal -----");
+        }
 
+        if (expectedTotalTimeMinutes < LIMIT_TIME * numberOfMeals) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST
+                    , "----- You expect to little Time to cook meals, " +
+                    " please increase your expected value, recommended is 20 minutes per meal -----");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(mealsService.getMeals(expectedKcal, expectedTotalTimeMinutes, numberOfMeals));
     }
 }

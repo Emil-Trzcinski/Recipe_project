@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.6.4'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id "net.bytebuddy.byte-buddy-gradle-plugin" version "1.11.22"
 }
 
 group = 'pl.trzcinski.emil'
@@ -34,12 +35,16 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
+	implementation 'org.mockito:mockito-core:4.4.0'
+	testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.4.0'
+	testImplementation group: 'net.bytebuddy', name: 'byte-buddy-agent', version: '1.11.22'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
-	implementation 'org.mockito:mockito-core:4.6.1'
+	testImplementation 'org.hamcrest:hamcrest:2.2'
 
 }
+
 test {
 	useJUnitPlatform()
 }

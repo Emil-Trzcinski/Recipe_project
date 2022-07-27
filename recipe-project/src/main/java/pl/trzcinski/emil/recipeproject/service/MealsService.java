@@ -15,7 +15,6 @@ import java.util.stream.Stream;
 import static pl.trzcinski.emil.recipeproject.service.MealTagEnum.*;
 import static pl.trzcinski.emil.recipeproject.utility.MealPreparedAttributes.calculateKcalPerMeal;
 import static pl.trzcinski.emil.recipeproject.utility.MealPreparedAttributes.calculateTimePerMeal;
-import static pl.trzcinski.emil.recipeproject.utility.ShoppingList.shoppingList;
 
 @Slf4j
 @Service
@@ -25,52 +24,54 @@ public class MealsService implements RecipeSetService {
     private final Meals meals;
     private final DataBaseMealsService dataBaseMealsService;
     private final RecipeService recipeService;
+    private final ShoppingListService shoppingListService;
 
-    public MealsService(Meals meals, DataBaseMealsService dataBaseMealsService, RecipeService recipeService) {
+    public MealsService(Meals meals, DataBaseMealsService dataBaseMealsService, RecipeService recipeService, ShoppingListService shoppingListService) {
         this.meals = meals;
         this.dataBaseMealsService = dataBaseMealsService;
         this.recipeService = recipeService;
+        this.shoppingListService = shoppingListService;
     }
 
     public Meals getMeals(int expectedKcal, int expectedTotalTimeMinutes, int numberOfMeals) throws Exception {
         final Set<Recipe> recipeSet = getSetFromDB(expectedKcal, expectedTotalTimeMinutes, numberOfMeals);
-        Meals mealsTemp = new Meals();
+        Meals mealsTemp;
 
         if (recipeSet.isEmpty()) {
             log.info("--------ASKING API---------------");
             mealsTemp = dataBaseMealsService.create(getExpectedMealsFromApi(expectedKcal, expectedTotalTimeMinutes, numberOfMeals));
 
-            return Meals.builder()
+//            Meals mealsResult = new Meals(mealsTemp.getId(), mealsTemp.getRecipeSet(), calculateSumOfMealsKcal(mealsTemp), calculateSumOfCookTimes(mealsTemp), createShoppingList(mealsTemp));
+//            return mealsResult;
+
+            return Meals.builder()      //todo refactor wywalic buildery - return new Meals(argmenty)
                     .id(mealsTemp.getId())
                     .recipeSet(mealsTemp.getRecipeSet())
-                    .totalKcalOfMeals(sumOfMealsKcal(mealsTemp))
-                    .sumOfCookTotalTime(sumOfCookTimes(mealsTemp))
-                    .componentsMap(shoppingList(mealsTemp))
+                    .totalKcalOfMeals(calculateSumOfMealsKcal(mealsTemp))
+                    .sumOfCookTotalTime(calculateSumOfCookTimes(mealsTemp))
+                    .shoppingList(shoppingListService.createShoppingList(mealsTemp))
                     .build();
 
         } else if (recipeSet.size() < numberOfMeals) {
             log.info("--------ASKING API - NOT ENOUGH RECIPE IN DB---------------");
 
-            //pobiera nowe recepty z api
             final Meals apiTempMeals = getExpectedMealsFromApi(expectedKcal, expectedTotalTimeMinutes, numberOfMeals);
-            //wyciąga set recept
             final Set<Recipe> apiRecipeTemp = apiTempMeals.getRecipeSet();
 
-            //wyciaga nazwy recept
-//            final Set<String> apiRecipeNamesSet = apiTempMeals.getRecipeSet().stream().map(Recipe::getName).collect(Collectors.toSet());
-            //sprawdza czy nie ma powtórzeń i tworzy set brakujących recept
-//            mealsTemp.setRecipeSet(checkingRecipes(apiRecipeTemp, apiRecipeNamesSet)); // sprawdzić parametry metody
-
-            //zapisuje w bazie danych nowo pobrane recepty - ale nie ma jeszcze przygotowanego pełenego meals - coś tu się dobrze odbierdala
-
             mealsTemp = dataBaseMealsService.create(getExpectedMealsFromApiAndDB(checkingRecipes(apiRecipeTemp), recipeSet));
+
+//            return new Meals(mealsTemp.getId(),
+//                    getSetFromDB(expectedKcal, expectedTotalTimeMinutes, numberOfMeals),
+//                    sumOfMealsKcal(mealsTemp),
+//                    sumOfCookTimes(mealsTemp),
+//                    createShoppingList(mealsTemp));
 
             return Meals.builder()
                     .id(mealsTemp.getId())
                     .recipeSet(getSetFromDB(expectedKcal, expectedTotalTimeMinutes, numberOfMeals))
-                    .totalKcalOfMeals(sumOfMealsKcal(mealsTemp))
-                    .sumOfCookTotalTime(sumOfCookTimes(mealsTemp))
-                    .componentsMap(shoppingList(mealsTemp))
+                    .totalKcalOfMeals(calculateSumOfMealsKcal(mealsTemp))
+                    .sumOfCookTotalTime(calculateSumOfCookTimes(mealsTemp))
+                    .shoppingList(shoppingListService.createShoppingList(mealsTemp))
                     .build();
         }
 
@@ -80,18 +81,19 @@ public class MealsService implements RecipeSetService {
         if (mealsFromDB.isEmpty()) {
             Meals correctMeals = dataBaseMealsService.create(createExpectedMealAtDB(recipeSet));
 
+//            return new Meals(correctMeals.getId(), correctMeals.getRecipeSet(), sumOfMealsKcal(correctMeals), sumOfCookTimes(correctMeals), createShoppingList(correctMeals));
+
             return Meals.builder()
                     .id(correctMeals.getId())
                     .recipeSet(correctMeals.getRecipeSet())
-                    .totalKcalOfMeals(sumOfMealsKcal(correctMeals))
-                    .sumOfCookTotalTime(sumOfCookTimes(correctMeals))
-                    .componentsMap(shoppingList(correctMeals))
+                    .totalKcalOfMeals(calculateSumOfMealsKcal(correctMeals))
+                    .sumOfCookTotalTime(calculateSumOfCookTimes(correctMeals))
+                    .shoppingList(shoppingListService.createShoppingList(correctMeals))
                     .build();
 
         } else {
             return getExpectedMealsFromDB(dataBaseMealsService.findExpectedMeals(expectedKcal, expectedTotalTimeMinutes, numberOfMeals));
         }
-
     }
 
     private Set<Recipe> getSetFromDB(int expectedKcal, int expectedTotalTimeMinutes, int numberOfMeals) {
@@ -168,27 +170,26 @@ public class MealsService implements RecipeSetService {
         mealsApi.setId(null);
         mealsApi.setRecipeSet(recipeService.getSetOfRecipesWithAllParameters(expectedKcal, expectedTotalTimeMinutes, numberOfMeals));
         mealsApi.setRecipeSetSize(mealsApi.getRecipeSet().size());
-        mealsApi.setTotalKcalOfMeals(sumOfMealsKcal(mealsApi));
-        mealsApi.setSumOfCookTotalTime(sumOfCookTimes(mealsApi));
-        mealsApi.setComponentsMap(shoppingList(mealsApi));
+        mealsApi.setTotalKcalOfMeals(calculateSumOfMealsKcal(mealsApi));
+        mealsApi.setSumOfCookTotalTime(calculateSumOfCookTimes(mealsApi));
+        mealsApi.setShoppingList(shoppingListService.createShoppingList(mealsApi));
         return mealsApi;
 
     }
 
     private Meals getExpectedMealsFromApiAndDB(Set<Recipe> recipeSetTemp, Set<Recipe> recipeSet) {
         Meals mealsToDataBase = new Meals();
-        Set<Recipe> concatSet = hasToBigSize(Stream.concat(recipeSetTemp.stream(), recipeSet.stream()).collect(Collectors.toSet()));
+        Set<Recipe> concatSet = hasTooBigSize(Stream.concat(recipeSetTemp.stream(), recipeSet.stream()).collect(Collectors.toSet()));
 
         //comcat przekracza maxymalny zakres ilości w secie dodaje ponad 3
         // w tym miejscu set może miec max 3 elemnty
 
-
         mealsToDataBase.setId(null);
         mealsToDataBase.setRecipeSet(concatSet);
         mealsToDataBase.setRecipeSetSize(mealsToDataBase.getRecipeSet().size());
-        mealsToDataBase.setTotalKcalOfMeals(sumOfMealsKcal(mealsToDataBase));
-        mealsToDataBase.setSumOfCookTotalTime(sumOfCookTimes(mealsToDataBase));
-        mealsToDataBase.setComponentsMap(shoppingList(mealsToDataBase));
+        mealsToDataBase.setTotalKcalOfMeals(calculateSumOfMealsKcal(mealsToDataBase));
+        mealsToDataBase.setSumOfCookTotalTime(calculateSumOfCookTimes(mealsToDataBase));
+        mealsToDataBase.setShoppingList(shoppingListService.createShoppingList(mealsToDataBase));
         return mealsToDataBase;
     }
 
@@ -197,9 +198,9 @@ public class MealsService implements RecipeSetService {
         someMeals.setId(someMeals.getId());
         someMeals.setRecipeSet(someMeals.getRecipeSet());
         someMeals.setRecipeSetSize(someMeals.getRecipeSet().size());
-        someMeals.setTotalKcalOfMeals(sumOfMealsKcal(someMeals));
-        someMeals.setSumOfCookTotalTime(sumOfCookTimes(someMeals));
-        someMeals.setComponentsMap(shoppingList(someMeals));
+        someMeals.setTotalKcalOfMeals(calculateSumOfMealsKcal(someMeals));
+        someMeals.setSumOfCookTotalTime(calculateSumOfCookTimes(someMeals));
+        someMeals.setShoppingList(shoppingListService.createShoppingList(someMeals));
         return someMeals;
     }
 
@@ -209,9 +210,9 @@ public class MealsService implements RecipeSetService {
         mealsToDataBase.setId(null);
         mealsToDataBase.setRecipeSet(recipeSet);
         mealsToDataBase.setRecipeSetSize(mealsToDataBase.getRecipeSet().size());
-        mealsToDataBase.setTotalKcalOfMeals(sumOfMealsKcal(mealsToDataBase));
-        mealsToDataBase.setSumOfCookTotalTime(sumOfCookTimes(mealsToDataBase));
-        mealsToDataBase.setComponentsMap(shoppingList(mealsToDataBase));
+        mealsToDataBase.setTotalKcalOfMeals(calculateSumOfMealsKcal(mealsToDataBase));
+        mealsToDataBase.setSumOfCookTotalTime(calculateSumOfCookTimes(mealsToDataBase));
+        mealsToDataBase.setShoppingList(shoppingListService.createShoppingList(mealsToDataBase));
         return mealsToDataBase;
     }
 
@@ -248,7 +249,7 @@ public class MealsService implements RecipeSetService {
         return temp;
     }
 
-    private Set<Recipe> hasToBigSize(Set<Recipe> concatSet) {
+    private Set<Recipe> hasTooBigSize(Set<Recipe> concatSet) {
 
         // uwaga tą metode robić na 3 mniejsze np. do sniadania obiadu i kolacji
         // tu ma zostać max 3 recepty
@@ -262,13 +263,13 @@ public class MealsService implements RecipeSetService {
         //  tu pobiera najwięszą kaloryczność z poszeczgólnych list
         // pozostaje pobrać przepisy z list na podstawie największej kalorczyności i dodać do setu
 
-        final Set<Recipe> tempSet = new HashSet<>();
+        final Set<Recipe> resultSet = new HashSet<>();
 
-        tempSet.add(getBreakfast(concatSet));
-        tempSet.add(getLunch(concatSet));
-        tempSet.add(getDinner(concatSet));
+        resultSet.add(getBreakfast(concatSet));
+        resultSet.add(getLunch(concatSet));
+        resultSet.add(getDinner(concatSet));
 
-        return hasNull(tempSet);
+        return hasNull(resultSet);
     }
 
     private Recipe getBreakfast(Set<Recipe> concatSet) {
@@ -362,7 +363,7 @@ public class MealsService implements RecipeSetService {
     }
 
     @NotNull
-    private Integer sumOfMealsKcal(Meals meals) {
+    private Integer calculateSumOfMealsKcal(Meals meals) {
 
         OptionalInt sumOfKcal = meals.getRecipeSet()
                 .stream()
@@ -378,7 +379,7 @@ public class MealsService implements RecipeSetService {
     }
 
     @NotNull
-    private Integer sumOfCookTimes(Meals meals) {
+    private Integer calculateSumOfCookTimes(Meals meals) {
 
         OptionalInt sumOfTime = meals.getRecipeSet()
                 .stream()
@@ -392,10 +393,4 @@ public class MealsService implements RecipeSetService {
 
         return sumOfTime.getAsInt();
     }
-
-    //metoda ogolna z if / else sprawdzająca baze danych lub uruchamiająca recipeservice - jest
-    //metoda zwracająca map ze składnikami -jest
-    //metoda do uruchaminia recipeservice - jest
-    //metoda sumująca Kcal - jest
-    //metoda sumująca czasPrzyrządzania - jest
 }

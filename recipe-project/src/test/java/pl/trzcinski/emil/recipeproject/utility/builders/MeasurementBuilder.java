@@ -37,7 +37,7 @@ public class MeasurementBuilder {
         return this;
     }
 
-    public MeasurementBuilder withDefaultQuantity(String quantity) {
+    public MeasurementBuilder withQuantity(String quantity) {
         this.quantity = quantity;
         return this;
     }

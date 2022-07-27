@@ -18,19 +18,23 @@ import static pl.trzcinski.emil.recipeproject.api.request.ApiRequestEnums.*;
 
 @Slf4j
 @Controller
-public class ExternalApiRequest {
+public class ExternalApiRequest { //todo stringbuilder
 
     public String createUrl(String mealTag, int requestStartingPoint) {
-        UrlBuilder urlBuilder = new UrlBuilder();
-        urlBuilder.setUrlTasty("https://tasty.p.rapidapi.com/recipes/");
-        urlBuilder.setRequestStartingPoint(requestStartingPoint);
-        urlBuilder.setUrlParameters("&size=40");
-        urlBuilder.setTag(mealTag);
 
-        return urlBuilder.build();
+        StringBuilder urlStringBuilder = new StringBuilder();
+
+        urlStringBuilder.append("https://tasty.p.rapidapi.com/recipes/")
+                .append("list?from=")
+                .append(requestStartingPoint)
+                .append("&size=40")
+                .append("&tags=")
+                .append(mealTag);
+
+        return urlStringBuilder.toString();
     }
 
-    public Response getResponse(String mealTag, int requestStartingPoint) throws IOException, NullPointerException , StreamReadException,
+    public Response getResponse(String mealTag, int requestStartingPoint) throws IOException, NullPointerException, StreamReadException,
             DatabindException, JsonProcessingException, JsonMappingException {
 
         try {
@@ -46,7 +50,7 @@ public class ExternalApiRequest {
 
         } catch (Exception exception) {
             // dodac zabezpiecznie na wyadek wykorzytsania limitu api
-            throw new ResponseStatusException(HttpStatus.REQUEST_TIMEOUT, "ExternalApi is Offline");
+            throw new ResponseStatusException(HttpStatus.REQUEST_TIMEOUT, "ExternalApi is Offline, please try again latter");
         }
     }
 

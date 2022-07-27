@@ -22,7 +22,6 @@ public class DataBaseMealsService {
 
     public Meals create(Meals meals) {
         return mealsRepository.save(meals);
-        //hmmm zwracac np: ID
     }
 
     public Recipe findByName(String name) {
@@ -43,8 +42,4 @@ public class DataBaseMealsService {
     public boolean isNotEmpty() {
         return mealsRepository.count() > 0;
     }
-
-    //create
-    //find/findAll
-    //opcjonalnie delete
 }

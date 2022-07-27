@@ -16,8 +16,9 @@ public class BuilderTest {
         defaultRecipe = new RecipeBuilder().withDefaultRecipe().build();
     }
 
-    @DisplayName("Recipe is not null")
+
     @Test
+    @DisplayName("Recipe is not null")
     void should_not_return_null() {
         assertNotNull(defaultRecipe);
         assertNotNull(defaultRecipe.getInstructions());
@@ -33,8 +34,9 @@ public class BuilderTest {
         assertNotNull(defaultRecipe.getTags());
     }
 
-    @DisplayName("Recipe have default properties")
+
     @Test
+    @DisplayName("Recipe have default properties")
     void should_return_default_properties() {
         assertThat(defaultRecipe.getRecipeId()).isEqualTo(1L);
         assertThat(defaultRecipe.getName()).isEqualTo("Default Recipe Name");
