@@ -19,7 +19,7 @@ public class Nutrition {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "nutrition_id", nullable = false)
-    private Long id;
+    private Long nutritionId;
 
     @JsonProperty("calories")
     private Integer calories;
@@ -42,6 +42,4 @@ public class Nutrition {
     @OneToOne(mappedBy = "nutrition")
     @JsonIgnore
     private Recipe recipe;
-
-
 }

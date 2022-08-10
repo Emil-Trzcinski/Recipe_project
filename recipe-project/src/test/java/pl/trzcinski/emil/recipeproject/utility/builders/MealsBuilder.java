@@ -3,6 +3,8 @@ package pl.trzcinski.emil.recipeproject.utility.builders;
 import pl.trzcinski.emil.recipeproject.model.Meals;
 import pl.trzcinski.emil.recipeproject.model.Recipe;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,7 +20,31 @@ public class MealsBuilder {
 
     private int sumOfCookTotalTime;
 
-    private Map<String, String> componentsMap;
+    private Map<String, String> shoppingList;
+
+    public MealsBuilder withDefaultMeal() {
+
+        this.id = 1L;
+        this.recipeSet = new HashSet<>(Set.of(new RecipeBuilder().withDefaultRecipe().build(),
+                new RecipeBuilder().withDefaultRecipe().build(),
+                new RecipeBuilder().withDefaultRecipe().build()));
+
+        this.recipeSetSize = recipeSet.size();
+        this.totalKcalOfMeals = 900;
+        this.sumOfCookTotalTime = 60;
+        this.shoppingList = new HashMap<>();
+                shoppingList.put("assam tea leaves", "1");
+                shoppingList.put("scallions", "3");
+                shoppingList.put("all purpose flour", "185.0");
+                shoppingList.put("balsamic vinegar", "1");
+                shoppingList.put("whole green cardamom pods", "7");
+                shoppingList.put("fresh basil leaf", "20.0");
+                shoppingList.put("nonstick cooking spray", "1");
+                shoppingList.put("cornstarch", "2");
+                shoppingList.put("cookies", "1");
+        return this;
+    }
+
 
     public MealsBuilder defaultID() {
         this.id = 1L;
@@ -65,14 +91,14 @@ public class MealsBuilder {
         return this;
     }
 
-    public MealsBuilder withComponentsMap(Map<String, String> mapOfComponents) {
-        this.componentsMap = mapOfComponents;
+    public MealsBuilder withShoppingList(Map<String, String> shoppingList) {
+        this.shoppingList = shoppingList;
         return this;
 
     }
 
     public Meals build() {
-        return new Meals(id, recipeSet, recipeSetSize, totalKcalOfMeals, sumOfCookTotalTime, componentsMap);
+        return new Meals(id, recipeSet, recipeSetSize, totalKcalOfMeals, sumOfCookTotalTime, shoppingList);
     }
 
 }

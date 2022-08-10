@@ -33,5 +33,4 @@ public class Measurement {
     @JoinColumn(name = "unit_id")
     @JsonProperty("unit")
     private Unit unit;
-
 }

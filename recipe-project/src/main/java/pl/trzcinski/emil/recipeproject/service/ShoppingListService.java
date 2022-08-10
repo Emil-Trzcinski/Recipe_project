@@ -23,13 +23,12 @@ public class ShoppingListService {
                 .stream()
                 .flatMap(recipe -> recipe.getSections().stream())
                 .flatMap(section -> section.getComponents().stream())
-                .collect(Collectors.toMap(component -> component.getIngredient().getName(), ShoppingListService::getValue,      //todo  jak zmienic ten statyczny kontekst??? -> ShoppingListService::getValue
+                .collect(Collectors.toMap(component -> component.getIngredient().getName(), ShoppingListService::getValue,
                         (firstValue, secValue) -> String.valueOf(Double.parseDouble(firstValue) + Double.parseDouble(secValue))));
 
         log.info(String.valueOf(shoppingList));
         return shoppingList;
     }
-
     private static String getValue(Component component) {
         List<String> listOfQuantity;
         List<String> listTemp = new ArrayList<>();
@@ -84,7 +83,7 @@ public class ShoppingListService {
         StringBuilder numberBuilder = new StringBuilder();
         StringBuilder builderTemp = new StringBuilder();
 
-        Pattern pattern = Pattern.compile("[⅕¼⅓⅖½⅗⅔¾⅘]");
+        Pattern pattern = Pattern.compile("[⅛⅜⅝⅞⅕¼⅓⅖½⅗⅔¾⅘]");
         Matcher matcher = pattern.matcher(number);
 
         numberBuilder.append(numberConverter(number));
@@ -98,6 +97,9 @@ public class ShoppingListService {
 
             switch (builderTemp.toString()) {
 
+                case "⅛":
+                    builder.append(Double.parseDouble(numberBuilder.toString()) + Double.parseDouble("0.125"));
+                    break;
                 case "⅕":
                     builder.append(Double.parseDouble(numberBuilder.toString()) + Double.parseDouble("0.2"));
                     break;
@@ -106,6 +108,9 @@ public class ShoppingListService {
                     break;
                 case "⅓":
                     builder.append(Double.parseDouble(numberBuilder.toString()) + Double.parseDouble("0.33"));
+                    break;
+                case "⅜":
+                    builder.append(Double.parseDouble(numberBuilder.toString()) + Double.parseDouble("0.375"));
                     break;
                 case "⅖":
                     builder.append(Double.parseDouble(numberBuilder.toString()) + Double.parseDouble("0.4"));
@@ -116,6 +121,9 @@ public class ShoppingListService {
                 case "⅗":
                     builder.append(Double.parseDouble(numberBuilder.toString()) + Double.parseDouble("0.6"));
                     break;
+                case "⅝":
+                    builder.append(Double.parseDouble(numberBuilder.toString()) + Double.parseDouble("0,625"));
+                    break;
                 case "⅔":
                     builder.append(Double.parseDouble(numberBuilder.toString()) + Double.parseDouble("0,66"));
                     break;
@@ -124,6 +132,9 @@ public class ShoppingListService {
                     break;
                 case "⅘":
                     builder.append(Double.parseDouble(numberBuilder.toString()) + Double.parseDouble("0.8"));
+                    break;
+                case "⅞":
+                    builder.append(Double.parseDouble(numberBuilder.toString()) + Double.parseDouble("0.875"));
                     break;
                 default:
                     //nothing to do here

@@ -20,7 +20,7 @@ public class Component {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "component_id", nullable = false)
-    private Long component_id;
+    private Long componentId;
 
     @OneToMany
     @Cascade(CascadeType.ALL)
@@ -41,5 +41,4 @@ public class Component {
 
     @JsonProperty("raw_text")
     private String rawText;
-
 }

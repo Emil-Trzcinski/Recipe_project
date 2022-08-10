@@ -15,9 +15,9 @@ public class RecipeListFilterService {
 
     public RecipeList listFiltering(RecipeList recipeList) {
 
-        Optional<List<Recipe>> optionalRecipeList = Optional.ofNullable(recipeList.getResults()); //todo try/catch vs optional ???
+        Optional<List<Recipe>> optionalRecipeList = Optional.ofNullable(recipeList.getResults());
 
-        if(optionalRecipeList.isPresent()) {
+        if (optionalRecipeList.isPresent()) {
             List<Recipe> temp = recipeList.getResults()
                     .stream()
                     .filter(recipe -> recipe.getName() != null)
@@ -41,7 +41,8 @@ public class RecipeListFilterService {
             return filteredRecipeList;
 
         } else {
-            throw new RuntimeException("Empty recipe list");
+            throw new RuntimeException("Empty recipe list - " +
+                    "probably external api don`t work correctly or your limit is exhaust - please check response status code");
         }
     }
 }

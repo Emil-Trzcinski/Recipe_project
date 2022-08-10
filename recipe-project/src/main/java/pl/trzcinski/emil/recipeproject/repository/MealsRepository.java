@@ -9,6 +9,6 @@ import pl.trzcinski.emil.recipeproject.model.Meals;
 @Transactional
 public interface MealsRepository extends JpaRepository<Meals, Long> {
 
-        Meals findTopByTotalKcalOfMealsLessThanEqualAndSumOfCookTotalTimeLessThanEqualAndRecipeSetSizeEquals
-                (int expectedKcal, int expectedTotalTimeMinutes, int size);
+    Meals findTopByTotalKcalOfMealsBetweenAndSumOfCookTotalTimeLessThanEqualAndRecipeSetSizeEquals
+            (int minimumKcal, int expectedKcal, int expectedTotalTimeMinutes, int size);
 }

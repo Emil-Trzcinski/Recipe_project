@@ -8,6 +8,8 @@ import pl.trzcinski.emil.recipeproject.repository.RecipeRepository;
 
 import java.util.Set;
 
+import static pl.trzcinski.emil.recipeproject.service.Conversion.CONVERTER;
+
 @Service
 public class DataBaseMealsService {
 
@@ -29,17 +31,21 @@ public class DataBaseMealsService {
     }
 
     public Meals findExpectedMeals(int expectedKcal, int expectedTotalTimeMinutes, int size) {
-        return mealsRepository.findTopByTotalKcalOfMealsLessThanEqualAndSumOfCookTotalTimeLessThanEqualAndRecipeSetSizeEquals
-                (expectedKcal, expectedTotalTimeMinutes, size);
+        return mealsRepository.findTopByTotalKcalOfMealsBetweenAndSumOfCookTotalTimeLessThanEqualAndRecipeSetSizeEquals
+                (calculateMinimumOfKcal(expectedKcal), expectedKcal, expectedTotalTimeMinutes, size);
     }
 
     public Set<Recipe> findExpectedRecipeSet(int expectedKcal, int expectedTotalTimeMinutes) {
         return recipeRepository.
-                findByNutrition_CaloriesLessThanEqualAndCookTimeMinutesLessThanEqual
-                        (expectedKcal, expectedTotalTimeMinutes);
+                findByNutrition_CaloriesBetweenAndCookTimeMinutesLessThanEqual
+                        (calculateMinimumOfKcal(expectedKcal), expectedKcal, expectedTotalTimeMinutes);
     }
 
     public boolean isNotEmpty() {
         return mealsRepository.count() > 0;
+    }
+
+    private Integer calculateMinimumOfKcal(int expectedKcal) {
+        return (int) (expectedKcal * CONVERTER);
     }
 }

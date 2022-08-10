@@ -18,7 +18,7 @@ public class BuilderTest {
 
 
     @Test
-    @DisplayName("Recipe is not null")
+    @DisplayName("Recipe Is Not Null")
     void should_not_return_null() {
         assertNotNull(defaultRecipe);
         assertNotNull(defaultRecipe.getInstructions());
@@ -36,11 +36,11 @@ public class BuilderTest {
 
 
     @Test
-    @DisplayName("Recipe have default properties")
+    @DisplayName("Recipe Have Default Properties")
     void should_return_default_properties() {
         assertThat(defaultRecipe.getRecipeId()).isEqualTo(1L);
         assertThat(defaultRecipe.getName()).isEqualTo("Default Recipe Name");
-        assertThat(defaultRecipe.getNutrition().getId()).isEqualTo(1L);
+        assertThat(defaultRecipe.getNutrition().getNutritionId()).isEqualTo(1L);
         assertThat(defaultRecipe.getNutrition().getCalories()).isEqualTo(300);
         assertThat(defaultRecipe.getNutrition().getCarbohydrates()).isEqualTo(301);
         assertThat(defaultRecipe.getNutrition().getFat()).isEqualTo(302);
@@ -56,13 +56,13 @@ public class BuilderTest {
         assertThat(defaultRecipe.getCookTimeMinutes()).isEqualTo(13);
         assertThat(defaultRecipe.getSections().size()).isEqualTo(3);
         assertThat(defaultRecipe.getSections().get(0).getComponents().get(0).getRawText()).isEqualTo("default");
-        assertThat(defaultRecipe.getSections().get(1).getComponents().get(1).getComponent_id()).isEqualTo(5);
+        assertThat(defaultRecipe.getSections().get(1).getComponents().get(1).getComponentId()).isEqualTo(5);
         assertThat(defaultRecipe.getSections().get(1).getComponents().get(1).getRawText()).isEqualTo("Text");
         assertThat(defaultRecipe.getThumbnailUrl()).isEqualTo("https://someURL");
         assertThat(defaultRecipe.getNumServings()).isEqualTo(3);
         assertThat(defaultRecipe.getTags().size()).isEqualTo(2);
         assertThat(defaultRecipe.getTags().get(0).getName()).isEqualTo("default");
-        assertThat(defaultRecipe.getTags().get(1).getIdTag()).isEqualTo(2);
+        assertThat(defaultRecipe.getTags().get(1).getTagId()).isEqualTo(2);
         assertThat(defaultRecipe.getTags().get(1).getName()).isEqualTo("Lunch");
     }
 }

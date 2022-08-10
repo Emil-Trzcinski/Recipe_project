@@ -30,18 +30,22 @@ dependencies {
 	implementation 'com.giffing.bucket4j.spring.boot.starter:bucket4j-spring-boot-starter:0.6.1'
 
 	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.3'
+	testImplementation 'org.projectlombok:lombok:1.18.22'
+
 	runtimeOnly 'com.h2database:h2'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-	implementation 'org.mockito:mockito-core:4.4.0'
+	implementation 'org.mockito:mockito-core:4.4.0' //<- nie robić update występuje niezgodność wersji z byte-buddy-agent
+
 	testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.4.0'
 	testImplementation group: 'net.bytebuddy', name: 'byte-buddy-agent', version: '1.11.22'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 	testImplementation 'org.hamcrest:hamcrest:2.2'
+	testImplementation("com.squareup.okhttp3:mockwebserver:4.10.0")
 
 }
 
@@ -49,6 +53,3 @@ test {
 	useJUnitPlatform()
 }
 
-//tasks.named('test') {
-//	useJUnitPlatform()
-//}

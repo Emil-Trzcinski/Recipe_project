@@ -24,7 +24,7 @@ public class Meals {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "meals_id", nullable = false)
-    private Long id;
+    private Long mealsId;
 
     @ManyToMany
     @Cascade(CascadeType.ALL)
@@ -40,7 +40,4 @@ public class Meals {
 
     @Transient
     private Map<String, String> shoppingList;
-
-//    public Meals(Long id, Set<Recipe> recipeSet, Integer calculateSumOfMealsKcal, Integer calculateSumOfCookTimes, Map<String, String> shoppingList) {
-//    }
 }

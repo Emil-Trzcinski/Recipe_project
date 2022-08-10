@@ -82,7 +82,7 @@ class ShoppingListServiceTest {
     }
 
     @Test
-    @DisplayName("Shopping List is equals too given elements")
+    @DisplayName("Shopping List Is Equals Too Given Elements")
     void should_Given_Map_Equals_Too_Shopping_List() {
         //given
         Map<String, String> resultMap = new HashMap<>();
@@ -95,7 +95,7 @@ class ShoppingListServiceTest {
     }
 
     @Test
-    @DisplayName("Shopping List correct sum same elements")
+    @DisplayName("Shopping List Correct Sum Same Elements")
     void should_Shopping_List_Correct_Sum_Same_Elements() {
         //given
         Map<String, String> resultMap = new HashMap<>();

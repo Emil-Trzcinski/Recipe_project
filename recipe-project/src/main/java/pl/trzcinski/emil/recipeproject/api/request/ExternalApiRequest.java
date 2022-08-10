@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,7 +19,7 @@ import static pl.trzcinski.emil.recipeproject.api.request.ApiRequestEnums.*;
 
 @Slf4j
 @Controller
-public class ExternalApiRequest { //todo stringbuilder
+public class ExternalApiRequest {
 
     public String createUrl(String mealTag, int requestStartingPoint) {
 
@@ -34,8 +35,10 @@ public class ExternalApiRequest { //todo stringbuilder
         return urlStringBuilder.toString();
     }
 
-    public Response getResponse(String mealTag, int requestStartingPoint) throws IOException, NullPointerException, StreamReadException,
+    public ResponseBody getResponse(String mealTag, int requestStartingPoint) throws IOException, NullPointerException, StreamReadException,
             DatabindException, JsonProcessingException, JsonMappingException {
+
+        Response response;
 
         try {
             OkHttpClient client = new OkHttpClient();
@@ -46,12 +49,15 @@ public class ExternalApiRequest { //todo stringbuilder
                     .addHeader(HEADER_KEY_NAME.getValue(), HEADER_KEY_VALUE.getValue())
                     .build();
 
-            return client.newCall(request).execute();
+            response = client.newCall(request).execute();
+            log.info(response.toString());
 
         } catch (Exception exception) {
-            // dodac zabezpiecznie na wyadek wykorzytsania limitu api
+            //todo refactor !!!???
+            log.error(exception.getMessage());
             throw new ResponseStatusException(HttpStatus.REQUEST_TIMEOUT, "ExternalApi is Offline, please try again latter");
-        }
-    }
 
+        }
+        return response.body();
+    }
 }

@@ -1,5 +1,6 @@
 package pl.trzcinski.emil.recipeproject.service;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,8 +18,13 @@ class RecipeListFilterServiceTest {
         recipeListFilterService = new RecipeListFilterService();
     }
 
+    @AfterEach
+    public void after() {
+        recipeListFilterService = null;
+    }
+
     @Test
-    @DisplayName("Recipe List don`t have nulls")
+    @DisplayName("Recipe List Don`t Have Nulls")
     void should_Recipe_List_Filters_Return_List_Without_Nulls() {
         //given
         RecipeList recipeList = new RecipeListBuilder().withDefaultRecipeList().build();
@@ -31,7 +37,7 @@ class RecipeListFilterServiceTest {
     }
 
     @Test
-    @DisplayName("Recipe List have expected size")
+    @DisplayName("Recipe List Have Expected Size")
     void should_Recipe_List_Filters_Return_List_With_Size_2() {
         //given
         RecipeList recipeList = new RecipeListBuilder().withDefaultRecipeList().build();
@@ -44,8 +50,8 @@ class RecipeListFilterServiceTest {
     }
 
     @Test
-    @DisplayName("Recipe List with nulls, throw exception")
-    void should_Trow_Exception_When_Recipe_List_Filters_Have_Nulls() {
+    @DisplayName("Recipe List With Nulls Will Throw Exception")
+    void should_Throw_Exception_When_Recipe_List_Filters_Have_Nulls() {
         //given
         RecipeList recipeList = new RecipeListBuilder().build();
 

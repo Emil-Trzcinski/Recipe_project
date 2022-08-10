@@ -34,31 +34,31 @@ public class MealsService implements RecipeSetService {
     }
 
     public Meals getMeals(int expectedKcal, int expectedTotalTimeMinutes, int numberOfMeals) throws Exception {
-        final Set<Recipe> recipeSet = getSetFromDB(expectedKcal, expectedTotalTimeMinutes, numberOfMeals);
+        final Set<Recipe> recipeSetFromDB = getSetFromDB(expectedKcal, expectedTotalTimeMinutes, numberOfMeals);
         Meals mealsTemp;
 
-        if (recipeSet.isEmpty()) {
-            log.info("--------ASKING API---------------");
+        if (recipeSetFromDB.isEmpty()) {
+            log.info("--------ASKING API FOR RECIPES---------------");
             mealsTemp = dataBaseMealsService.create(getExpectedMealsFromApi(expectedKcal, expectedTotalTimeMinutes, numberOfMeals));
 
 //            Meals mealsResult = new Meals(mealsTemp.getId(), mealsTemp.getRecipeSet(), calculateSumOfMealsKcal(mealsTemp), calculateSumOfCookTimes(mealsTemp), createShoppingList(mealsTemp));
 //            return mealsResult;
 
-            return Meals.builder()      //todo refactor wywalic buildery - return new Meals(argmenty)
-                    .id(mealsTemp.getId())
+            return Meals.builder()      //todo refactor wywalic buildery - return new Meals(argmenty) -> zwraca nulle - przeanalizować
+                    .mealsId(mealsTemp.getMealsId())
                     .recipeSet(mealsTemp.getRecipeSet())
                     .totalKcalOfMeals(calculateSumOfMealsKcal(mealsTemp))
                     .sumOfCookTotalTime(calculateSumOfCookTimes(mealsTemp))
                     .shoppingList(shoppingListService.createShoppingList(mealsTemp))
                     .build();
 
-        } else if (recipeSet.size() < numberOfMeals) {
-            log.info("--------ASKING API - NOT ENOUGH RECIPE IN DB---------------");
+        } else if (recipeSetFromDB.size() < numberOfMeals) {
+            log.info("--------ASKING API - NOT ENOUGH EXPECTED RECIPES IN DB--------");
 
             final Meals apiTempMeals = getExpectedMealsFromApi(expectedKcal, expectedTotalTimeMinutes, numberOfMeals);
             final Set<Recipe> apiRecipeTemp = apiTempMeals.getRecipeSet();
 
-            mealsTemp = dataBaseMealsService.create(getExpectedMealsFromApiAndDB(checkingRecipes(apiRecipeTemp), recipeSet));
+            mealsTemp = dataBaseMealsService.create(getExpectedMealsFromApiAndDB(checkingDuplicatedRecipes(apiRecipeTemp), recipeSetFromDB));
 
 //            return new Meals(mealsTemp.getId(),
 //                    getSetFromDB(expectedKcal, expectedTotalTimeMinutes, numberOfMeals),
@@ -67,7 +67,7 @@ public class MealsService implements RecipeSetService {
 //                    createShoppingList(mealsTemp));
 
             return Meals.builder()
-                    .id(mealsTemp.getId())
+                    .mealsId(mealsTemp.getMealsId())
                     .recipeSet(getSetFromDB(expectedKcal, expectedTotalTimeMinutes, numberOfMeals))
                     .totalKcalOfMeals(calculateSumOfMealsKcal(mealsTemp))
                     .sumOfCookTotalTime(calculateSumOfCookTimes(mealsTemp))
@@ -75,16 +75,16 @@ public class MealsService implements RecipeSetService {
                     .build();
         }
 
-        log.info("--------ASKING DB---------------");
+        log.info("--------ASKING DB FOR RECIPES---------------");
         Optional<Meals> mealsFromDB = Optional.ofNullable(dataBaseMealsService.findExpectedMeals(expectedKcal, expectedTotalTimeMinutes, numberOfMeals));
 
         if (mealsFromDB.isEmpty()) {
-            Meals correctMeals = dataBaseMealsService.create(createExpectedMealAtDB(recipeSet));
+            Meals correctMeals = dataBaseMealsService.create(createExpectedMealAtDB(recipeSetFromDB));
 
 //            return new Meals(correctMeals.getId(), correctMeals.getRecipeSet(), sumOfMealsKcal(correctMeals), sumOfCookTimes(correctMeals), createShoppingList(correctMeals));
 
             return Meals.builder()
-                    .id(correctMeals.getId())
+                    .mealsId(correctMeals.getMealsId())
                     .recipeSet(correctMeals.getRecipeSet())
                     .totalKcalOfMeals(calculateSumOfMealsKcal(correctMeals))
                     .sumOfCookTotalTime(calculateSumOfCookTimes(correctMeals))
@@ -92,6 +92,7 @@ public class MealsService implements RecipeSetService {
                     .build();
 
         } else {
+
             return getExpectedMealsFromDB(dataBaseMealsService.findExpectedMeals(expectedKcal, expectedTotalTimeMinutes, numberOfMeals));
         }
     }
@@ -144,12 +145,9 @@ public class MealsService implements RecipeSetService {
                 .collect(Collectors.toSet());
 
         if (recipeSet.isEmpty()) {
-            //tu jest problem - przy sprawdzaniu ilości przpisów
-
             return null;
         }
 
-        // tu wprowadzić zabezpiecznie dla tych samych nazw
         if (!mealsSet.isEmpty()) {
             recipeListTemp = hasSameName(recipeSet, mealsSet);
         } else {
@@ -158,33 +156,30 @@ public class MealsService implements RecipeSetService {
         }
 
         preparedListOfRecipe = recipeListTemp.stream().toList();
+
         if (preparedListOfRecipe.isEmpty()) {
             return null;
         }
         return preparedListOfRecipe.get(0);
     }
 
-    private Meals getExpectedMealsFromApi(int expectedKcal, int expectedTotalTimeMinutes, int numberOfMeals) throws Exception {
+    private Meals getExpectedMealsFromApi(int expectedKcal, int expectedTotalTimeMinutes, int numberOfMeals) {
         Meals mealsApi = new Meals();
 
-        mealsApi.setId(null);
+        mealsApi.setMealsId(null);
         mealsApi.setRecipeSet(recipeService.getSetOfRecipesWithAllParameters(expectedKcal, expectedTotalTimeMinutes, numberOfMeals));
         mealsApi.setRecipeSetSize(mealsApi.getRecipeSet().size());
         mealsApi.setTotalKcalOfMeals(calculateSumOfMealsKcal(mealsApi));
         mealsApi.setSumOfCookTotalTime(calculateSumOfCookTimes(mealsApi));
         mealsApi.setShoppingList(shoppingListService.createShoppingList(mealsApi));
         return mealsApi;
-
     }
 
-    private Meals getExpectedMealsFromApiAndDB(Set<Recipe> recipeSetTemp, Set<Recipe> recipeSet) {
+    private Meals getExpectedMealsFromApiAndDB(Set<Recipe> recipeSetFromApi, Set<Recipe> recipeSetFromDB) {
         Meals mealsToDataBase = new Meals();
-        Set<Recipe> concatSet = hasTooBigSize(Stream.concat(recipeSetTemp.stream(), recipeSet.stream()).collect(Collectors.toSet()));
+        Set<Recipe> concatSet = hasTooBigSize(Stream.concat(recipeSetFromApi.stream(), recipeSetFromDB.stream()).collect(Collectors.toSet()));
 
-        //comcat przekracza maxymalny zakres ilości w secie dodaje ponad 3
-        // w tym miejscu set może miec max 3 elemnty
-
-        mealsToDataBase.setId(null);
+        mealsToDataBase.setMealsId(null);
         mealsToDataBase.setRecipeSet(concatSet);
         mealsToDataBase.setRecipeSetSize(mealsToDataBase.getRecipeSet().size());
         mealsToDataBase.setTotalKcalOfMeals(calculateSumOfMealsKcal(mealsToDataBase));
@@ -194,20 +189,21 @@ public class MealsService implements RecipeSetService {
     }
 
     private Meals getExpectedMealsFromDB(Meals someMeals) {
+        Meals mealsFromDB = new Meals();
 
-        someMeals.setId(someMeals.getId());
-        someMeals.setRecipeSet(someMeals.getRecipeSet());
-        someMeals.setRecipeSetSize(someMeals.getRecipeSet().size());
-        someMeals.setTotalKcalOfMeals(calculateSumOfMealsKcal(someMeals));
-        someMeals.setSumOfCookTotalTime(calculateSumOfCookTimes(someMeals));
-        someMeals.setShoppingList(shoppingListService.createShoppingList(someMeals));
-        return someMeals;
+        mealsFromDB.setMealsId(someMeals.getMealsId());
+        mealsFromDB.setRecipeSet(someMeals.getRecipeSet());
+        mealsFromDB.setRecipeSetSize(someMeals.getRecipeSet().size());
+        mealsFromDB.setTotalKcalOfMeals(calculateSumOfMealsKcal(someMeals));
+        mealsFromDB.setSumOfCookTotalTime(calculateSumOfCookTimes(someMeals));
+        mealsFromDB.setShoppingList(shoppingListService.createShoppingList(someMeals));
+        return mealsFromDB;
     }
 
     private Meals createExpectedMealAtDB(Set<Recipe> recipeSet) {
         Meals mealsToDataBase = new Meals();
 
-        mealsToDataBase.setId(null);
+        mealsToDataBase.setMealsId(null);
         mealsToDataBase.setRecipeSet(recipeSet);
         mealsToDataBase.setRecipeSetSize(mealsToDataBase.getRecipeSet().size());
         mealsToDataBase.setTotalKcalOfMeals(calculateSumOfMealsKcal(mealsToDataBase));
@@ -216,143 +212,137 @@ public class MealsService implements RecipeSetService {
         return mealsToDataBase;
     }
 
-    //sprawdzić dokladnie działanie - coś tu jest zakręcone
-    private Set<Recipe> checkingRecipes(Set<Recipe> recipeSet) {
-        final Set<Recipe> temp = new HashSet<>();
+    private Set<Recipe> checkingDuplicatedRecipes(Set<Recipe> recipeSet) {
+        final Set<Recipe> recipesSet = new HashSet<>();
         final Set<String> apiRecipeNamesSet = recipeSet.stream().map(Recipe::getName).collect(Collectors.toSet());
 
         for (String recipeName : apiRecipeNamesSet) {
             Optional<Recipe> optionalRecipe = Optional.ofNullable(dataBaseMealsService.findByName(recipeName));
 
             if (optionalRecipe.isEmpty()) {
-                temp.addAll(recipeSet.stream()
+                recipesSet.addAll(recipeSet.stream()
                         .filter(recipe -> recipe.getName().equals(recipeName))
                         .collect(Collectors.toSet()));
             }
         }
-        return temp;
+        return recipesSet;
     }
 
     public Set<Recipe> hasSameName(Set<Recipe> recipeTemp, @NotNull Set<Recipe> mealsSet) {
-        final Set<Recipe> temp = new HashSet<>();
+        final Set<Recipe> singleNames = new HashSet<>();
 
         Set<String> tempOfRecipeNames = mealsSet.stream()
-                .filter(Objects::nonNull) //sprawdzić i ewentualnie wywalić
+                .filter(Objects::nonNull)
                 .map(Recipe::getName)
                 .collect(Collectors.toSet());
 
         for (String recipeName : tempOfRecipeNames) {
-            temp.addAll(recipeTemp.stream()
+            singleNames.addAll(recipeTemp.stream()
                     .filter(recipe -> !recipe.getName().equals(recipeName))
                     .toList());
         }
-        return temp;
+        return singleNames;
     }
 
     private Set<Recipe> hasTooBigSize(Set<Recipe> concatSet) {
 
-        // uwaga tą metode robić na 3 mniejsze np. do sniadania obiadu i kolacji
-        // tu ma zostać max 3 recepty
-//         zrobic stream zbiejący powtórzenia do oddzielnej koekcji na podstawie dinner, lunch , breakfast
-//         jeżlei kolekcja ma tylko rozmair 1 to ją wyczyścić
-//         jeżlei kolekcja ma roxzmair wiekszy niż 1 to zrobić stream z reduce do reicpe z najwikeszą kalorycznością
-//         jeżlei przpeis ma dwa tagi np: lunch dinnner "spróbuj" i powstaje podowjenie nazw psiłków spróbuje pobrać przepis z miniejszą kalorycznością - tego raczej nie trzeba będzie
-//         cascadeTyp robi update przy zapisie, wiec może być set z nazwą recepty pochodząca z bazydanych - trzeba tylko ograniczyć rozmair setu do max 3!
-//         uwaga na rozmair 2!! żeby nie zajebać nulla - ewentualnie zrobić filtr ".filter(Objects::nonNull)"
-
-        //  tu pobiera najwięszą kaloryczność z poszeczgólnych list
-        // pozostaje pobrać przepisy z list na podstawie największej kalorczyności i dodać do setu
-
         final Set<Recipe> resultSet = new HashSet<>();
 
         resultSet.add(getBreakfast(concatSet));
+        concatSet.removeAll(resultSet);
+
         resultSet.add(getLunch(concatSet));
+        concatSet.removeAll(resultSet);
+
         resultSet.add(getDinner(concatSet));
+        concatSet.removeAll(resultSet);
 
         return hasNull(resultSet);
     }
 
-    private Recipe getBreakfast(Set<Recipe> concatSet) {
-        final List<Recipe> preparedBreakfastRecipeList;
+    @Nullable
+    private Recipe getRecipe(List<Recipe> RecipeList) {
+        final List<Recipe> preparedRecipeList;
+        if (RecipeList.isEmpty()) {
+            return null;
+        }
 
+        Optional<Integer> recipeOptional = RecipeList.stream()
+                .map(recipe -> recipe.getNutrition().getCalories())
+                .reduce(Math::max);
+
+        if (RecipeList.size() > 1) {
+            preparedRecipeList = RecipeList.stream()
+                    .filter(recipe -> recipe.getNutrition().getCalories() >= recipeOptional.get())
+                    .toList();
+
+            return preparedRecipeList.get(0);
+        }
+
+        return RecipeList.get(0);
+    }
+
+    private Recipe getBreakfast(Set<Recipe> concatSet) {
         final List<Recipe> breakfastRecipeList = concatSet.stream()
                 .filter(recipe -> recipe.getTags()
                         .stream()
                         .anyMatch(tag -> tag.getName().equalsIgnoreCase(BREAKFAST.getMeal())))
                 .toList();
 
-        if (breakfastRecipeList.isEmpty()) {
-            return null;
-        }
-
-        Optional<Integer> breakfastOptional = breakfastRecipeList.stream()
-                .map(recipe -> recipe.getNutrition().getCalories())
-                .reduce(Math::max);
-
-        if (breakfastRecipeList.size() > 1) {
-            preparedBreakfastRecipeList = breakfastRecipeList.stream()
-                    .filter(recipe -> recipe.getNutrition().getCalories() >= breakfastOptional.get()) //TODO OPTIONAL
-                    .toList();
-
-            return preparedBreakfastRecipeList.get(0);
-        }
-
-        return breakfastRecipeList.get(0);
+        return getRecipe(breakfastRecipeList);
     }
 
     private Recipe getLunch(Set<Recipe> concatSet) {
-        final List<Recipe> preparedLunchRecipeList;
-
         final List<Recipe> lunchRecipeList = concatSet.stream()
                 .filter(recipe -> recipe.getTags()
                         .stream()
-                        .anyMatch(tag -> tag.getName().equalsIgnoreCase(LUNCH.getMeal()))).toList();
+                        .anyMatch(tag -> tag.getName().equalsIgnoreCase(LUNCH.getMeal())))
+                .toList();
 
-        if (lunchRecipeList.isEmpty()) {
-            return null;
-        }
+        final List<Recipe> recipeSingleTagList = lunchRecipeList
+                .stream()
+                .filter(recipe -> recipe.getTags()
+                        .stream()
+                        .noneMatch(tag -> tag.getName().equalsIgnoreCase(LUNCH.getMeal())
+                                && tag.getName().equalsIgnoreCase(DINNER.getMeal())))
+                .toList();
 
-        Optional<Integer> lunchOptional = lunchRecipeList.stream()
-                .map(recipe -> recipe.getNutrition().getCalories())
-                .reduce(Math::max);
-
-        if (lunchRecipeList.size() > 1) {
-            preparedLunchRecipeList = lunchRecipeList.stream()
-                    .filter(recipe -> recipe.getNutrition().getCalories() >= lunchOptional.get()) //TODO OPTIONAL
+        if (recipeSingleTagList.size() > 1) {
+            List<Recipe> singleElements = recipeSingleTagList.stream().filter(recipe -> recipe.getTags()
+                            .stream()
+                            .anyMatch(tag -> tag.getName().equalsIgnoreCase(LUNCH.getMeal())))
                     .toList();
 
-            return preparedLunchRecipeList.get(0);
+            return singleElements.get(0);
         }
 
-        return lunchRecipeList.get(0);
+        return getRecipe(lunchRecipeList);
     }
 
     private Recipe getDinner(Set<Recipe> concatSet) {
-        final List<Recipe> preparedDinnerRecipeList;
-
         final List<Recipe> dinnerRecipeList = concatSet.stream()
                 .filter(recipe -> recipe.getTags()
                         .stream()
                         .anyMatch(tag -> tag.getName().equalsIgnoreCase(DINNER.getMeal())))
                 .toList();
 
-        if (dinnerRecipeList.isEmpty()) {
-            return null;
-        }
+        final List<Recipe> recipeSingleTagList = dinnerRecipeList
+                .stream()
+                .filter(recipe -> recipe.getTags().stream()
+                        .noneMatch(tag -> tag.getName().equalsIgnoreCase(LUNCH.getMeal())
+                                && tag.getName().equalsIgnoreCase(DINNER.getMeal())))
+                .toList();
 
-        Optional<Integer> dinnerOptional = dinnerRecipeList.stream()
-                .map(recipe -> recipe.getNutrition().getCalories())
-                .reduce(Math::max);
-
-        if (dinnerRecipeList.size() > 1) {
-            preparedDinnerRecipeList = dinnerRecipeList.stream()
-                    .filter(recipe -> recipe.getNutrition().getCalories() >= dinnerOptional.get()) //TODO OPTIONAL
+        if (recipeSingleTagList.size() > 1) {
+            List<Recipe> singleElements = recipeSingleTagList.stream().filter(recipe -> recipe.getTags()
+                            .stream()
+                            .anyMatch(tag -> tag.getName().equalsIgnoreCase(DINNER.getMeal())))
                     .toList();
 
-            return preparedDinnerRecipeList.get(0);
+            return singleElements.get(0);
         }
 
-        return dinnerRecipeList.get(0);
+        return getRecipe(dinnerRecipeList);
     }
 
     private Set<Recipe> hasNull(Set<Recipe> mealsSet) {

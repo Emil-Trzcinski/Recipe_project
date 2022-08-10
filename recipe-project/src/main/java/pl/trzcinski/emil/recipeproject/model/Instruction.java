@@ -16,7 +16,7 @@ public class Instruction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "instruction_id", nullable = false)
-    private Long instruction_id;
+    private Long instructionId;
 
     @Column(name = "Instruction", columnDefinition = "varchar(max)")
     @JsonProperty("display_text")
@@ -26,5 +26,4 @@ public class Instruction {
     @JoinColumn(name = "recipe_id", referencedColumnName = "recipe_id")
     @JsonIgnore
     private Recipe recipe;
-
 }

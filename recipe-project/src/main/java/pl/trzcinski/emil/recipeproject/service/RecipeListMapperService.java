@@ -6,22 +6,30 @@ import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import okhttp3.Response;
+import lombok.extern.slf4j.Slf4j;
+import okhttp3.ResponseBody;
 import org.springframework.stereotype.Service;
 import pl.trzcinski.emil.recipeproject.model.RecipeList;
 
 import java.io.IOException;
-import java.util.Objects;
 
+@Slf4j
 @Service
 public class RecipeListMapperService {
 
     ObjectMapper objectMapper = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-    public RecipeList getListFromResponseBody(Response response) throws IOException, NullPointerException,
+    public RecipeList getListFromResponseBody(ResponseBody responseBody) throws IOException, NullPointerException,
             StreamReadException, DatabindException, JsonProcessingException, JsonMappingException {
+        RecipeList recipeList = new RecipeList();
 
-        return objectMapper.readValue(Objects.requireNonNull(response.body()).string(), RecipeList.class);
+        try {
+            recipeList = objectMapper.readValue(responseBody.string(), RecipeList.class);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+
+        return recipeList;
     }
 }

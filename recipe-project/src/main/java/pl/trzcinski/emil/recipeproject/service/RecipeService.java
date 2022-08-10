@@ -7,19 +7,21 @@ import pl.trzcinski.emil.recipeproject.api.request.ExternalApiRequest;
 import pl.trzcinski.emil.recipeproject.model.Recipe;
 import pl.trzcinski.emil.recipeproject.model.RecipeList;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import static pl.trzcinski.emil.recipeproject.service.Conversion.CONVERTER;
+import static pl.trzcinski.emil.recipeproject.service.MealTagEnum.*;
 import static pl.trzcinski.emil.recipeproject.utility.MealPreparedAttributes.calculateKcalPerMeal;
 import static pl.trzcinski.emil.recipeproject.utility.MealPreparedAttributes.calculateTimePerMeal;
-import static pl.trzcinski.emil.recipeproject.service.MealTagEnum.*;
 
 @Slf4j
 @Service
 public class RecipeService implements RecipeSetService {
 
     private final RecipeListFilterService recipeListFilterService;
-
     private final ExternalApiRequest externalApiRequest;
     private final RecipeListMapperService recipeListMapperService;
     private RecipeList recipeList;
@@ -34,7 +36,7 @@ public class RecipeService implements RecipeSetService {
     }
 
     public Set<Recipe> getSetOfRecipesWithAllParameters
-            (int expectedKcal, int expectedTotalTimeMinutes, int numberOfMeals) throws Exception {
+            (int expectedKcal, int expectedTotalTimeMinutes, int numberOfMeals) {
 
         final Set<Recipe> mealsSet = new HashSet<>();
         final int preparedKcal = calculateKcalPerMeal(expectedKcal, numberOfMeals);
@@ -59,42 +61,54 @@ public class RecipeService implements RecipeSetService {
     }
 
     private Recipe getRecipeFromListOfRecipes
-            (int expectedKcal, int expectedTotalTimeMinutes, String mealTag, Set<Recipe> mealsSet) throws Exception {
+            (int expectedKcal, int expectedTotalTimeMinutes, String mealTag, Set<Recipe> mealsSet) {
 
         int requestStartingPoint = 0;
-        Set<Recipe> recipeTemp;
-        Set<Recipe> preparedSet;
+        Set<Recipe> recipeSetTemp;
+        Set<Recipe> preparedSet = new HashSet<>();
 
-        do {
-            recipeList = recipeListMapperService.getListFromResponseBody(externalApiRequest.getResponse(mealTag, requestStartingPoint));
+        while (preparedSet.isEmpty()) {
+            log.info("Request Starting Point is " + requestStartingPoint);
+            try {
+                recipeList = recipeListMapperService.getListFromResponseBody(externalApiRequest.getResponse(mealTag, requestStartingPoint));
 
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
             recipeList = recipeListFilterService.listFiltering(recipeList);
 
-            recipeTemp = recipeList.getResults().stream()
-                    .filter(recipe ->
-                            (recipe.getNutrition().getCalories() > 0 &&
-                                    recipe.getNutrition().getCalories() <= expectedKcal &&
-                                    recipe.getTotalTimeMinutes() > 0 &&
-                                    recipe.getTotalTimeMinutes() <= expectedTotalTimeMinutes))
-                    .collect(Collectors.toSet());
+            recipeSetTemp = getRecipeSetFromFilteredList(expectedKcal, expectedTotalTimeMinutes);
+
+            if (!mealsSet.isEmpty()) {
+                preparedSet = hasSameName(recipeSetTemp, mealsSet);
+
+            } else if (!recipeSetTemp.isEmpty()) {
+                return getRecipeWithTopParameters(recipeSetTemp);
+            }
 
             requestStartingPoint += 40;
-
-        } while (recipeTemp.isEmpty());
-
-        if (!mealsSet.isEmpty()) {
-            preparedSet = hasSameName(recipeTemp, mealsSet);
-        } else {
-            return getRecipeWithTopParameters(recipeTemp);
         }
-
         return getRecipeWithTopParameters(preparedSet);
     }
 
-    private Recipe getRecipeWithTopParameters(Set<Recipe> recipeTemp) {
+    @NotNull
+    private Set<Recipe> getRecipeSetFromFilteredList(int expectedKcal, int expectedTotalTimeMinutes) {
+        Set<Recipe> recipeSetTemp;
+        recipeSetTemp = recipeList.getResults().stream()
+                .filter(recipe ->
+                        (recipe.getNutrition().getCalories() > 0 &&
+                                recipe.getNutrition().getCalories() > expectedKcal * CONVERTER &&
+                                recipe.getNutrition().getCalories() <= expectedKcal &&
+                                recipe.getTotalTimeMinutes() > 0 &&
+                                recipe.getTotalTimeMinutes() <= expectedTotalTimeMinutes))
+                .collect(Collectors.toSet());
+        return recipeSetTemp;
+    }
+
+    private Recipe getRecipeWithTopParameters(Set<Recipe> preparedSet) {
 
         Optional<Recipe> optionalRecipe;
-        optionalRecipe = recipeTemp.stream()
+        optionalRecipe = preparedSet.stream()
                 .reduce((recipe, secRecipe) -> {
                     if (secRecipe != null) {
                         return recipe.getNutrition().getCalories() > secRecipe.getNutrition().getCalories() ? recipe : secRecipe;
@@ -103,22 +117,35 @@ public class RecipeService implements RecipeSetService {
                 });
 
         if (optionalRecipe.isEmpty()) {
-            log.info("-----Recipe is empty-----");
-            throw new RuntimeException("-----Recipe is empty-----");
+            log.error("-----Prepared Set is empty-----");
+            throw new RuntimeException("-----Prepared Set is empty-----");
         }
 
         return optionalRecipe.get();
     }
 
+    /**
+     * zwraca elemnty które nie znajdzują się w "Set<Recipe> mealsSet"
+     *
+     * @param recipeTemp
+     * @param mealsSet
+     * @return
+     */
     public Set<Recipe> hasSameName(Set<Recipe> recipeTemp, @NotNull Set<Recipe> mealsSet) {
-        final Set<Recipe> temp = new HashSet<>();
-        Set<String> tempOfRecipeNames = mealsSet.stream().map(Recipe::getName).collect(Collectors.toSet());
+        final Set<Recipe> resultSet = new HashSet<>();
 
-        for (String recipeName : tempOfRecipeNames) {
-            temp.addAll(recipeTemp.stream()
-                    .filter(recipe -> !recipe.getName().equals(recipeName))
-                    .collect(Collectors.toSet()));
+        try {
+            Set<String> tempOfRecipeNames = mealsSet.stream().map(Recipe::getName).collect(Collectors.toSet());
+
+            for (String recipeName : tempOfRecipeNames) {
+                resultSet.addAll(recipeTemp.stream()
+                        .filter(recipe -> !recipe.getName().equals(recipeName))
+                        .collect(Collectors.toSet()));
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
         }
-        return temp;
+
+        return resultSet;
     }
 }

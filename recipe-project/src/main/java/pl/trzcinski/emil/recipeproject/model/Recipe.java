@@ -73,5 +73,4 @@ public class Recipe {
     @JsonIgnore
     @ManyToMany(mappedBy = "recipeSet")
     private Set<Meals> meals = new HashSet<>();
-
 }
