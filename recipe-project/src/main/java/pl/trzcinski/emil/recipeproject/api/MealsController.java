@@ -4,29 +4,39 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import pl.trzcinski.emil.recipeproject.model.Meals;
-import pl.trzcinski.emil.recipeproject.service.MealsService;
+import pl.trzcinski.emil.recipeproject.model.User;
+import pl.trzcinski.emil.recipeproject.service.UserMealsService;
 
 @Slf4j
 @EnableCaching
 @RestController
-public class RecipeApi {
-
-    private final MealsService mealsService;
+public class MealsController {
+    private final UserMealsService userMealsService;
     private static final int BOTTOM_LIMIT_KCAL = 300;
     private static final int UPPER_LIMIT_KCAL = 900;
     private static final int LIMIT_TIME = 20;
 
-    public RecipeApi(MealsService mealsService) {
-        this.mealsService = mealsService;
+
+    public MealsController(UserMealsService userMealsService) {
+        this.userMealsService = userMealsService;
     }
 
     @GetMapping("/api/v1/meals")
     @ResponseBody
-    public ResponseEntity<Meals> getRecipe(@RequestParam int expectedKcal, int expectedTotalTimeMinutes,
-                                           @RequestParam(defaultValue = "1") int numberOfMeals) throws Exception {
+    public ResponseEntity<User> getRecipe(@RequestParam int identifier, int expectedKcal, int expectedTotalTimeMinutes,
+                                          @RequestParam(defaultValue = "1") int numberOfMeals) throws Exception {
+
+
+        if (identifier <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST
+                    , "-----  wrong identifier, " +
+                    " please insert correct identifier -----");
+        }
 
         if (numberOfMeals < 1 || numberOfMeals > 3) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST
@@ -53,6 +63,6 @@ public class RecipeApi {
         }
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(mealsService.getMeals(expectedKcal, expectedTotalTimeMinutes, numberOfMeals));
+                .body(userMealsService.getUserWithMeals(identifier, expectedKcal, expectedTotalTimeMinutes, numberOfMeals));
     }
 }

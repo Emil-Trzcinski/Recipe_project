@@ -28,5 +28,4 @@ public class MealPreparedAttributes {
         return calculation(expectedKcal, numberOfMeals);
     }
 
-
 }

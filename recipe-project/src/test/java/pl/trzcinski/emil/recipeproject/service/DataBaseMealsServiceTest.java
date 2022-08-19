@@ -104,7 +104,7 @@ class DataBaseMealsServiceTest {
         meal = new MealsBuilder().withDefaultMeal().build();
         given(mealsRepository
                 .findTopByTotalKcalOfMealsBetweenAndSumOfCookTotalTimeLessThanEqualAndRecipeSetSizeEquals(
-                        (int) (900 * CONVERTER),900, 60, 3))
+                        (int) (900 * CONVERTER), 900, 60, 3))
                 .willReturn(meal);
         //when
         Meals expectedMeal = dataBaseMealsService.findExpectedMeals(900, 60, 3);
@@ -112,23 +112,10 @@ class DataBaseMealsServiceTest {
         //then
         then(mealsRepository).should()
                 .findTopByTotalKcalOfMealsBetweenAndSumOfCookTotalTimeLessThanEqualAndRecipeSetSizeEquals(
-                        (int) (900 * CONVERTER),900, 60, 3);
+                        (int) (900 * CONVERTER), 900, 60, 3);
         assertThat(expectedMeal).isNotNull();
         assertThat(expectedMeal).isEqualTo(meal);
     }
-
-//    @Test
-//    @DisplayName("Not Find Expected Meals And Throw NullPointerException")
-//    void should_Not_Find_Expected_Meals_And_Throw_NullPointerException() {
-//        //given
-//        given(mealsRepository
-//                .findTopByTotalKcalOfMealsBetweenAndSumOfCookTotalTimeLessThanEqualAndRecipeSetSizeEquals(anyInt(), anyInt(), anyInt(), anyInt()))
-//                .willThrow(NullPointerException.class);
-//
-//        //when
-//        //then
-//        assertThrows(NullPointerException.class, () -> dataBaseMealsService.findExpectedMeals(anyInt(), anyInt(), anyInt()));
-//    }
 
     @Test
     @DisplayName("Successfully Find Expected Recipe Set")
@@ -147,20 +134,6 @@ class DataBaseMealsServiceTest {
         assertThat(expectedRecipeSet).isNotNull();
         assertThat(expectedRecipeSet).isEqualTo(setOfRecipes);
     }
-
-//    @Test
-//    @DisplayName("Not Find Expected Recipe Set")
-//    void should_Not_Find_Expected_Recipe_Set() {
-//        //given
-//        given(recipeRepository.findByNutrition_CaloriesBetweenAndCookTimeMinutesLessThanEqual(anyInt(), anyInt(), anyInt()))
-//                .willReturn(null);
-//        //when
-//        Set<Recipe> expectedRecipeSet = dataBaseMealsService.findExpectedRecipeSet(anyInt(), anyInt());
-//
-//        //then
-//        then(recipeRepository).should().findByNutrition_CaloriesBetweenAndCookTimeMinutesLessThanEqual(anyInt(), anyInt(), anyInt());
-//        assertThat(expectedRecipeSet).isNull();
-//    }
 
     @Test
     @DisplayName("DataBase is not empty")

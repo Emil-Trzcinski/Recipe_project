@@ -16,7 +16,6 @@ public class BuilderTest {
         defaultRecipe = new RecipeBuilder().withDefaultRecipe().build();
     }
 
-
     @Test
     @DisplayName("Recipe Is Not Null")
     void should_not_return_null() {
@@ -33,7 +32,6 @@ public class BuilderTest {
         assertNotNull(defaultRecipe.getTotalTimeMinutes());
         assertNotNull(defaultRecipe.getTags());
     }
-
 
     @Test
     @DisplayName("Recipe Have Default Properties")

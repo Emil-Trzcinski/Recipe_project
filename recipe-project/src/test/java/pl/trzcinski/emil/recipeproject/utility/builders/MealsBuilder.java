@@ -2,6 +2,7 @@ package pl.trzcinski.emil.recipeproject.utility.builders;
 
 import pl.trzcinski.emil.recipeproject.model.Meals;
 import pl.trzcinski.emil.recipeproject.model.Recipe;
+import pl.trzcinski.emil.recipeproject.model.User;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,6 +21,8 @@ public class MealsBuilder {
 
     private int sumOfCookTotalTime;
 
+    private Set<User> userSet;
+
     private Map<String, String> shoppingList;
 
     public MealsBuilder withDefaultMeal() {
@@ -33,18 +36,17 @@ public class MealsBuilder {
         this.totalKcalOfMeals = 900;
         this.sumOfCookTotalTime = 60;
         this.shoppingList = new HashMap<>();
-                shoppingList.put("assam tea leaves", "1");
-                shoppingList.put("scallions", "3");
-                shoppingList.put("all purpose flour", "185.0");
-                shoppingList.put("balsamic vinegar", "1");
-                shoppingList.put("whole green cardamom pods", "7");
-                shoppingList.put("fresh basil leaf", "20.0");
-                shoppingList.put("nonstick cooking spray", "1");
-                shoppingList.put("cornstarch", "2");
-                shoppingList.put("cookies", "1");
+        shoppingList.put("assam tea leaves", "1");
+        shoppingList.put("scallions", "3");
+        shoppingList.put("all purpose flour", "185.0");
+        shoppingList.put("balsamic vinegar", "1");
+        shoppingList.put("whole green cardamom pods", "7");
+        shoppingList.put("fresh basil leaf", "20.0");
+        shoppingList.put("nonstick cooking spray", "1");
+        shoppingList.put("cornstarch", "2");
+        shoppingList.put("cookies", "1");
         return this;
     }
-
 
     public MealsBuilder defaultID() {
         this.id = 1L;
@@ -91,6 +93,12 @@ public class MealsBuilder {
         return this;
     }
 
+    public MealsBuilder withUserSet(Set<User> setOfUsers) {
+        this.userSet = setOfUsers;
+        return this;
+
+    }
+
     public MealsBuilder withShoppingList(Map<String, String> shoppingList) {
         this.shoppingList = shoppingList;
         return this;
@@ -98,7 +106,6 @@ public class MealsBuilder {
     }
 
     public Meals build() {
-        return new Meals(id, recipeSet, recipeSetSize, totalKcalOfMeals, sumOfCookTotalTime, shoppingList);
+        return new Meals(id, recipeSet, recipeSetSize, totalKcalOfMeals, sumOfCookTotalTime, userSet, shoppingList);
     }
-
 }

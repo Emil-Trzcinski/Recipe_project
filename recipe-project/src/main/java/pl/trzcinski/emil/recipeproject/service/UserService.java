@@ -1,0 +1,47 @@
+package pl.trzcinski.emil.recipeproject.service;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import pl.trzcinski.emil.recipeproject.model.User;
+import pl.trzcinski.emil.recipeproject.repository.UserRepository;
+
+import javax.persistence.EntityNotFoundException;
+import java.util.Optional;
+
+@Slf4j
+@Service
+public class UserService {
+
+    private final UserIdentifierService userIdentifierService;
+    private final UserRepository userRepository;
+
+    public UserService(UserIdentifierService userIdentifierService, UserRepository userRepository) {
+        this.userIdentifierService = userIdentifierService;
+        this.userRepository = userRepository;
+    }
+
+    public User createUser(String userName) {
+
+        User user = new User(null, userName, userIdentifierService.createIdentifier(), null);
+        log.info("------------------User Identifier : " + user.getIdentifier());
+        userRepository.save(user);
+        return user;
+    }
+
+    public boolean userExist(String userName) {
+        Optional<User> userOptional = Optional.ofNullable(userRepository.findUserByUserName(userName));
+
+        return userOptional.isPresent();
+    }
+
+    public User getUser(int identifier) {
+
+        Optional<User> userOptional = Optional.ofNullable(userRepository.findUserByIdentifier(identifier));
+
+        if (userOptional.isEmpty()) {
+            throw new EntityNotFoundException("User don`t exist");
+        }
+
+        return userOptional.get();
+    }
+}

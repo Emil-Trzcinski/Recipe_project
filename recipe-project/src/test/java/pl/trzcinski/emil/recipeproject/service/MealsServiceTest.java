@@ -2,8 +2,6 @@ package pl.trzcinski.emil.recipeproject.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import org.assertj.core.api.AssertionsForClassTypes;
-import org.assertj.core.api.AssertionsForInterfaceTypes;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -86,8 +84,8 @@ class MealsServiceTest {
         Set<Recipe> expectedRecipe = mealsService.getSetOfRecipesWithAllParameters(800, 50, 2);
         //then
         then(mealsService).should().getSetOfRecipesWithAllParameters(800, 50, 2);
-        AssertionsForInterfaceTypes.assertThat(expectedRecipe).isEqualTo(recipeSet);
-        AssertionsForClassTypes.assertThat(expectedRecipe.size()).isEqualTo(2);
+        assertThat(expectedRecipe).isEqualTo(recipeSet);
+        assertThat(expectedRecipe.size()).isEqualTo(2);
     }
 
     @Test
@@ -170,7 +168,7 @@ class MealsServiceTest {
 
         //then
         then(mealsService).should().hasSameName(anySet(), anySet());
-        AssertionsForClassTypes.assertThat(result.size()).isEqualTo(resultRecipeSet.size());
+        assertThat(result.size()).isEqualTo(resultRecipeSet.size());
     }
 
     @Test
