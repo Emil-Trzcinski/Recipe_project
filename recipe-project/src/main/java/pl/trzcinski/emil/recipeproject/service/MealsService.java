@@ -16,6 +16,9 @@ import static pl.trzcinski.emil.recipeproject.service.MealTagEnum.*;
 import static pl.trzcinski.emil.recipeproject.utility.MealPreparedAttributes.calculateKcalPerMeal;
 import static pl.trzcinski.emil.recipeproject.utility.MealPreparedAttributes.calculateTimePerMeal;
 
+/**
+ * MealsService przygotowywuje zestaw unikalnych posiłków
+ */
 @Slf4j
 @Service
 @Transactional
@@ -105,6 +108,13 @@ public class MealsService implements RecipeSetService {
         return Collections.emptySet();
     }
 
+    /**
+     * tworzy zestaw uniklanych posiłków
+     * @param expectedKcal
+     * @param expectedTotalTimeMinutes
+     * @param numberOfMeals
+     * @return unikalny zestaw posiłków
+     */
     public Set<Recipe> getSetOfRecipesWithAllParameters(int expectedKcal, int expectedTotalTimeMinutes, int numberOfMeals) {
         Set<Recipe> mealsSet = new HashSet<>();
         final int preparedKcal = calculateKcalPerMeal(expectedKcal, numberOfMeals);
@@ -112,15 +122,15 @@ public class MealsService implements RecipeSetService {
 
         switch (numberOfMeals) {
             case 3:
-                mealsSet.add(getFromDBSetOfRecipes(preparedKcal, preparedTime, DINNER.getMeal(), mealsSet));
+                mealsSet.add(getFromDBSingleRecipe(preparedKcal, preparedTime, DINNER.getMeal(), mealsSet));
                 mealsSet.remove(null);
 
             case 2:
-                mealsSet.add(getFromDBSetOfRecipes(preparedKcal, preparedTime, LUNCH.getMeal(), mealsSet));
+                mealsSet.add(getFromDBSingleRecipe(preparedKcal, preparedTime, LUNCH.getMeal(), mealsSet));
                 mealsSet.remove(null);
 
             case 1:
-                mealsSet.add(getFromDBSetOfRecipes(preparedKcal, preparedTime, BREAKFAST.getMeal(), mealsSet));
+                mealsSet.add(getFromDBSingleRecipe(preparedKcal, preparedTime, BREAKFAST.getMeal(), mealsSet));
                 mealsSet.remove(null);
                 break;
 
@@ -131,8 +141,16 @@ public class MealsService implements RecipeSetService {
         return mealsSet;
     }
 
+    /**
+     * pobiera przepisy
+     * @param expectedKcal oczekiwana kalorycznosc
+     * @param expectedTotalTimeMinutes oczekiwany całkowity czsa przygotowania
+     * @param mealTag nazwa posiłku
+     * @param mealsSet zestaw posiadanych przepisów
+     * @return przepis
+     */
     @Nullable
-    private Recipe getFromDBSetOfRecipes(int expectedKcal, int expectedTotalTimeMinutes, String mealTag, Set<Recipe> mealsSet) {
+    private Recipe getFromDBSingleRecipe(int expectedKcal, int expectedTotalTimeMinutes, String mealTag, Set<Recipe> mealsSet) {
         final Set<Recipe> recipeTemp = dataBaseMealsService.findExpectedRecipeSet(expectedKcal, expectedTotalTimeMinutes);
         Set<Recipe> recipeListTemp;
         List<Recipe> preparedListOfRecipe;
@@ -163,6 +181,13 @@ public class MealsService implements RecipeSetService {
         return preparedListOfRecipe.get(0);
     }
 
+    /**
+     * pobiera unikalne przepisy z zew. api
+     * @param expectedKcal oczekiwana kalorycznosc
+     * @param expectedTotalTimeMinutes oczekiwany całkowity czas przygotownaia
+     * @param numberOfMeals liczba posiłków
+     * @return unikalne posiłki
+     */
     private Meals getExpectedMealsFromApi(int expectedKcal, int expectedTotalTimeMinutes, int numberOfMeals) {
         Meals mealsApi = new Meals();
 
@@ -175,6 +200,12 @@ public class MealsService implements RecipeSetService {
         return mealsApi;
     }
 
+    /**
+     * pobiera unikalne posiłki z bazy danych i zew. api
+     * @param recipeSetFromApi zestaw pobrany z api
+     * @param recipeSetFromDB zestaw pobrany z bazy danych
+     * @return unikalne posiłki
+     */
     private Meals getExpectedMealsFromApiAndDB(Set<Recipe> recipeSetFromApi, Set<Recipe> recipeSetFromDB) {
         Meals mealsToDataBase = new Meals();
         Set<Recipe> concatSet = hasTooBigSize(Stream.concat(recipeSetFromApi.stream(), recipeSetFromDB.stream()).collect(Collectors.toSet()));
@@ -188,6 +219,11 @@ public class MealsService implements RecipeSetService {
         return mealsToDataBase;
     }
 
+    /**
+     * ????
+     * @param someMeals
+     * @return uniklane posiłki
+     */
     private Meals getExpectedMealsFromDB(Meals someMeals) {
         Meals mealsFromDB = new Meals();
 
@@ -200,6 +236,11 @@ public class MealsService implements RecipeSetService {
         return mealsFromDB;
     }
 
+    /**
+     * tworzy i dodaje przygotowane posiłki do bazydanych
+     * @param recipeSet  zestaw przepisów
+     * @return unikalne posiłki
+     */
     private Meals createExpectedMealAtDB(Set<Recipe> recipeSet) {
         Meals mealsToDataBase = new Meals();
 
@@ -212,6 +253,11 @@ public class MealsService implements RecipeSetService {
         return mealsToDataBase;
     }
 
+    /**
+     * sprawdza czy przepisy z podanego zestawu nie występują już w bazie danych
+     * @param recipeSet zestaw przepisów
+     * @return unikalny zestaw przepisów nie wystepujące w bazie danych
+     */
     private Set<Recipe> checkingDuplicatedRecipes(Set<Recipe> recipeSet) {
         final Set<Recipe> recipesSet = new HashSet<>();
         final Set<String> apiRecipeNamesSet = recipeSet.stream().map(Recipe::getName).collect(Collectors.toSet());
@@ -228,6 +274,12 @@ public class MealsService implements RecipeSetService {
         return recipesSet;
     }
 
+    /**
+     * zajmue się uzyskaniem unikalnego zestawu nazw przepisów z przepisów i posiłków
+     * @param recipeTemp zestaw przepisów
+     * @param mealsSet zestaw posiłków
+     * @return unikalny zestaw z nawami przepisów
+     */
     public Set<Recipe> hasSameName(Set<Recipe> recipeTemp, @NotNull Set<Recipe> mealsSet) {
         final Set<Recipe> singleNames = new HashSet<>();
 
@@ -244,6 +296,11 @@ public class MealsService implements RecipeSetService {
         return singleNames;
     }
 
+    /**
+     * zajmuje się usuwaniem nadliczbowych posiłków
+     * @param concatSet połączony zestaw
+     * @return unikalny zestaw
+     */
     private Set<Recipe> hasTooBigSize(Set<Recipe> concatSet) {
 
         final Set<Recipe> resultSet = new HashSet<>();
@@ -260,6 +317,13 @@ public class MealsService implements RecipeSetService {
         return hasNull(resultSet);
     }
 
+    /**
+     * pobiera przepis z najwyższą możliwą kalorycznością
+     * <p>
+     * jeżeli lista jest pusta zwraca null
+     * @param RecipeList lista przpisow
+     * @return przepis
+     */
     @Nullable
     private Recipe getRecipe(List<Recipe> RecipeList) {
         final List<Recipe> preparedRecipeList;
@@ -282,6 +346,11 @@ public class MealsService implements RecipeSetService {
         return RecipeList.get(0);
     }
 
+    /**
+     * pobiera przepis na śniadanie
+     * @param concatSet połączony zestaw
+     * @return przepis na śniadanie
+     */
     private Recipe getBreakfast(Set<Recipe> concatSet) {
         final List<Recipe> breakfastRecipeList = concatSet.stream()
                 .filter(recipe -> recipe.getTags()
@@ -292,6 +361,13 @@ public class MealsService implements RecipeSetService {
         return getRecipe(breakfastRecipeList);
     }
 
+    /**
+     * pobiera przepis na obiad
+     * <p>
+     * jeżeli przepis posiada tagi obiad i kolacja to zwraca posiłek tylko z tagiem obiad
+     * @param concatSet połączony zestaw
+     * @return przepis na obiad
+     */
     private Recipe getLunch(Set<Recipe> concatSet) {
         final List<Recipe> lunchRecipeList = concatSet.stream()
                 .filter(recipe -> recipe.getTags()
@@ -319,6 +395,13 @@ public class MealsService implements RecipeSetService {
         return getRecipe(lunchRecipeList);
     }
 
+    /**
+     * pobiera przepis na kolację
+     * <p>
+     * jeżeli przepis posiada tagi obiad i kolacja to zwraca posiłek tylko z tagiem kolacja
+     * @param concatSet połączony zestaw
+     * @return przepis na kolację
+     */
     private Recipe getDinner(Set<Recipe> concatSet) {
         final List<Recipe> dinnerRecipeList = concatSet.stream()
                 .filter(recipe -> recipe.getTags()
@@ -345,6 +428,11 @@ public class MealsService implements RecipeSetService {
         return getRecipe(dinnerRecipeList);
     }
 
+    /**
+     * usuówa puste przepisy z zestawu
+     * @param mealsSet zestaw przepisow
+     * @return unikalny zestaw
+     */
     private Set<Recipe> hasNull(Set<Recipe> mealsSet) {
         return mealsSet
                 .stream()
@@ -352,6 +440,12 @@ public class MealsService implements RecipeSetService {
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * oblicza całkowitą kalorycznosc posiłków
+     * @param meals  posiłki
+     * @return kalorycznosc
+     * @throws RuntimeException kiedy nie wystepuja wartości kalorycznosci posiłku
+     */
     @NotNull
     private Integer calculateSumOfMealsKcal(Meals meals) {
 
@@ -368,6 +462,12 @@ public class MealsService implements RecipeSetService {
         return sumOfKcal.getAsInt();
     }
 
+    /**
+     * oblicza całkowity czas na przygotowanie posiłków
+     * @param meals posiłki
+     * @return czas
+     * @throws RuntimeException kiedy nie wystepuja wartości czasu przygotowania posiłku
+     */
     @NotNull
     private Integer calculateSumOfCookTimes(Meals meals) {
 

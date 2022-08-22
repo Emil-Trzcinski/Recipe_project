@@ -8,6 +8,9 @@ import pl.trzcinski.emil.recipeproject.repository.UserRepository;
 import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
+/**
+ * UserService zajmuje się obługą użytkowników
+ */
 @Slf4j
 @Service
 public class UserService {
@@ -20,20 +23,36 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * tworzy użytkownika dodaje go do bazy danych
+     * @param userName login użytkownia
+     * @return użytkownika
+     */
     public User createUser(String userName) {
 
         User user = new User(null, userName, userIdentifierService.createIdentifier(), null);
-        log.info("------------------User Identifier : " + user.getIdentifier());
+        log.info("--------User Identifier : " + user.getIdentifier());
         userRepository.save(user);
         return user;
     }
 
+    /**
+     * sprawdza czy dany użytkownik istnieje już w bazie danych
+     * @param userName login użytkownika
+     * @return true jeżlei użytkownik istnieje
+     */
     public boolean userExist(String userName) {
         Optional<User> userOptional = Optional.ofNullable(userRepository.findUserByUserName(userName));
 
         return userOptional.isPresent();
     }
 
+        /**
+     * pobiera użytkownika z bazdy danych
+     * @param identifier unikalny identyfikator
+     * @return użytkownika z bazy danych
+     * @throws  EntityNotFoundException jeżeli użytkownik nie został znaleziony
+     */
     public User getUser(int identifier) {
 
         Optional<User> userOptional = Optional.ofNullable(userRepository.findUserByIdentifier(identifier));

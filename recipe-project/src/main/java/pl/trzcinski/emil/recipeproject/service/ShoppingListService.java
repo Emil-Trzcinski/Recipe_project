@@ -9,6 +9,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * ShoppingListService generuje liste zepupowa dla przepisow
+ */
 @Slf4j
 @Service
 public class ShoppingListService {
@@ -16,6 +19,11 @@ public class ShoppingListService {
     public ShoppingListService() {
     }
 
+    /**
+     * tworzy liste zakupowa (mapę - key - nazwa składnika - value - ilość składniak) dla podanych posilkow
+     * @param meals posiłki
+     * @return liste zakupowa
+     */
     public Map<String, String> createShoppingList(Meals meals) {
         final Map<String, String> shoppingList;
 
@@ -29,6 +37,12 @@ public class ShoppingListService {
         log.info(String.valueOf(shoppingList));
         return shoppingList;
     }
+
+    /**
+     * pobiera ilosc konkretnego składnika
+     * @param component składnik
+     * @return ilość składnika
+     */
     private static String getValue(Component component) {
         List<String> listOfQuantity;
         List<String> listTemp = new ArrayList<>();
@@ -63,6 +77,11 @@ public class ShoppingListService {
         return listOfQuantity.get(0);
     }
 
+    /**
+     * pobiera poczatkowa liczbe z przekazywanego ciagu
+     * @param numbers ciag
+     * @return liczby w postaci ciagu
+     */
     private static String numberConverter(String numbers) {
         StringBuilder builder = new StringBuilder();
 
@@ -78,6 +97,11 @@ public class ShoppingListService {
         return builder.toString().trim();
     }
 
+    /**
+     * konwertuje ułamki na liczby dziesiętne z pobranego ciagu
+     * @param number ciag
+     * @return liczbę dzisiętną
+     */
     private static String fractionConverter(String number) {
         StringBuilder builder = new StringBuilder();
         StringBuilder numberBuilder = new StringBuilder();

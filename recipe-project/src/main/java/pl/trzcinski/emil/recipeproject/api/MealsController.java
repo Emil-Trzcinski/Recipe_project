@@ -12,6 +12,10 @@ import org.springframework.web.server.ResponseStatusException;
 import pl.trzcinski.emil.recipeproject.model.User;
 import pl.trzcinski.emil.recipeproject.service.UserMealsService;
 
+
+/**
+ * MealsController obsługuje przychodzące zapytania od uyżytkowników
+ */
 @Slf4j
 @EnableCaching
 @RestController
@@ -26,6 +30,17 @@ public class MealsController {
         this.userMealsService = userMealsService;
     }
 
+    /**
+     * pobiera przepisy dla konkretnego uzytkownika domyślnie jeden posilek
+     * <p>
+     * jeżlei zapytanie zawiera niewlasciwe paramtery zwraca bład zapytania
+     * @param identifier unikalny identyfikator uzytkownika
+     * @param expectedKcal oczekiwana kalorycznosc posiłków
+     * @param expectedTotalTimeMinutes oczekiwany czsa przyrzadzenia
+     * @param numberOfMeals liczba posilkow
+     * @return uzytkownika z przygotwanymi przepisami i HttpStatus OK
+     * @throws Exception
+     */
     @GetMapping("/api/v1/meals")
     @ResponseBody
     public ResponseEntity<User> getRecipe(@RequestParam int identifier, int expectedKcal, int expectedTotalTimeMinutes,

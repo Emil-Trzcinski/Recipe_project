@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.trzcinski.emil.recipeproject.model.User;
 import pl.trzcinski.emil.recipeproject.service.UserService;
 
+/**
+ * RegistrationController obługuje rejestracje użytkowników
+ */
 @Slf4j
 @EnableCaching
 @RestController
@@ -21,6 +24,15 @@ public class RegistrationController {
         this.userService = userService;
     }
 
+    /**
+     * odbiera prośbe o dodanie użytkownia do serwisu
+     * <p>
+     * jeżeli nazawa użytkownika jest zbyt krótka zwraca informację i HttpStatus.BAD_REQUEST
+     * <p>
+     * jeżlei użytkowni juz istnieje zwraca informację i HttpStatus.BAD_REQUEST
+     * @param userName login użytkownika
+     * @return zwraca unikalny identyfikator użytkownia i status utworzono
+     */
     @PostMapping("/api/v1/register")
     public ResponseEntity<String> register(@RequestParam String userName) {
         log.info("---------------REGISTERING---------------");

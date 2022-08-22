@@ -17,6 +17,9 @@ import static pl.trzcinski.emil.recipeproject.service.MealTagEnum.*;
 import static pl.trzcinski.emil.recipeproject.utility.MealPreparedAttributes.calculateKcalPerMeal;
 import static pl.trzcinski.emil.recipeproject.utility.MealPreparedAttributes.calculateTimePerMeal;
 
+/**
+ * RecipeService zajmuje się przetworzeniem pozyskanych przepisów
+ */
 @Slf4j
 @Service
 public class RecipeService implements RecipeSetService {
@@ -35,6 +38,14 @@ public class RecipeService implements RecipeSetService {
         this.recipeListMapperService = recipeListMapperService;
     }
 
+    /**
+     * tworzy unikalny zestaw przepisow
+     *
+     * @param expectedKcal  oczekiwana kaloryczność
+     * @param expectedTotalTimeMinutes oczekiwany czas przygotowania
+     * @param numberOfMeals liczba posiłków
+     * @return zestaw unikalnych przepisow
+     */
     public Set<Recipe> getSetOfRecipesWithAllParameters
             (int expectedKcal, int expectedTotalTimeMinutes, int numberOfMeals) {
 
@@ -60,6 +71,19 @@ public class RecipeService implements RecipeSetService {
         return mealsSet;
     }
 
+    /**
+     * pobiera przepis z najlepszym dopasowaniem
+     * <p>
+     * uruchamia zapytanie do zewnetrzbnego, api. odfiltrowywyuje braki w danych i sprawdza czy przepis o danej nazwie nie jest już w serwisie
+     * <p>
+     * w przypadku kiedy nie uzyska oczkiwanego wyniku zwiększa punkt startowy zapytania w api i ponownie przprowadza powyższy proces.
+     *
+     * @param expectedKcal oczekiwana kaloryczność
+     * @param expectedTotalTimeMinutes oczekiwany czas przygotowania
+     * @param mealTag tag posiłku
+     * @param mealsSet unikany zestaw przepisów
+     * @return przepis
+     */
     private Recipe getRecipeFromListOfRecipes
             (int expectedKcal, int expectedTotalTimeMinutes, String mealTag, Set<Recipe> mealsSet) {
 
@@ -91,6 +115,12 @@ public class RecipeService implements RecipeSetService {
         return getRecipeWithTopParameters(preparedSet);
     }
 
+    /**
+     * tworzy unikalny zestaw przepisów z przefiltrowanej już listy
+     * @param expectedKcal oczekiwana kaloczycność
+     * @param expectedTotalTimeMinutes oczekiwany czas na przygotwanie
+     * @return unikalny zestaw przepisów
+     */
     @NotNull
     private Set<Recipe> getRecipeSetFromFilteredList(int expectedKcal, int expectedTotalTimeMinutes) {
         Set<Recipe> recipeSetTemp;
@@ -105,6 +135,12 @@ public class RecipeService implements RecipeSetService {
         return recipeSetTemp;
     }
 
+    /**
+     * zwraca przepis z njawyższą wartością Kcal
+     * @param preparedSet zestaw przepisów
+     * @return przepis
+     * @throws RuntimeException występuje w przypadku pustego zestawu przepisów
+     */
     private Recipe getRecipeWithTopParameters(Set<Recipe> preparedSet) {
 
         Optional<Recipe> optionalRecipe;
@@ -125,11 +161,11 @@ public class RecipeService implements RecipeSetService {
     }
 
     /**
-     * zwraca elemnty które nie znajdzują się w "Set<Recipe> mealsSet"
+     * zwraca przepisy które nie znajdzują się w "Set<Recipe> mealsSet"
      *
      * @param recipeTemp
      * @param mealsSet
-     * @return
+     * @return unikalny zestaw przepisow
      */
     public Set<Recipe> hasSameName(Set<Recipe> recipeTemp, @NotNull Set<Recipe> mealsSet) {
         final Set<Recipe> resultSet = new HashSet<>();

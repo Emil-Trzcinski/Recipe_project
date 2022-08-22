@@ -7,6 +7,9 @@ import pl.trzcinski.emil.recipeproject.repository.UserRepository;
 import java.util.Optional;
 import java.util.Random;
 
+/**
+ * UserIdentifierService zajmuje sie generowaniem pesudolosowych identyfikatorow dla rejestrujacych sie uzytkownikow
+ */
 @Service
 public class UserIdentifierService {
 
@@ -16,6 +19,13 @@ public class UserIdentifierService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * tworzy pseudolosowy identyfikator w zakresie od 1 do 2_147_483_647 włącznie
+     * <p>
+     * kazdoroazowo sprawdza czy dany identyfikator nie istnieje juz w bazie danych, przypadku istanienia genereuje nowy
+     * aż do uzyskania unikalnego identyfikatora
+     * @return identyfikator
+     */
     public int createIdentifier() {
         Random random = new Random();
         int upper = Integer.MAX_VALUE - 1;

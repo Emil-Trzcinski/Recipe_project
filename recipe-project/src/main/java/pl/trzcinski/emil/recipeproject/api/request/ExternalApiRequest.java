@@ -1,9 +1,5 @@
 package pl.trzcinski.emil.recipeproject.api.request;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.exc.StreamReadException;
-import com.fasterxml.jackson.databind.DatabindException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -13,14 +9,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
-
 import static pl.trzcinski.emil.recipeproject.api.request.ApiRequestEnums.*;
 
+/**
+ * ExternalApiRequest pobiera z zew. api liste przepisow na podsttawie przekazanych danych
+ */
 @Slf4j
 @Controller
 public class ExternalApiRequest {
 
+    /**
+     * tworzy link zawierajacy oczekiwane tagi posilkow
+     *
+     * @param mealTag              nazwa oczekiwanego tagu
+     * @param requestStartingPoint punkt startowy listy w zew. api
+     * @return przygotowany link
+     */
     public String createUrl(String mealTag, int requestStartingPoint) {
 
         StringBuilder urlStringBuilder = new StringBuilder();
@@ -35,8 +39,17 @@ public class ExternalApiRequest {
         return urlStringBuilder.toString();
     }
 
-    public ResponseBody getResponse(String mealTag, int requestStartingPoint) throws IOException, NullPointerException, StreamReadException,
-            DatabindException, JsonProcessingException, JsonMappingException {
+    /**
+     * wysyła zapytanie do api i zwraca otrzymana odpowiedz, lub null w przypadku braku odpowiedzi,
+     * <p>
+     * oczekuje listy 40 posiłków na podstawie przygotowanego linku
+     *
+     * @param mealTag
+     * @param requestStartingPoint
+     * @return zwraca ciało odpowiedzi z api
+     * @throws NullPointerException nie otrzymuje odpowiedzi z zew api
+     */
+    public ResponseBody getResponse(String mealTag, int requestStartingPoint) throws NullPointerException {
 
         Response response;
 

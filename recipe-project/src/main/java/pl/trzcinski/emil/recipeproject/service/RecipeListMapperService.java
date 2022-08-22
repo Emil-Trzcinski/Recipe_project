@@ -13,6 +13,9 @@ import pl.trzcinski.emil.recipeproject.model.RecipeList;
 
 import java.io.IOException;
 
+/**
+ * RecipeListMapperService zajmuje się zmapowaniem odpoiwedzi z zew. api do listy przepisow
+ */
 @Slf4j
 @Service
 public class RecipeListMapperService {
@@ -20,6 +23,17 @@ public class RecipeListMapperService {
     ObjectMapper objectMapper = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
+    /**
+     * mapuje odpowiedz z zew. api do listy przepisow
+     * @param responseBody ciało odpowidzi z zew. api
+     * @return lista zmapowanych przepisow
+     * @throws IOException
+     * @throws NullPointerException
+     * @throws StreamReadException
+     * @throws DatabindException
+     * @throws JsonProcessingException
+     * @throws JsonMappingException
+     */
     public RecipeList getListFromResponseBody(ResponseBody responseBody) throws IOException, NullPointerException,
             StreamReadException, DatabindException, JsonProcessingException, JsonMappingException {
         RecipeList recipeList = new RecipeList();

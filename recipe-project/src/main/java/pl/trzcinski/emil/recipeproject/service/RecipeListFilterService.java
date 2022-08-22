@@ -7,12 +7,23 @@ import pl.trzcinski.emil.recipeproject.model.RecipeList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * RecipeListFilterService zajmuje się filtrowaniem przepisow z brakami w danych
+ */
 @Service
 public class RecipeListFilterService {
 
     public RecipeListFilterService() {
     }
 
+    /**
+     * filtruje liste przepisow z brakow w danych
+     * <p>
+     * jezeli otrzymana lista jest pusta zwraca wyjątek z informacją o problemie z zew. api lub wyczerpanym limicie zapytan
+     * @param recipeList lista przepisow
+     * @return przefiltrowana lista przepisow
+     * @throws RuntimeException zwraca wyjątek w przypadku pustej listy
+     */
     public RecipeList listFiltering(RecipeList recipeList) {
 
         Optional<List<Recipe>> optionalRecipeList = Optional.ofNullable(recipeList.getResults());
