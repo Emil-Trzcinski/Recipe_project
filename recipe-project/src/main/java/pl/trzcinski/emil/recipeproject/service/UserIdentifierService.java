@@ -41,6 +41,11 @@ public class UserIdentifierService {
         return result;
     }
 
+    /**
+     * sprawdza czy użytkownik o danym identyfikatorze nie istnieje w bazie danych
+     * @param number identyfikator
+     * @return true jeżlie użytkownik o danym identyfikatorze nie istnieje w bazie danych
+     */
     private boolean notExist(int number) {
         Optional<User> longOptional = Optional.ofNullable(userRepository.findUserByIdentifier(number));
 

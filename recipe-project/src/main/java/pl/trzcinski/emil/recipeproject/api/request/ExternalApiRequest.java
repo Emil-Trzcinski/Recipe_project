@@ -19,7 +19,7 @@ import static pl.trzcinski.emil.recipeproject.api.request.ApiRequestEnums.*;
 public class ExternalApiRequest {
 
     /**
-     * tworzy link zawierajacy oczekiwane tagi posilkow
+     * tworzy link zawierajacy oczekiwane tagi posiłków
      *
      * @param mealTag              nazwa oczekiwanego tagu
      * @param requestStartingPoint punkt startowy listy w zew. api

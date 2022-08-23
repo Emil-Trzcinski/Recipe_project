@@ -136,7 +136,7 @@ public class RecipeService implements RecipeSetService {
     }
 
     /**
-     * zwraca przepis z njawyższą wartością Kcal
+     * zwraca przepis z najwyższą wartością Kcal
      * @param preparedSet zestaw przepisów
      * @return przepis
      * @throws RuntimeException występuje w przypadku pustego zestawu przepisów
@@ -161,7 +161,7 @@ public class RecipeService implements RecipeSetService {
     }
 
     /**
-     * zwraca przepisy które nie znajdzują się w "Set<Recipe> mealsSet"
+     * zwraca przepisy które nie znajdzują się w "Set<Recipe> mealsSet", elimnuje w ten sposob powtarzające się przepisy
      *
      * @param recipeTemp
      * @param mealsSet

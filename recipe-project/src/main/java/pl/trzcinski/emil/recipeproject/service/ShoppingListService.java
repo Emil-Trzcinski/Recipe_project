@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
- * ShoppingListService generuje liste zepupowa dla przepisow
+ * ShoppingListService generuje liste zakupowa dla przepisow
  */
 @Slf4j
 @Service
@@ -20,7 +20,9 @@ public class ShoppingListService {
     }
 
     /**
-     * tworzy liste zakupowa (mapę - key - nazwa składnika - value - ilość składniak) dla podanych posilkow
+     * tworzy liste zakupowa (mapę - key -> nazwa składnika : value -> ilość składniak) dla podanych posilkow
+     * <p>
+     * jeżeli skłądniki się powtarzają to są ze sobą sumowane
      * @param meals posiłki
      * @return liste zakupowa
      */
@@ -40,6 +42,12 @@ public class ShoppingListService {
 
     /**
      * pobiera ilosc konkretnego składnika
+     * <p>
+     * jeżeli w ilościach wystepuje zakres od, do to zwraca początkową ilość
+     * <p>
+     * jeżlei jest to ułamek konwertuje go na liczbę dziesiętną
+     * <p>
+     * jeżeli przesłąna ilśc składnika to "zero" zwraca jedną sztukę
      * @param component składnik
      * @return ilość składnika
      */

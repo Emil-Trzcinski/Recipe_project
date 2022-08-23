@@ -35,7 +35,7 @@ public class DataBaseMealsService {
     }
 
     /**
-     * wyszukuje posiłek o danej nazwie
+     * wyszukuje przepis o danej nazwie
      * @param name nazawa posiłku
      * @return posiłek
      */

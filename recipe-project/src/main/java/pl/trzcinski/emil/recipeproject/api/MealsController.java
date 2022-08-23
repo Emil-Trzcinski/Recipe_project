@@ -33,7 +33,7 @@ public class MealsController {
     /**
      * pobiera przepisy dla konkretnego uzytkownika domyślnie jeden posilek
      * <p>
-     * jeżlei zapytanie zawiera niewlasciwe paramtery zwraca bład zapytania
+     * jeżlei zapytanie zawiera niewlasciwe paramtery zwraca informację o błędym zapytaniu i HttpStatus.BAD_REQUEST
      * @param identifier unikalny identyfikator uzytkownika
      * @param expectedKcal oczekiwana kalorycznosc posiłków
      * @param expectedTotalTimeMinutes oczekiwany czsa przyrzadzenia

@@ -24,7 +24,7 @@ public class UserService {
     }
 
     /**
-     * tworzy użytkownika dodaje go do bazy danych
+     * tworzy użytkownika i dodaje go do bazy danych
      * @param userName login użytkownia
      * @return użytkownika
      */
@@ -47,11 +47,13 @@ public class UserService {
         return userOptional.isPresent();
     }
 
-        /**
-     * pobiera użytkownika z bazdy danych
+    /**
+     * pobiera użytkownika z bazdy danych*
+     * <p>
+     * jeżlei użytkownik nie został zleziony zwraca wyjątek
      * @param identifier unikalny identyfikator
      * @return użytkownika z bazy danych
-     * @throws  EntityNotFoundException jeżeli użytkownik nie został znaleziony
+     * @throws  EntityNotFoundException użytkownik nie został znaleziony
      */
     public User getUser(int identifier) {
 

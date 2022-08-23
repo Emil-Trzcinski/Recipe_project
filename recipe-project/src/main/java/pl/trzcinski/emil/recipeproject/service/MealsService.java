@@ -36,7 +36,20 @@ public class MealsService implements RecipeSetService {
         this.shoppingListService = shoppingListService;
     }
 
-    public Meals getMeals(int expectedKcal, int expectedTotalTimeMinutes, int numberOfMeals) throws Exception {
+    /**
+     * pobiera unikalny zestaw posiłków
+     * <p>
+     * wpierw odpytuje bazę danych i weryfikuje odpowiedź zgodnie z oczekiwaniami
+     * <p>
+     * w przypadku braków posiłków uzupełnia je z zew. api
+     * <p>
+     * jeżlei w bazie danych nie występuję odpowiednie posiłki odpytuje zew. api.
+     * @param expectedKcal
+     * @param expectedTotalTimeMinutes
+     * @param numberOfMeals
+     * @return unikalny zestaw posiłków
+     */
+    public Meals getMeals(int expectedKcal, int expectedTotalTimeMinutes, int numberOfMeals) {
         final Set<Recipe> recipeSetFromDB = getSetFromDB(expectedKcal, expectedTotalTimeMinutes, numberOfMeals);
         Meals mealsTemp;
 
@@ -142,7 +155,9 @@ public class MealsService implements RecipeSetService {
     }
 
     /**
-     * pobiera przepisy
+     * pobiera przepisy i sprawdza czy nie wystepują te same nazyw
+     * <p>
+     * jeżlie nie zjadzie posiłku w bazie danych zwraca null
      * @param expectedKcal oczekiwana kalorycznosc
      * @param expectedTotalTimeMinutes oczekiwany całkowity czsa przygotowania
      * @param mealTag nazwa posiłku
@@ -220,8 +235,8 @@ public class MealsService implements RecipeSetService {
     }
 
     /**
-     * ????
-     * @param someMeals
+     * pobiera unikalne posiłki z bazy danych
+     * @param someMeals posiłki
      * @return uniklane posiłki
      */
     private Meals getExpectedMealsFromDB(Meals someMeals) {
