@@ -134,7 +134,7 @@ public class RecipeBuilder {
         return this;
     }
 
-    public Recipe build() { //meals nie jest generowany
+    public Recipe build() {
         Recipe recipe = new Recipe(recipeId, name, nutrition, instructions, totalTimeMinutes, prepTimeMinutes, cookTimeMinutes, sections, thumbnailUrl, numServings, tags, meals);
         return recipe;
 

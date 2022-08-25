@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * RecipeListFilterService zajmuje się filtrowaniem przepisow z brakami w danych
+ * RecipeListFilterService filtering recipes with missing data
  */
 @Service
 public class RecipeListFilterService {
@@ -17,12 +17,13 @@ public class RecipeListFilterService {
     }
 
     /**
-     * filtruje liste przepisow z brakow w danych
+     * filtering list of recipes with missing data
      * <p>
-     * jezeli otrzymana lista jest pusta zwraca wyjątek z informacją o problemie z zew. api lub wyczerpanym limicie zapytan
-     * @param recipeList lista przepisow
-     * @return przefiltrowana lista przepisow
-     * @throws RuntimeException zwraca wyjątek w przypadku pustej listy
+     * if the received list is empty, it returns an exception with information about a problem with external api or an exhausted limit of queries
+     *
+     * @param recipeList recipe list
+     * @return filtered recipe list
+     * @throws RuntimeException returns an exception when list is empty
      */
     public RecipeList listFiltering(RecipeList recipeList) {
 
@@ -53,7 +54,7 @@ public class RecipeListFilterService {
 
         } else {
             throw new RuntimeException("Empty recipe list - " +
-                    "probably external api don`t work correctly or your limit is exhaust - please check response status code");
+                    "probably external api doesn't work correctly or your limit is exhaust - please check response status code");
         }
     }
 }

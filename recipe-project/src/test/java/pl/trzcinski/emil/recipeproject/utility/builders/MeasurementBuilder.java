@@ -17,7 +17,6 @@ public class MeasurementBuilder {
     public MeasurementBuilder withDefaultMeasurement() {
         this.measurementId = withDefaultId().measurementId;
         this.quantity = withDefaultQuantity().quantity;
-//        this.unit = withUnit(new UnitBuilder().withDefaultUnit().build()).unit;
 
         return this;
     }

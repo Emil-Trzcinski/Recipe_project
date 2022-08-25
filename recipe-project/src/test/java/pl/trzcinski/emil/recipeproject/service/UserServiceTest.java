@@ -31,7 +31,7 @@ class UserServiceTest {
     User user;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         user = new User();
 
         user.setUserName("testName");
@@ -42,7 +42,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("Successfully Find User By Name")
-    public void should_Find_User_By_Name() {
+    void should_Find_User_By_Name() {
         //given
         given(userRepository.findUserByUserName("testName")).willReturn(user);
 
@@ -56,7 +56,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("Not Found User")
-    public void should_not_find_user() {
+    void should_not_find_user() {
         //given
         given(userRepository.findUserByUserName(anyString())).willReturn(null);
 
@@ -69,7 +69,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("Successfully Find User By Identifier")
-    public void should_Get_User() {
+    void should_Get_User() {
         //given
         given(userService.getUser(10)).willReturn(user);
 
@@ -84,7 +84,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("Find User Will Throw RuntimeException")
-    public void should_Throw_Exception_When_Try_Find_User() {
+    void should_Throw_Exception_When_Try_Find_User() {
         //given
         given(userService.getUser(anyInt())).willThrow(RuntimeException.class);
 

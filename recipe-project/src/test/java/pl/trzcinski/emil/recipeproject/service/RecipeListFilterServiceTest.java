@@ -14,12 +14,12 @@ class RecipeListFilterServiceTest {
     RecipeListFilterService recipeListFilterService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         recipeListFilterService = new RecipeListFilterService();
     }
 
     @AfterEach
-    public void after() {
+    void after() {
         recipeListFilterService = null;
     }
 

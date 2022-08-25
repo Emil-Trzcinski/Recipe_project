@@ -18,7 +18,7 @@ class ShoppingListServiceTest {
     Meals secMeals;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         shoppingListService = new ShoppingListService();
 
         Ingredient ingredient = new IngredientBuilder()

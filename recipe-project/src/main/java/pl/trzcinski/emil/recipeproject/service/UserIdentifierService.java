@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.Random;
 
 /**
- * UserIdentifierService zajmuje sie generowaniem pesudolosowych identyfikatorow dla rejestrujacych sie uzytkownikow
+ * UserIdentifierService deals with generating random identifiers for registering users
  */
 @Service
 public class UserIdentifierService {
@@ -20,11 +20,11 @@ public class UserIdentifierService {
     }
 
     /**
-     * tworzy pseudolosowy identyfikator w zakresie od 1 do 2_147_483_647 włącznie
+     * creates a pseudo-random identifier in the range 1 to 2_147_483_647, inclusive
      * <p>
-     * kazdoroazowo sprawdza czy dany identyfikator nie istnieje juz w bazie danych, przypadku istanienia genereuje nowy
-     * aż do uzyskania unikalnego identyfikatora
-     * @return identyfikator
+     * checks if a given identifier already exists in the database, if it exists generates a new one
+     * until a unique identifier is obtained
+     * @return identifier
      */
     public int createIdentifier() {
         Random random = new Random();
@@ -42,9 +42,9 @@ public class UserIdentifierService {
     }
 
     /**
-     * sprawdza czy użytkownik o danym identyfikatorze nie istnieje w bazie danych
-     * @param number identyfikator
-     * @return true jeżlie użytkownik o danym identyfikatorze nie istnieje w bazie danych
+     * checks if the user with the given identifier does not exist in the database
+     * @param number identifier
+     * @return true if the user with the given identifier does not exist in the database
      */
     private boolean notExist(int number) {
         Optional<User> longOptional = Optional.ofNullable(userRepository.findUserByIdentifier(number));

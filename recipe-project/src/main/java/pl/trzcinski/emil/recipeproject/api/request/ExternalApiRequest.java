@@ -12,18 +12,18 @@ import org.springframework.web.server.ResponseStatusException;
 import static pl.trzcinski.emil.recipeproject.api.request.ApiRequestEnums.*;
 
 /**
- * ExternalApiRequest pobiera z zew. api liste przepisow na podsttawie przekazanych danych
+ * ExternalApiRequest retrieves a recipe list from an external api based on the provided data
  */
 @Slf4j
 @Controller
 public class ExternalApiRequest {
 
     /**
-     * tworzy link zawierajacy oczekiwane tagi posiłków
+     * creates a link with the expected meal tags
      *
-     * @param mealTag              nazwa oczekiwanego tagu
-     * @param requestStartingPoint punkt startowy listy w zew. api
-     * @return przygotowany link
+     * @param mealTag name of the expected tag
+     * @param requestStartingPoint list starting point in external api
+     * @return prepared link
      */
     public String createUrl(String mealTag, int requestStartingPoint) {
 
@@ -40,14 +40,14 @@ public class ExternalApiRequest {
     }
 
     /**
-     * wysyła zapytanie do api i zwraca otrzymana odpowiedz, lub null w przypadku braku odpowiedzi,
+     * sends a query to api and returns the received response
      * <p>
-     * oczekuje listy 40 posiłków na podstawie przygotowanego linku
+     * expects a list of 40 meals based on the prepared link
      *
-     * @param mealTag
-     * @param requestStartingPoint
-     * @return zwraca ciało odpowiedzi z api
-     * @throws NullPointerException nie otrzymuje odpowiedzi z zew api
+     * @param mealTag tag name
+     * @param requestStartingPoint starting point
+     * @return returns the response body from external api
+     * @throws NullPointerException does not receive a reply from external api
      */
     public ResponseBody getResponse(String mealTag, int requestStartingPoint) throws NullPointerException {
 
@@ -66,7 +66,6 @@ public class ExternalApiRequest {
             log.info(response.toString());
 
         } catch (Exception exception) {
-            //todo refactor !!!???
             log.error(exception.getMessage());
             throw new ResponseStatusException(HttpStatus.REQUEST_TIMEOUT, "ExternalApi is Offline, please try again latter");
 

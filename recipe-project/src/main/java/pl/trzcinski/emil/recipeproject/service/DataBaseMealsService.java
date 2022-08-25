@@ -11,7 +11,7 @@ import java.util.Set;
 import static pl.trzcinski.emil.recipeproject.service.Conversion.CONVERTER;
 
 /**
- * DataBaseMealsService zajmuje się komunikacja z baza danych gotowych posilkow i przepisow
+ * DataBaseMealsService deals with communication with the database of prepared meals and recipes
  */
 @Service
 public class DataBaseMealsService {
@@ -26,29 +26,29 @@ public class DataBaseMealsService {
     }
 
     /**
-     * zapisuje i zwraca posiłek
-     * @param meals posiłek
-     * @return posiłek
+     * saves and returns the meal
+     * @param meals meal
+     * @return meal
      */
     public Meals create(Meals meals) {
         return mealsRepository.save(meals);
     }
 
     /**
-     * wyszukuje przepis o danej nazwie
-     * @param name nazawa posiłku
-     * @return posiłek
+     * finds a recipe with the given name
+     * @param name meal name
+     * @return meal
      */
     public Recipe findByName(String name) {
         return recipeRepository.findByName(name);
     }
 
     /**
-     * wyszukuje oczekiwany posiłek o wartosciach najbardziej zblizonych do oczekiwanych
-     * @param expectedKcal liczba kalorii
-     * @param expectedTotalTimeMinutes przewidywane czas przyrzadzania
-     * @param size liczba posilkow
-     * @return posilek
+     * finds the expected meal with values closest to the expected one
+     * @param expectedKcal number of calories
+     * @param expectedTotalTimeMinutes estimated cooking time
+     * @param size number of meals
+     * @return meal
      */
     public Meals findExpectedMeals(int expectedKcal, int expectedTotalTimeMinutes, int size) {
         return mealsRepository.findTopByTotalKcalOfMealsBetweenAndSumOfCookTotalTimeLessThanEqualAndRecipeSetSizeEquals
@@ -56,10 +56,10 @@ public class DataBaseMealsService {
     }
 
     /**
-     * wyszukuje zestaw uniekalnych przepisow pomiedzy wartoscia minimalną a oczekiwana
-     * @param expectedKcal ozcekiwana ilosc kaloryczna
-     * @param expectedTotalTimeMinutes oczekiwany zcas przyrzadzenia
-     * @return zestaw unikalnych przepisow
+     * finds a set of unique recipes between minimum and expected values
+     * @param expectedKcal number of calories
+     * @param expectedTotalTimeMinutes estimated cooking time
+     * @return set of unique recipes
      */
     public Set<Recipe> findExpectedRecipeSet(int expectedKcal, int expectedTotalTimeMinutes) {
         return recipeRepository.
@@ -68,17 +68,17 @@ public class DataBaseMealsService {
     }
 
     /**
-     * sprawdza czy bazada danych nie jest pusta
-     * @return true jeżeli w bazie są posiłki
+     * checks if the database is not empty
+     * @return true if there are meals in the database
      */
     public boolean isNotEmpty() {
         return mealsRepository.count() > 0;
     }
 
     /**
-     * oblicza dolny zakres zapytania do bazy danych
-     * @param expectedKcal oczekiwana ilość kcal
-     * @return dolny zakres kcal
+     * calculate the lower end of a database query
+     * @param expectedKcal expected amount of kcal
+     * @return lower value of kcal
      */
     private Integer calculateMinimumOfKcal(int expectedKcal) {
         return (int) (expectedKcal * CONVERTER);

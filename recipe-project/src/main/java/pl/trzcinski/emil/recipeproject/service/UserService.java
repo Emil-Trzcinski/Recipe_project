@@ -9,7 +9,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 /**
- * UserService zajmuje się obługą użytkowników
+ * UserService user services
  */
 @Slf4j
 @Service
@@ -24,9 +24,10 @@ public class UserService {
     }
 
     /**
-     * tworzy użytkownika i dodaje go do bazy danych
-     * @param userName login użytkownia
-     * @return użytkownika
+     * creates a user and adds it to the database
+     *
+     * @param userName user's login
+     * @return user
      */
     public User createUser(String userName) {
 
@@ -37,9 +38,10 @@ public class UserService {
     }
 
     /**
-     * sprawdza czy dany użytkownik istnieje już w bazie danych
-     * @param userName login użytkownika
-     * @return true jeżlei użytkownik istnieje
+     * checks if the given user already exists in the database
+     *
+     * @param userName user's login
+     * @return true if the user exists
      */
     public boolean userExist(String userName) {
         Optional<User> userOptional = Optional.ofNullable(userRepository.findUserByUserName(userName));
@@ -48,19 +50,20 @@ public class UserService {
     }
 
     /**
-     * pobiera użytkownika z bazdy danych*
+     * received user from database
      * <p>
-     * jeżlei użytkownik nie został zleziony zwraca wyjątek
-     * @param identifier unikalny identyfikator
-     * @return użytkownika z bazy danych
-     * @throws  EntityNotFoundException użytkownik nie został znaleziony
+     * if the user doesn't exist return exception
+     *
+     * @param identifier unique identifier
+     * @return user from database
+     * @throws EntityNotFoundException user doesn't exist
      */
     public User getUser(int identifier) {
 
         Optional<User> userOptional = Optional.ofNullable(userRepository.findUserByIdentifier(identifier));
 
         if (userOptional.isEmpty()) {
-            throw new EntityNotFoundException("User don`t exist");
+            throw new EntityNotFoundException("user doesn't exist");
         }
 
         return userOptional.get();

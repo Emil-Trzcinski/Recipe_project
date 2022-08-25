@@ -1,14 +1,14 @@
 package pl.trzcinski.emil.recipeproject.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -41,7 +41,7 @@ public class Recipe {
     @Cascade(CascadeType.ALL)
     @JoinColumn(name = "recipe_id")
     @JsonProperty("instructions")
-    private List<Instruction> instructions = new ArrayList<>();
+    private List<Instruction> instructions;
 
     @JsonProperty("total_time_minutes")
     private Integer totalTimeMinutes;
@@ -56,7 +56,7 @@ public class Recipe {
     @Cascade(CascadeType.ALL)
     @JoinColumn(name = "recipe_id")
     @JsonProperty("sections")
-    private List<Section> sections = new ArrayList<>();
+    private List<Section> sections;
 
     @JsonProperty("thumbnail_url")
     private String thumbnailUrl;
@@ -68,9 +68,9 @@ public class Recipe {
     @Cascade(CascadeType.ALL)
     @JoinColumn(name = "recipe_id")
     @JsonProperty("tags")
-    private List<Tag> tags = new ArrayList<>();
+    private List<Tag> tags;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "recipeSet")
-    private Set<Meals> meals = new HashSet<>();
+    private Set<Meals> meals;
 }

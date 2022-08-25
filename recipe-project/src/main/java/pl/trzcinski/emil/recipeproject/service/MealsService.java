@@ -17,37 +17,35 @@ import static pl.trzcinski.emil.recipeproject.utility.MealPreparedAttributes.cal
 import static pl.trzcinski.emil.recipeproject.utility.MealPreparedAttributes.calculateTimePerMeal;
 
 /**
- * MealsService przygotowywuje zestaw unikalnych posiłków
+ * MealsService prepares unique meals
  */
 @Slf4j
 @Service
 @Transactional
 public class MealsService implements RecipeSetService {
 
-    private final Meals meals;
     private final DataBaseMealsService dataBaseMealsService;
     private final RecipeService recipeService;
     private final ShoppingListService shoppingListService;
 
-    public MealsService(Meals meals, DataBaseMealsService dataBaseMealsService, RecipeService recipeService, ShoppingListService shoppingListService) {
-        this.meals = meals;
+    public MealsService(DataBaseMealsService dataBaseMealsService, RecipeService recipeService, ShoppingListService shoppingListService) {
         this.dataBaseMealsService = dataBaseMealsService;
         this.recipeService = recipeService;
         this.shoppingListService = shoppingListService;
     }
 
     /**
-     * pobiera unikalny zestaw posiłków
+     * takes a unique set of meals
      * <p>
-     * wpierw odpytuje bazę danych i weryfikuje odpowiedź zgodnie z oczekiwaniami
+     * first it questions the database and verifies the answer as expected
      * <p>
-     * w przypadku braków posiłków uzupełnia je z zew. api
+     * in case of missing meals, complements them with an external api
      * <p>
-     * jeżlei w bazie danych nie występuję odpowiednie posiłki odpytuje zew. api.
-     * @param expectedKcal
-     * @param expectedTotalTimeMinutes
-     * @param numberOfMeals
-     * @return unikalny zestaw posiłków
+     * if there are no appropriate meals in the database, it asks the external API.
+     * @param expectedKcal number of calories
+     * @param expectedTotalTimeMinutes estimated cooking time
+     * @param numberOfMeals number of meals
+     * @return meals with unique set of recipes
      */
     public Meals getMeals(int expectedKcal, int expectedTotalTimeMinutes, int numberOfMeals) {
         final Set<Recipe> recipeSetFromDB = getSetFromDB(expectedKcal, expectedTotalTimeMinutes, numberOfMeals);
@@ -57,10 +55,7 @@ public class MealsService implements RecipeSetService {
             log.info("--------ASKING API FOR RECIPES---------------");
             mealsTemp = dataBaseMealsService.create(getExpectedMealsFromApi(expectedKcal, expectedTotalTimeMinutes, numberOfMeals));
 
-//            Meals mealsResult = new Meals(mealsTemp.getId(), mealsTemp.getRecipeSet(), calculateSumOfMealsKcal(mealsTemp), calculateSumOfCookTimes(mealsTemp), createShoppingList(mealsTemp));
-//            return mealsResult;
-
-            return Meals.builder()      //todo refactor wywalic buildery - return new Meals(argmenty) -> zwraca nulle - przeanalizować
+            return Meals.builder()
                     .mealsId(mealsTemp.getMealsId())
                     .recipeSet(mealsTemp.getRecipeSet())
                     .totalKcalOfMeals(calculateSumOfMealsKcal(mealsTemp))
@@ -76,12 +71,6 @@ public class MealsService implements RecipeSetService {
 
             mealsTemp = dataBaseMealsService.create(getExpectedMealsFromApiAndDB(checkingDuplicatedRecipes(apiRecipeTemp), recipeSetFromDB));
 
-//            return new Meals(mealsTemp.getId(),
-//                    getSetFromDB(expectedKcal, expectedTotalTimeMinutes, numberOfMeals),
-//                    sumOfMealsKcal(mealsTemp),
-//                    sumOfCookTimes(mealsTemp),
-//                    createShoppingList(mealsTemp));
-
             return Meals.builder()
                     .mealsId(mealsTemp.getMealsId())
                     .recipeSet(getSetFromDB(expectedKcal, expectedTotalTimeMinutes, numberOfMeals))
@@ -96,8 +85,6 @@ public class MealsService implements RecipeSetService {
 
         if (mealsFromDB.isEmpty()) {
             Meals correctMeals = dataBaseMealsService.create(createExpectedMealAtDB(recipeSetFromDB));
-
-//            return new Meals(correctMeals.getId(), correctMeals.getRecipeSet(), sumOfMealsKcal(correctMeals), sumOfCookTimes(correctMeals), createShoppingList(correctMeals));
 
             return Meals.builder()
                     .mealsId(correctMeals.getMealsId())
@@ -122,11 +109,11 @@ public class MealsService implements RecipeSetService {
     }
 
     /**
-     * tworzy zestaw uniklanych posiłków
-     * @param expectedKcal
-     * @param expectedTotalTimeMinutes
-     * @param numberOfMeals
-     * @return unikalny zestaw posiłków
+     * creates a set of unique meals
+     * @param expectedKcal number of calories
+     * @param expectedTotalTimeMinutes estimated cooking time
+     * @param numberOfMeals number of meals
+     * @return unique set of recipes
      */
     public Set<Recipe> getSetOfRecipesWithAllParameters(int expectedKcal, int expectedTotalTimeMinutes, int numberOfMeals) {
         Set<Recipe> mealsSet = new HashSet<>();
@@ -155,14 +142,14 @@ public class MealsService implements RecipeSetService {
     }
 
     /**
-     * pobiera przepisy i sprawdza czy nie wystepują te same nazyw
+     * downloads recipes and checks for the same names
      * <p>
-     * jeżlie nie zjadzie posiłku w bazie danych zwraca null
-     * @param expectedKcal oczekiwana kalorycznosc
-     * @param expectedTotalTimeMinutes oczekiwany całkowity czsa przygotowania
-     * @param mealTag nazwa posiłku
-     * @param mealsSet zestaw posiadanych przepisów
-     * @return przepis
+     * returns null if it does not find a meal in the database
+     * @param expectedKcal number of calories
+     * @param expectedTotalTimeMinutes estimated cooking time
+     * @param mealTag meals tag
+     * @param mealsSet stored set of recipes
+     * @return recipe
      */
     @Nullable
     private Recipe getFromDBSingleRecipe(int expectedKcal, int expectedTotalTimeMinutes, String mealTag, Set<Recipe> mealsSet) {
@@ -197,11 +184,11 @@ public class MealsService implements RecipeSetService {
     }
 
     /**
-     * pobiera unikalne przepisy z zew. api
-     * @param expectedKcal oczekiwana kalorycznosc
-     * @param expectedTotalTimeMinutes oczekiwany całkowity czas przygotownaia
-     * @param numberOfMeals liczba posiłków
-     * @return unikalne posiłki
+     * gets unique recipes from external api
+     * @param expectedKcal number of calories
+     * @param expectedTotalTimeMinutes estimated cooking time
+     * @param numberOfMeals number of meals
+     * @return unique meals
      */
     private Meals getExpectedMealsFromApi(int expectedKcal, int expectedTotalTimeMinutes, int numberOfMeals) {
         Meals mealsApi = new Meals();
@@ -216,10 +203,10 @@ public class MealsService implements RecipeSetService {
     }
 
     /**
-     * pobiera unikalne posiłki z bazy danych i zew. api
-     * @param recipeSetFromApi zestaw pobrany z api
-     * @param recipeSetFromDB zestaw pobrany z bazy danych
-     * @return unikalne posiłki
+     * gets unique meals from database and external api
+     * @param recipeSetFromApi set downloaded from api
+     * @param recipeSetFromDB set retrieved from the database
+     * @return unique meals
      */
     private Meals getExpectedMealsFromApiAndDB(Set<Recipe> recipeSetFromApi, Set<Recipe> recipeSetFromDB) {
         Meals mealsToDataBase = new Meals();
@@ -235,9 +222,9 @@ public class MealsService implements RecipeSetService {
     }
 
     /**
-     * pobiera unikalne posiłki z bazy danych
-     * @param someMeals posiłki
-     * @return uniklane posiłki
+     * gets unique meals from the database
+     * @param someMeals meals
+     * @return unique meals
      */
     private Meals getExpectedMealsFromDB(Meals someMeals) {
         Meals mealsFromDB = new Meals();
@@ -252,9 +239,9 @@ public class MealsService implements RecipeSetService {
     }
 
     /**
-     * tworzy i dodaje przygotowane posiłki do bazydanych
-     * @param recipeSet  zestaw przepisów
-     * @return unikalne posiłki
+     * creates and adds prepared meals to the database
+     * @param recipeSet  set of recipes
+     * @return unique meals
      */
     private Meals createExpectedMealAtDB(Set<Recipe> recipeSet) {
         Meals mealsToDataBase = new Meals();
@@ -269,9 +256,9 @@ public class MealsService implements RecipeSetService {
     }
 
     /**
-     * sprawdza czy przepisy z podanego zestawu nie występują już w bazie danych
-     * @param recipeSet zestaw przepisów
-     * @return unikalny zestaw przepisów nie wystepujące w bazie danych
+     * checks if recipes from the given set are no longer present in the database
+     * @param recipeSet set of recipes
+     * @return unique set of recipes not present in the database
      */
     private Set<Recipe> checkingDuplicatedRecipes(Set<Recipe> recipeSet) {
         final Set<Recipe> recipesSet = new HashSet<>();
@@ -290,10 +277,10 @@ public class MealsService implements RecipeSetService {
     }
 
     /**
-     * zajmue się uzyskaniem unikalnego zestawu nazw przepisów z przepisów i posiłków
-     * @param recipeTemp zestaw przepisów
-     * @param mealsSet zestaw posiłków
-     * @return unikalny zestaw z nawami przepisów
+     * gets unique set of recipe names from recipes and meals
+     * @param recipeTemp set of recipes
+     * @param mealsSet set of meals
+     * @return a unique set of recipes names
      */
     public Set<Recipe> hasSameName(Set<Recipe> recipeTemp, @NotNull Set<Recipe> mealsSet) {
         final Set<Recipe> singleNames = new HashSet<>();
@@ -312,9 +299,9 @@ public class MealsService implements RecipeSetService {
     }
 
     /**
-     * zajmuje się usuwaniem nadliczbowych posiłków
-     * @param concatSet połączony zestaw
-     * @return unikalny zestaw
+     * remove excess meals
+     * @param concatSet combined set
+     * @return unique set of recipes
      */
     private Set<Recipe> hasTooBigSize(Set<Recipe> concatSet) {
 
@@ -333,11 +320,11 @@ public class MealsService implements RecipeSetService {
     }
 
     /**
-     * pobiera przepis z najwyższą możliwą kalorycznością
+     * gets the recipe with the highest possible calories
      * <p>
-     * jeżeli lista jest pusta zwraca null
-     * @param RecipeList lista przpisow
-     * @return przepis
+     * if the list is empty, returns null
+     * @param RecipeList recipe list
+     * @return recipe
      */
     @Nullable
     private Recipe getRecipe(List<Recipe> RecipeList) {
@@ -362,9 +349,9 @@ public class MealsService implements RecipeSetService {
     }
 
     /**
-     * pobiera przepis na śniadanie
-     * @param concatSet połączony zestaw
-     * @return przepis na śniadanie
+     * gets a recipe for breakfast
+     * @param concatSet combined set
+     * @return breakfast recipe
      */
     private Recipe getBreakfast(Set<Recipe> concatSet) {
         final List<Recipe> breakfastRecipeList = concatSet.stream()
@@ -377,11 +364,11 @@ public class MealsService implements RecipeSetService {
     }
 
     /**
-     * pobiera przepis na obiad
+     * gets a recipe for dinner
      * <p>
-     * jeżeli przepis posiada tagi obiad i kolacja to zwraca posiłek tylko z tagiem obiad
-     * @param concatSet połączony zestaw
-     * @return przepis na obiad
+     * if the recipe has the tags lunch and dinner, it returns the meal only with the tag lunch
+     * @param concatSet combined set
+     * @return recipe for dinner
      */
     private Recipe getLunch(Set<Recipe> concatSet) {
         final List<Recipe> lunchRecipeList = concatSet.stream()
@@ -411,11 +398,11 @@ public class MealsService implements RecipeSetService {
     }
 
     /**
-     * pobiera przepis na kolację
+     * gets a recipe for dinner
      * <p>
-     * jeżeli przepis posiada tagi obiad i kolacja to zwraca posiłek tylko z tagiem kolacja
-     * @param concatSet połączony zestaw
-     * @return przepis na kolację
+     * if the recipe has the tags lunch and dinner, it returns the meal only with the tag dinner
+     * @param concatSet combined set
+     * @return recipe for dinner
      */
     private Recipe getDinner(Set<Recipe> concatSet) {
         final List<Recipe> dinnerRecipeList = concatSet.stream()
@@ -444,9 +431,9 @@ public class MealsService implements RecipeSetService {
     }
 
     /**
-     * usuówa puste przepisy z zestawu
-     * @param mealsSet zestaw przepisow
-     * @return unikalny zestaw
+     * removes empty recipes from the set
+     * @param mealsSet set of recipes
+     * @return unique recipe set
      */
     private Set<Recipe> hasNull(Set<Recipe> mealsSet) {
         return mealsSet
@@ -456,10 +443,10 @@ public class MealsService implements RecipeSetService {
     }
 
     /**
-     * oblicza całkowitą kalorycznosc posiłków
-     * @param meals  posiłki
-     * @return kalorycznosc
-     * @throws RuntimeException kiedy nie wystepuja wartości kalorycznosci posiłku
+     * calculates the total caloric value of your meals
+     * @param meals meals
+     * @return calorific value
+     * @throws RuntimeException when the caloric value of the meal is not present
      */
     @NotNull
     private Integer calculateSumOfMealsKcal(Meals meals) {
@@ -478,10 +465,10 @@ public class MealsService implements RecipeSetService {
     }
 
     /**
-     * oblicza całkowity czas na przygotowanie posiłków
-     * @param meals posiłki
-     * @return czas
-     * @throws RuntimeException kiedy nie wystepuja wartości czasu przygotowania posiłku
+     * calculates the total time to prepare meals
+     * @param meals meals
+     * @return cooking time
+     * @throws RuntimeException when there is no cooking time value of the meal
      */
     @NotNull
     private Integer calculateSumOfCookTimes(Meals meals) {
@@ -492,8 +479,8 @@ public class MealsService implements RecipeSetService {
                 .reduce(Integer::sum);
 
         if (sumOfTime.isEmpty()) {
-            log.debug("--- empty numbers of cook time ---");
-            throw new RuntimeException("--- empty numbers of cook time ---");
+            log.debug("--- empty numbers of cooking time ---");
+            throw new RuntimeException("--- empty numbers of cooking time ---");
         }
 
         return sumOfTime.getAsInt();

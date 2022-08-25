@@ -8,7 +8,6 @@ import org.hibernate.annotations.CascadeType;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -41,7 +40,7 @@ public class Meals {
 
     @JsonIgnore
     @ManyToMany(mappedBy = "mealsSet")
-    private Set<User> users = new HashSet<>();
+    private Set<User> users;
 
     @Transient
     private Map<String, String> shoppingList;

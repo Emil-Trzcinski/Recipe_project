@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
- * ShoppingListService generuje liste zakupowa dla przepisow
+ * ShoppingListService generates a shopping list for recipes
  */
 @Slf4j
 @Service
@@ -20,11 +20,11 @@ public class ShoppingListService {
     }
 
     /**
-     * tworzy liste zakupowa (mapę - key -> nazwa składnika : value -> ilość składniak) dla podanych posilkow
+     * creates a shopping list (map - key -> ingredient name: value -> ingredient quantity) for given meals
      * <p>
-     * jeżeli skłądniki się powtarzają to są ze sobą sumowane
-     * @param meals posiłki
-     * @return liste zakupowa
+     * if the components are repeated, they are added together
+     * @param meals meals
+     * @return shopping list
      */
     public Map<String, String> createShoppingList(Meals meals) {
         final Map<String, String> shoppingList;
@@ -41,15 +41,15 @@ public class ShoppingListService {
     }
 
     /**
-     * pobiera ilosc konkretnego składnika
+     * gets the quantity of a specific component
      * <p>
-     * jeżeli w ilościach wystepuje zakres od, do to zwraca początkową ilość
+     * if the range of quantities is from, to returns the initial quantity
      * <p>
-     * jeżlei jest to ułamek konwertuje go na liczbę dziesiętną
+     * if it is a fraction converts it to a decimal number
      * <p>
-     * jeżeli przesłąna ilśc składnika to "zero" zwraca jedną sztukę
-     * @param component składnik
-     * @return ilość składnika
+     * if the value of the ingredient is "zero", it returns one pcs
+     * @param component component
+     * @return component value
      */
     private static String getValue(Component component) {
         List<String> listOfQuantity;
@@ -86,9 +86,9 @@ public class ShoppingListService {
     }
 
     /**
-     * pobiera poczatkowa liczbe z przekazywanego ciagu
-     * @param numbers ciag
-     * @return liczby w postaci ciagu
+     * gets the initial number from the passed string
+     * @param numbers string
+     * @return numbers in the form of a string
      */
     private static String numberConverter(String numbers) {
         StringBuilder builder = new StringBuilder();
@@ -106,9 +106,9 @@ public class ShoppingListService {
     }
 
     /**
-     * konwertuje ułamki na liczby dziesiętne z pobranego ciagu
-     * @param number ciag
-     * @return liczbę dzisiętną
+     * converts fractions to decimals in a given string
+     * @param number string
+     * @return double number
      */
     private static String fractionConverter(String number) {
         StringBuilder builder = new StringBuilder();
@@ -154,10 +154,10 @@ public class ShoppingListService {
                     builder.append(Double.parseDouble(numberBuilder.toString()) + Double.parseDouble("0.6"));
                     break;
                 case "⅝":
-                    builder.append(Double.parseDouble(numberBuilder.toString()) + Double.parseDouble("0,625"));
+                    builder.append(Double.parseDouble(numberBuilder.toString()) + Double.parseDouble("0.625"));
                     break;
                 case "⅔":
-                    builder.append(Double.parseDouble(numberBuilder.toString()) + Double.parseDouble("0,66"));
+                    builder.append(Double.parseDouble(numberBuilder.toString()) + Double.parseDouble("0.66"));
                     break;
                 case "¾":
                     builder.append(Double.parseDouble(numberBuilder.toString()) + Double.parseDouble("0.75"));

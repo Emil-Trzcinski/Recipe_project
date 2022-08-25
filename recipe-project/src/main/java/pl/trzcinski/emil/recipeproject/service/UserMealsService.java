@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * UserMealsService uzyskuje dla konkretnego uzytkownia zestaw posiłków, według jego oczekiwań
+ * UserMealsService obtains a set of meals for a specific user, according to his expectations
  */
 @Slf4j
 @Service
@@ -28,17 +28,17 @@ public class UserMealsService {
     }
 
     /**
-     * pobiera dla konkretnego uzytkowania zestaw oczekiwanych przez niego posilkow
+     * receive a usage-specific set of meals it expects
      *
-     * @param identifier identyfikator uzytkownika
-     * @param expectedKcal oczekiwana ilosc Kcal dla posilków
-     * @param expectedTotalTimeMinutes oczekiwana ilosc czas na przygotowanie posilkow
-     * @param numberOfMeals liczba posikow
-     * @return uzytkowania wraz z przygotowanymi posilkami, całkowita kaloryczność, czas przygotowania i lista zakupowa
-     * @throws EntityNotFoundException nie znaleziono użytkowniaka
+     * @param identifier user identifier
+     * @param expectedKcal expected Kcal for meals
+     * @param expectedTotalTimeMinutes expected amount of time to prepare meals
+     * @param numberOfMeals number of meals
+     * @return user with prepared meals, total calorific value, preparation time and shopping list
+     * @throws EntityNotFoundException user not found
      *
      */
-    public User getUserWithMeals(int identifier, int expectedKcal, int expectedTotalTimeMinutes, int numberOfMeals) throws Exception {
+    public User getUserWithMeals(int identifier, int expectedKcal, int expectedTotalTimeMinutes, int numberOfMeals) {
 
         User preparedUser = userService.getUser(identifier);
 

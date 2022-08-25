@@ -12,9 +12,10 @@ import org.springframework.web.server.ResponseStatusException;
 import pl.trzcinski.emil.recipeproject.model.User;
 import pl.trzcinski.emil.recipeproject.service.UserMealsService;
 
+import javax.persistence.EntityNotFoundException;
 
 /**
- * MealsController obsługuje przychodzące zapytania od uyżytkowników
+ * MealsController process incoming user requests
  */
 @Slf4j
 @EnableCaching
@@ -31,20 +32,20 @@ public class MealsController {
     }
 
     /**
-     * pobiera przepisy dla konkretnego uzytkownika domyślnie jeden posilek
+     * gets recipes for a specific user, default one meal
      * <p>
-     * jeżlei zapytanie zawiera niewlasciwe paramtery zwraca informację o błędym zapytaniu i HttpStatus.BAD_REQUEST
-     * @param identifier unikalny identyfikator uzytkownika
-     * @param expectedKcal oczekiwana kalorycznosc posiłków
-     * @param expectedTotalTimeMinutes oczekiwany czsa przyrzadzenia
-     * @param numberOfMeals liczba posilkow
-     * @return uzytkownika z przygotwanymi przepisami i HttpStatus OK
-     * @throws Exception
+     * if the query contains incorrect parameters it returns information about the incorrect query and HttpStatus.BAD_REQUEST
+     * @param identifier unique user identifier
+     * @param expectedKcal expected calorific value of meals
+     * @param expectedTotalTimeMinutes expected time of preparation
+     * @param numberOfMeals number of meals
+     * @return user with prepared recipes and HttpStatus OK
+     * @throws EntityNotFoundException - user doesn't exist
      */
     @GetMapping("/api/v1/meals")
     @ResponseBody
     public ResponseEntity<User> getRecipe(@RequestParam int identifier, int expectedKcal, int expectedTotalTimeMinutes,
-                                          @RequestParam(defaultValue = "1") int numberOfMeals) throws Exception {
+                                          @RequestParam(defaultValue = "1") int numberOfMeals) throws EntityNotFoundException {
 
 
         if (identifier <= 0) {
@@ -61,19 +62,19 @@ public class MealsController {
 
         if (expectedKcal < BOTTOM_LIMIT_KCAL * numberOfMeals) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST
-                    , "----- You expect to low Kcal per meal, " +
+                    , "----- You expect too low Kcal per meal, " +
                     "please increase your expected value, recommended is more than 300 Kcal per meal -----");
         }
 
         if (expectedKcal > UPPER_LIMIT_KCAL * numberOfMeals) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST
-                    , "----- You expect to much Kcal per meal, " +
-                    "please decrease your expected value, recommended is less then 900 Kcal per meal -----");
+                    , "----- You expect too much Kcal per meal, " +
+                    "please decrease your expected value, recommended is less than 900 Kcal per meal -----");
         }
 
         if (expectedTotalTimeMinutes < LIMIT_TIME * numberOfMeals) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST
-                    , "----- You expect to little Time to cook meals, " +
+                    , "----- You expect too short Time to cook meals, " +
                     " please increase your expected value, recommended is 20 minutes per meal -----");
         }
 

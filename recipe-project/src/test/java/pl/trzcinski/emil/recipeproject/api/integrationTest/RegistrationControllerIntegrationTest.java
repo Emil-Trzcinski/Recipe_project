@@ -16,7 +16,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class RegistrationControllerIntegrationTest {
 
-
     @Autowired
     ObjectMapper objectMapper;
     @Autowired
@@ -56,6 +55,4 @@ class RegistrationControllerIntegrationTest {
                 .andExpect(status().isBadRequest())
                 .andReturn();
     }
-
-
 }

@@ -1,7 +1,6 @@
 package pl.trzcinski.emil.recipeproject.api.request;
 
 public enum ApiRequestEnums {
-
     HEADER_HOST_NAME("x-rapidapi-host"),
     HEADER_HOST_VALUE("tasty.p.rapidapi.com"),
     HEADER_KEY_NAME("x-rapidapi-key"),

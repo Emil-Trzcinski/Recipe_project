@@ -14,7 +14,7 @@ import pl.trzcinski.emil.recipeproject.model.RecipeList;
 import java.io.IOException;
 
 /**
- * RecipeListMapperService zajmuje się zmapowaniem odpoiwedzi z zew. api do listy przepisow
+ * RecipeListMapperService mapping of external api responses to the recipe list
  */
 @Slf4j
 @Service
@@ -24,13 +24,14 @@ public class RecipeListMapperService {
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     /**
-     * mapuje odpowiedz z zew. api do listy przepisow
-     * @param responseBody ciało odpowidzi z zew. api
-     * @return lista zmapowanych przepisow
+     * mapping of external api responses to the recipe list
+     *
+     * @param responseBody body responds from external api
+     * @return list of mapped recipes
      * @throws IOException
-     * @throws NullPointerException
-     * @throws StreamReadException
-     * @throws DatabindException
+     * @throws NullPointerException empty response body
+     * @throws StreamReadException can`t read response body
+     * @throws DatabindException can`t bind objects
      * @throws JsonProcessingException
      * @throws JsonMappingException
      */

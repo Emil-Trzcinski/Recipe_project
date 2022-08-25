@@ -1,11 +1,11 @@
 package pl.trzcinski.emil.recipeproject.service;
 
 /**
- * konwernter okresla minmalny zakres w jakim beda zwracane posilki.
+ * Converter specifies the minimum range in which meals will be returned.
  * <p>
- * W przypadku oczkiwania posilku o 1000Kcal otrzymamy dolny zakres stanowiacy 1000 * CONVERTER;
+ * if expect meal of 1000 Kcal, you will get the lower range of 1000 * CONVERTER
  * <p>
- * np. 1000 * 0,7 = 700
+ * example: 1000 * 0,7 = 700
  */
 public class Conversion {
 

@@ -21,12 +21,12 @@ class UserIdentifierServiceTest {
 
     @Test
     @DisplayName("Successfully Create Identifier")
-    public void should_Successfully_Create_Identifier() {
+    void should_Successfully_Create_Identifier() {
         //given
         given(userIdentifierService.createIdentifier()).willReturn(1000);
 
         //when
-        int result =  userIdentifierService.createIdentifier();
+        int result = userIdentifierService.createIdentifier();
 
         //then
         then(userIdentifierService).should().createIdentifier();

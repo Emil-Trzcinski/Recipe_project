@@ -1,0 +1,221 @@
+{
+	"info": {
+		"_postman_id": "9267d0ec-4ea7-40db-aefa-ae8e157dd4f3",
+		"name": "Recipe",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15640004"
+	},
+	"item": [
+		{
+			"name": "One Recipe",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/meals?identifier&expectedKcal=450&expectedTotalTimeMinutes=20&numberOfMeals=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"meals"
+					],
+					"query": [
+						{
+							"key": "identifier",
+							"value": null,
+							"description": "insert identifier"
+						},
+						{
+							"key": "expectedKcal",
+							"value": "450",
+							"description": "biger then 300 Kcal/per Meal and lower than 900 Kcal/per"
+						},
+						{
+							"key": "expectedTotalTimeMinutes",
+							"value": "20",
+							"description": "biger then 20minuts /per Meal"
+						},
+						{
+							"key": "numberOfMeals",
+							"value": "1",
+							"description": "Default is 1.  Or 1 do 3"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "One Recipe",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/meals?expectedKcal=450&expectedTotalTimeMinutes=20&numberOfMeals=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"meals"
+							],
+							"query": [
+								{
+									"key": "expectedKcal",
+									"value": "450",
+									"description": "biger then 300 Kcal/per Meal and lower than 900 Kcal/per"
+								},
+								{
+									"key": "expectedTotalTimeMinutes",
+									"value": "20",
+									"description": "biger then 20minuts /per Meal"
+								},
+								{
+									"key": "numberOfMeals",
+									"value": "1",
+									"description": "Default is 1.  Or 1 do 3"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Two Recipe",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/meals?identifier&expectedKcal=800&expectedTotalTimeMinutes=50&numberOfMeals=2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"meals"
+					],
+					"query": [
+						{
+							"key": "identifier",
+							"value": null,
+							"description": "insert identifier"
+						},
+						{
+							"key": "expectedKcal",
+							"value": "800",
+							"description": "biger then 300 Kcal/per Meal and lower than 900 Kcal/per"
+						},
+						{
+							"key": "expectedTotalTimeMinutes",
+							"value": "50",
+							"description": "biger then 20minuts /per Meal"
+						},
+						{
+							"key": "numberOfMeals",
+							"value": "2",
+							"description": "Default is 1.  Or 1 do 3"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Three Recipe",
+			"request": {
+				"auth": {
+					"type": "basic"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/meals?identifier=&expectedKcal=2100&expectedTotalTimeMinutes=120&numberOfMeals=3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"meals"
+					],
+					"query": [
+						{
+							"key": "identifier",
+							"value": "",
+							"description": "insert identifier"
+						},
+						{
+							"key": "expectedKcal",
+							"value": "2100",
+							"description": "biger then 300 Kcal/per Meal and lower than 900 Kcal/per"
+						},
+						{
+							"key": "expectedTotalTimeMinutes",
+							"value": "120",
+							"description": "biger then 20minuts /per Meal"
+						},
+						{
+							"key": "numberOfMeals",
+							"value": "3",
+							"description": "Default is 1.  Or 1 do 3"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/register?userName=Emilio",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"register"
+					],
+					"query": [
+						{
+							"key": "userName",
+							"value": "Emilio",
+							"description": "Set Your Login, require 4 characters"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

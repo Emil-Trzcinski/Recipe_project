@@ -51,20 +51,18 @@ public class MealsControllerIntegrationTest {
 
     User user;
 
-
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         user = new User(1L, "someName", 1657654684, null);
 
         userRepository.save(user);
     }
 
-
     @ParameterizedTest(name = "Test {index} => identifier= {0}, Kcal = {1}, Time = {2}, Recipes = {3}")
     @DisplayName("1. Successfully Get Meal ")
     @CsvSource({"1657654684, 450, 20, 1", "1657654684, 800, 50, 2", "1657654684, 1500, 60, 3", "1657654684, 2400, 90, 3", "1657654684, 800, 50, 2",
             "1657654684, 450, 20, 1", "1657654684, 500, 30, 1", "1657654684, 1500, 60, 3"})
-    public void should_Get_Meal(int identifier, int kcal, int time, int recipes) throws Exception {
+    void should_Get_Meal(int identifier, int kcal, int time, int recipes) throws Exception {
         //given
         //when
         MvcResult mvcResult = mockMvc.perform(get("/api/v1/meals?identifier=" + identifier + "&expectedKcal=" + kcal +
@@ -83,7 +81,7 @@ public class MealsControllerIntegrationTest {
     @ParameterizedTest(name = "Test {index} => Returns Too Many Requests")
     @DisplayName("8. Too Many Requests")
     @CsvSource({"800", "850", "900"})
-    public void should_Not_Get_Meal_Too_Many_Requests(int Kcal) throws Exception {
+    void should_Not_Get_Meal_Too_Many_Requests(int Kcal) throws Exception {
         //given
         //when
         MvcResult mvcResult = mockMvc.perform(get("/api/v1/meals?identifier=1389091090&expectedKcal=" + Kcal +

@@ -40,7 +40,7 @@ class RecipeServiceTest {
     Set<Recipe> secRecipeSet = new HashSet<>();
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         recipeList = new RecipeList();
 
         recipeList.setResults(Arrays.asList(new RecipeBuilder().withDefaultRecipe().build(),
@@ -48,7 +48,7 @@ class RecipeServiceTest {
     }
 
     @AfterEach
-    public void after(){
+    void after(){
         recipeList = null;
     }
 

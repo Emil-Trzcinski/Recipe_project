@@ -11,7 +11,7 @@ import pl.trzcinski.emil.recipeproject.model.User;
 import pl.trzcinski.emil.recipeproject.service.UserService;
 
 /**
- * RegistrationController obługuje rejestracje użytkowników
+ * RegistrationController process user registrations
  */
 @Slf4j
 @EnableCaching
@@ -25,13 +25,13 @@ public class RegistrationController {
     }
 
     /**
-     * odbiera prośbe o dodanie użytkownia do serwisu
+     * receives a request to add a user to the service
      * <p>
-     * jeżeli nazawa użytkownika jest zbyt krótka zwraca informację i HttpStatus.BAD_REQUEST
+     * if the username is too short it returns and HttpStatus.BAD_REQUEST
      * <p>
-     * jeżlei użytkowni juz istnieje zwraca informację i HttpStatus.BAD_REQUEST
-     * @param userName login użytkownika
-     * @return zwraca unikalny identyfikator użytkownia i status utworzono
+     * if the user already exists, it returns the information and HttpStatus.BAD_REQUEST
+     * @param userName user login
+     * @return returns a unique user Identifier and the status has been created
      */
     @PostMapping("/api/v1/register")
     public ResponseEntity<String> register(@RequestParam String userName) {
@@ -42,11 +42,11 @@ public class RegistrationController {
         }
 
         if (userService.userExist(userName)) {
-            return new ResponseEntity<>("User already exist, please use oder login", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("User already exist, please use other login", HttpStatus.BAD_REQUEST);
         }
 
         User user = userService.createUser(userName);
 
-        return new ResponseEntity<>("Successful registered, yours Identifier is : " + user.getIdentifier(), HttpStatus.CREATED);
+        return new ResponseEntity<>("Successful registered, your Identifier is : " + user.getIdentifier(), HttpStatus.CREATED);
     }
 }

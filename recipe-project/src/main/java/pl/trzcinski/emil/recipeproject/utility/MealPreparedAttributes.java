@@ -1,7 +1,7 @@
 package pl.trzcinski.emil.recipeproject.utility;
 
 /**
- * MealPreparedAttributes sluzy do przliczania podanych wartosci na konkretna ilosc posilkow
+ * MealPreparedAttributes It is used to convert the given values into a specific number of meals
  */
 public class MealPreparedAttributes {
 
@@ -10,13 +10,13 @@ public class MealPreparedAttributes {
     }
 
     /**
-     * Kalkulator służący do przeliczania ilości na poszegolny posiłek
+     * Calculator for converting the amount to each meal
      *
-     * @param givenValue wartosc z ktorej zostanie przeliczona ilosc na konkrretny posilek
-     * @param numberOfMeals liczba posilkow
-     * @return konkretna ilosc na 1 posiłek
-     * @throws ArithmeticException       dzielenie przez 0
-     * @throws IllegalArgumentException  przy wartosciach mniejszych niz 0
+     * @param givenValue    the value from which the quantity will be converted into a specific meal
+     * @param numberOfMeals number of meals
+     * @return specific amount for one meal
+     * @throws ArithmeticException      divide by 0
+     * @throws IllegalArgumentException with values less than 0
      */
 
     private static int calculation(int givenValue, int numberOfMeals) {
@@ -34,26 +34,26 @@ public class MealPreparedAttributes {
     }
 
     /**
-     * przy pomocu kalkulatora przelicza ilości potrzebnego czasu na poszegolny posiłek
+     * calculator to convert the amount of time needed for each meal
      *
-     * @param expectedTotalTimeMinutes calokowity czas z ktorego zostanie wyliczony czas na konkretny posilek
-     * @param numberOfMeals liczba posilkow
-     * @return konkretna ilosc Kcal na 1 posiłek
-     * @throws ArithmeticException       dzielenie przez 0
-     * @throws IllegalArgumentException  przy wartosciach mniejszych niz 0
+     * @param expectedTotalTimeMinutes total time from which the time for a specific meal will be calculated
+     * @param numberOfMeals            number of meals
+     * @return specific amount for one meal
+     * @throws ArithmeticException      divide by 0
+     * @throws IllegalArgumentException with values less than 0
      */
     public static int calculateTimePerMeal(int expectedTotalTimeMinutes, int numberOfMeals) {
         return calculation(expectedTotalTimeMinutes, numberOfMeals);
     }
 
     /**
-     * przy pomocu kalkulatora przelicza ilości kcal na poszegolny posiłek
+     * calculator to convert the amount of kcal to each meal
      *
-     * @param expectedKcal calkowita liczba kcal z ktory zostanie wyliczona ilosc na konkretny posilek
-     * @param numberOfMeals liczba posilkow
-     * @return konkretna ilosc Kcal na 1 posiłek
-     * @throws ArithmeticException       dzielenie przez 0
-     * @throws IllegalArgumentException  przy wartosciach mniejszych niz 0
+     * @param expectedKcal  total number of kcal from which the amount will be calculated for a specific meal
+     * @param numberOfMeals number of meals
+     * @return specific amount of Kcal for one meal
+     * @throws ArithmeticException      divide by 0
+     * @throws IllegalArgumentException with values less than 0
      */
     public static int calculateKcalPerMeal(int expectedKcal, int numberOfMeals) {
         return calculation(expectedKcal, numberOfMeals);

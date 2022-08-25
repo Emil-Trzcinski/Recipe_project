@@ -18,7 +18,7 @@ import static pl.trzcinski.emil.recipeproject.utility.MealPreparedAttributes.cal
 import static pl.trzcinski.emil.recipeproject.utility.MealPreparedAttributes.calculateTimePerMeal;
 
 /**
- * RecipeService zajmuje się przetworzeniem pozyskanych przepisów
+ * RecipeService processing of obtained recipes
  */
 @Slf4j
 @Service
@@ -39,15 +39,15 @@ public class RecipeService implements RecipeSetService {
     }
 
     /**
-     * tworzy unikalny zestaw przepisow
+     * creates a unique set of recipes
      *
-     * @param expectedKcal  oczekiwana kaloryczność
-     * @param expectedTotalTimeMinutes oczekiwany czas przygotowania
-     * @param numberOfMeals liczba posiłków
-     * @return zestaw unikalnych przepisow
+     * @param expectedKcal             expected calorific value
+     * @param expectedTotalTimeMinutes expected preparation time
+     * @param numberOfMeals            number of meals
+     * @return a set of unique recipes
      */
     public Set<Recipe> getSetOfRecipesWithAllParameters
-            (int expectedKcal, int expectedTotalTimeMinutes, int numberOfMeals) {
+    (int expectedKcal, int expectedTotalTimeMinutes, int numberOfMeals) {
 
         final Set<Recipe> mealsSet = new HashSet<>();
         final int preparedKcal = calculateKcalPerMeal(expectedKcal, numberOfMeals);
@@ -72,20 +72,20 @@ public class RecipeService implements RecipeSetService {
     }
 
     /**
-     * pobiera przepis z najlepszym dopasowaniem
+     * gets the recipe with the best match
      * <p>
-     * uruchamia zapytanie do zewnetrzbnego, api. odfiltrowywyuje braki w danych i sprawdza czy przepis o danej nazwie nie jest już w serwisie
+     * runs a query to the external, api. filters out missing data and checks if a recipe with a given name is no longer on the service
      * <p>
-     * w przypadku kiedy nie uzyska oczkiwanego wyniku zwiększa punkt startowy zapytania w api i ponownie przprowadza powyższy proces.
+     * when the expected result is not obtained, it increases the starting point of the query in api and repeats the above process.
      *
-     * @param expectedKcal oczekiwana kaloryczność
-     * @param expectedTotalTimeMinutes oczekiwany czas przygotowania
-     * @param mealTag tag posiłku
-     * @param mealsSet unikany zestaw przepisów
-     * @return przepis
+     * @param expectedKcal             expected calorific value
+     * @param expectedTotalTimeMinutes expected preparation time
+     * @param mealTag                  meals tag
+     * @param mealsSet                 unique set of recipes
+     * @return recipe
      */
     private Recipe getRecipeFromListOfRecipes
-            (int expectedKcal, int expectedTotalTimeMinutes, String mealTag, Set<Recipe> mealsSet) {
+    (int expectedKcal, int expectedTotalTimeMinutes, String mealTag, Set<Recipe> mealsSet) {
 
         int requestStartingPoint = 0;
         Set<Recipe> recipeSetTemp;
@@ -116,10 +116,11 @@ public class RecipeService implements RecipeSetService {
     }
 
     /**
-     * tworzy unikalny zestaw przepisów z przefiltrowanej już listy
-     * @param expectedKcal oczekiwana kaloczycność
-     * @param expectedTotalTimeMinutes oczekiwany czas na przygotwanie
-     * @return unikalny zestaw przepisów
+     * creates a unique set of recipes from an already filtered list
+     *
+     * @param expectedKcal             expected calorific value
+     * @param expectedTotalTimeMinutes expected preparation time
+     * @return unique set of recipes
      */
     @NotNull
     private Set<Recipe> getRecipeSetFromFilteredList(int expectedKcal, int expectedTotalTimeMinutes) {
@@ -136,10 +137,11 @@ public class RecipeService implements RecipeSetService {
     }
 
     /**
-     * zwraca przepis z najwyższą wartością Kcal
-     * @param preparedSet zestaw przepisów
-     * @return przepis
-     * @throws RuntimeException występuje w przypadku pustego zestawu przepisów
+     * returns the recipe with the highest Kcal value
+     *
+     * @param preparedSet set of recipe
+     * @return recipe
+     * @throws RuntimeException when there is an empty set of recipe
      */
     private Recipe getRecipeWithTopParameters(Set<Recipe> preparedSet) {
 
@@ -161,11 +163,11 @@ public class RecipeService implements RecipeSetService {
     }
 
     /**
-     * zwraca przepisy które nie znajdzują się w "Set<Recipe> mealsSet", elimnuje w ten sposob powtarzające się przepisy
+     * returns recipes that are not in the "Set <Recipe> meals Set", eliminating duplicate recipe
      *
-     * @param recipeTemp
-     * @param mealsSet
-     * @return unikalny zestaw przepisow
+     * @param recipeTemp temp set of recipes
+     * @param mealsSet   set of recipes
+     * @return unique set of recipes
      */
     public Set<Recipe> hasSameName(Set<Recipe> recipeTemp, @NotNull Set<Recipe> mealsSet) {
         final Set<Recipe> resultSet = new HashSet<>();
