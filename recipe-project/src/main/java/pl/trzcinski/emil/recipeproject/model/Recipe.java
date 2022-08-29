@@ -18,9 +18,9 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Component
 @Entity
-@Builder
 public class Recipe {
 
     @Id
